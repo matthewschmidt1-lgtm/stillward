@@ -336,18 +336,22 @@
         <div class="ob-dot done"></div><div class="ob-dot done"></div><div class="ob-dot active"></div>
       </div>
       <div class="display" style="margin-bottom:12px;">Who do you resonate with?</div>
-      <div class="body-text" style="margin-bottom:22px;">Tap a voice to begin. You can change this anytime.</div>
-      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;">
-        <div class="t-chip on" style="background:#EDF4F0;color:#3a5a4a;" onclick="selectTeacher(this)">Ram Dass</div>
-        <div class="t-chip on" style="background:#F9E8E6;color:#7a1a10;" onclick="selectTeacher(this)">Marianne Williamson</div>
-        <div class="t-chip on" style="background:#EDE6F5;color:#3d1a6a;" onclick="selectTeacher(this)">Almaas</div>
-        <div class="t-chip on" style="background:#FEF8DC;color:#7a5800;" onclick="selectTeacher(this)">Wayne Dyer</div>
-        <div class="t-chip on" style="background:#E3EDF5;color:#1A5F8F;" onclick="selectTeacher(this)">Jesus</div>
-        <div class="t-chip on" style="background:#F0EDE7;color:#444441;" onclick="selectTeacher(this)">Nisargadatta</div>
-        <div class="t-chip on" style="background:#F5EFE0;color:#6B4A00;" onclick="selectTeacher(this)">Buddha</div>
-        <div class="t-chip on" style="background:#E8F0EE;color:#1A4A3A;" onclick="selectTeacher(this)">Peter Crone</div>
-        <div class="t-chip on" style="background:var(--mist);color:var(--ink);" onclick="selectTeacher(this)">All of them</div>
+      <div class="body-text" style="margin-bottom:16px;">Tap a voice to include or exclude it. You can change this anytime.</div>
+      <div style="display:flex;gap:8px;margin-bottom:16px;">
+        <div class="pill" onclick="selectAllOb3Teachers()">Select all</div>
+        <div class="pill" onclick="unselectAllOb3Teachers()">Unselect all</div>
       </div>
+      <div id="ob3-teacher-chips" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px;">
+        <div class="t-chip on" data-init="RD" style="background:#EDF4F0;color:#3a5a4a;" onclick="toggleOb3Teacher(this)">Ram Dass</div>
+        <div class="t-chip on" data-init="MW" style="background:#F9E8E6;color:#7a1a10;" onclick="toggleOb3Teacher(this)">Marianne Williamson</div>
+        <div class="t-chip on" data-init="AH" style="background:#EDE6F5;color:#3d1a6a;" onclick="toggleOb3Teacher(this)">Almaas</div>
+        <div class="t-chip on" data-init="WD" style="background:#FEF8DC;color:#7a5800;" onclick="toggleOb3Teacher(this)">Wayne Dyer</div>
+        <div class="t-chip on" data-init="JC" style="background:#E3EDF5;color:#1A5F8F;" onclick="toggleOb3Teacher(this)">Jesus</div>
+        <div class="t-chip on" data-init="NM" style="background:#F0EDE7;color:#444441;" onclick="toggleOb3Teacher(this)">Nisargadatta</div>
+        <div class="t-chip on" data-init="BU" style="background:#F5EFE0;color:#6B4A00;" onclick="toggleOb3Teacher(this)">Buddha</div>
+        <div class="t-chip on" data-init="PC" style="background:#E8F0EE;color:#1A4A3A;" onclick="toggleOb3Teacher(this)">Peter Crone</div>
+      </div>
+      <button class="btn-primary" onclick="continueFromOb3()">Continue</button>
     </div>
   </div>
 
@@ -573,18 +577,17 @@
       <div style="display:flex;flex-direction:column;align-items:center;margin-bottom:14px;">
         <style>
           @keyframes breathe {
-            0%   { transform: scale(0.7); }
-            40%  { transform: scale(1); }
-            50%  { transform: scale(1); }
-            95%  { transform: scale(0.7); }
-            100% { transform: scale(0.7); }
+            0%     { transform: scale(0.7); }
+            33.33% { transform: scale(1); }
+            58.33% { transform: scale(1); }
+            100%   { transform: scale(0.7); }
           }
-          #breath-circle { animation: breathe 10s ease-in-out infinite; }
+          #breath-circle { animation: breathe 12s ease-in-out infinite; }
         </style>
-        <div style="width:64px;height:64px;display:flex;align-items:center;justify-content:center;margin-bottom:6px;">
-          <div id="breath-circle" style="width:56px;height:56px;border-radius:50%;background:var(--sage-light);border:2px solid var(--sage);"></div>
+        <div style="width:128px;height:128px;display:flex;align-items:center;justify-content:center;margin-bottom:10px;">
+          <div id="breath-circle" style="width:112px;height:112px;border-radius:50%;background:var(--sage-light);border:3px solid var(--sage);"></div>
         </div>
-        <div style="font-size:15px;color:var(--sage);font-weight:500;letter-spacing:.04em;" id="breath-lbl">Breathe in</div>
+        <div style="font-size:30px;color:var(--sage);font-weight:500;letter-spacing:.04em;" id="breath-lbl">Breathe in</div>
       </div>
       <div style="font-size:15px;font-weight:500;color:var(--ink);text-align:center;margin-bottom:12px;" id="timer-msg">Follow the practice below</div>
       <div style="background:var(--mist);border-radius:14px;padding:14px 16px;width:100%;margin-bottom:20px;flex:1;overflow-y:auto;">
@@ -600,7 +603,7 @@
   <!-- ============ PRACTICE: DONE ============ -->
   <div class="screen" id="p5">
     <div class="prog-bar"><div class="prog-fill" style="width:100%"></div></div>
-    <div style="flex:1;display:flex;flex-direction:column;align-items:center;padding:36px 26px 28px;">
+    <div style="flex:1;display:flex;flex-direction:column;align-items:center;padding:36px 26px 28px;overflow-y:auto;-webkit-overflow-scrolling:touch;">
       <div style="width:72px;height:72px;border-radius:50%;background:var(--sage-light);display:flex;align-items:center;justify-content:center;margin-bottom:20px;">
         <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><path d="M7 16l6 6 12-12" stroke="#7D9E89" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
@@ -1272,6 +1275,7 @@ function goScreen(id) {
   if (id === 'home') renderHome();
   if (id === 'you') renderYouScreen();
   if (id === 'patterns') switchTab('map');
+  if (id === 'ob3') renderOb3TeacherChips();
 }
 
 // ─── You screen ──────────────────────────────────────────
@@ -1379,17 +1383,35 @@ const teacherInitMap = {
 // Start with all teachers selected
 let selectedInits = new Set(Object.values(teacherInitMap));
 
-function selectTeacher(el) {
-  const name = el.textContent.trim();
+function renderOb3TeacherChips() {
+  document.querySelectorAll('#ob3-teacher-chips .t-chip').forEach(chip => {
+    const init = chip.getAttribute('data-init');
+    const on = selectedInits.has(init);
+    chip.classList.toggle('on', on);
+    chip.style.opacity = on ? '1' : '0.35';
+  });
+}
 
-  if (name === 'All of them') {
-    // Select all, go forward
-    selectedInits = new Set(Object.values(teacherInitMap));
-  } else {
-    // Single teacher selected — only show their content
-    const init = teacherInitMap[name];
-    if (init) selectedInits = new Set([init]);
-  }
+function toggleOb3Teacher(el) {
+  const init = el.getAttribute('data-init');
+  if (selectedInits.has(init)) selectedInits.delete(init);
+  else selectedInits.add(init);
+  renderOb3TeacherChips();
+}
+
+function selectAllOb3Teachers() {
+  selectedInits = new Set(Object.values(teacherInitMap));
+  renderOb3TeacherChips();
+}
+
+function unselectAllOb3Teachers() {
+  selectedInits = new Set();
+  renderOb3TeacherChips();
+}
+
+function continueFromOb3() {
+  // Don't leave the app with no teachers selected — fall back to all
+  if (selectedInits.size === 0) selectedInits = new Set(Object.values(teacherInitMap));
 
   // Persist to localStorage
   localStorage.setItem('selectedInits', JSON.stringify([...selectedInits]));
@@ -1538,16 +1560,16 @@ function startTimer() {
       if (secondsLeft <= 0) { clearInterval(timerInterval); completeSession(); }
     }
   }, 1000);
-  // Breath label sync — matches the 10s CSS cycle (0-4s in, 4-5s hold, 5-9.5s out)
+  // Breath label sync — matches the 12s CSS cycle (0-4s in, 4-7s hold, 7-12s out)
   if (breathInterval) clearInterval(breathInterval);
   let breathT = 0;
   const breathLbl = document.getElementById('breath-lbl');
   breathLbl.textContent = 'Breathe in';
   breathInterval = setInterval(() => {
     if (paused) return;
-    breathT = (breathT + 0.5) % 10;
+    breathT = (breathT + 0.5) % 12;
     if (breathT < 4)        breathLbl.textContent = 'Breathe in';
-    else if (breathT < 5)   breathLbl.textContent = 'Hold';
+    else if (breathT < 7)   breathLbl.textContent = 'Hold';
     else                    breathLbl.textContent = 'Breathe out';
   }, 500);
 }
