@@ -490,10 +490,6 @@
           <div class="serif-italic" style="margin-bottom:5px;">"The quieter you become, the more you can hear."</div>
           <div style="font-size:15px;color:var(--stone);">— Ram Dass</div>
         </div>
-        <div onclick="shareQuoteCard()" style="display:inline-flex;align-items:center;gap:6px;font-size:15px;color:var(--dusk);font-weight:500;cursor:pointer;padding:6px 0;">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v8M4 4l3-3 3 3M2 9v3h10V9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          Share this quote
-        </div>
       </div>
 
       <!-- Recent practices (real history) -->
@@ -816,14 +812,10 @@
       <div class="setting-row"><div style="display:flex;align-items:center;gap:14px;"><div class="setting-icon" style="background:#E3EDF5;"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 14l3-3 3 3 3-6 3 6" stroke="#1A5F8F" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></div><div><div style="font-size:16px;font-weight:500;color:var(--ink);">Show pattern insights</div><div style="font-size:15px;color:var(--stone);">Surface your practice patterns</div></div></div><div class="toggle on" onclick="this.classList.toggle('on')"><div class="toggle-knob"></div></div></div>
       <div class="setting-row"><div style="display:flex;align-items:center;gap:14px;"><div class="setting-icon" style="background:#EDF4F0;"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M4 10 Q6 5 9 8 Q12 11 14 6" stroke="#7D9E89" stroke-width="1.2" stroke-linecap="round" fill="none"/><circle cx="9" cy="8.5" r="1.5" fill="#7D9E89"/></svg></div><div><div style="font-size:16px;font-weight:500;color:var(--ink);">Ambient sound</div><div style="font-size:15px;color:var(--stone);">Play soft sound during practice</div></div></div><div class="toggle" onclick="this.classList.toggle('on')"><div class="toggle-knob"></div></div></div>
       <div class="hr"></div>
+      <div class="setting-row" onclick="shareApp()" style="cursor:pointer;"><div style="display:flex;align-items:center;gap:14px;"><div class="setting-icon" style="background:var(--mist);"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="3" y="3" width="12" height="12" rx="3" stroke="#888780" stroke-width="1" fill="none"/><path d="M6 9h6M9 6v6" stroke="#888780" stroke-width="1.2" stroke-linecap="round"/></svg></div><div><div style="font-size:16px;font-weight:500;color:var(--ink);">Share Stillward</div><div style="font-size:15px;color:var(--stone);" id="share-stillward-desc">Give someone a still point</div></div></div><div style="color:#8A8880;font-size:18px;">›</div></div>
       <div class="setting-row"><div style="display:flex;align-items:center;gap:14px;"><div class="setting-icon" style="background:var(--mist);"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="7" stroke="#888780" stroke-width="1" fill="none"/><path d="M9 8v5M9 6v.5" stroke="#888780" stroke-width="1.3" stroke-linecap="round"/></svg></div><div><div style="font-size:16px;font-weight:500;color:var(--ink);">The teachers</div><div style="font-size:15px;color:var(--stone);">Who guides these practices</div></div></div><div style="color:#8A8880;font-size:18px;">›</div></div>
-      <div class="setting-row"><div style="display:flex;align-items:center;gap:14px;"><div class="setting-icon" style="background:var(--mist);"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="3" y="3" width="12" height="12" rx="3" stroke="#888780" stroke-width="1" fill="none"/><path d="M6 9h6M9 6v6" stroke="#888780" stroke-width="1.2" stroke-linecap="round"/></svg></div><div><div style="font-size:16px;font-weight:500;color:var(--ink);">Share Stillward</div><div style="font-size:15px;color:var(--stone);">Give someone a still point</div></div></div><div style="color:#8A8880;font-size:18px;">›</div></div>
       <div class="hr"></div>
-      <div style="padding:0 22px 8px;">
-        <div class="serif-italic" style="margin-bottom:4px;" id="you-quote">"The quieter you become, the more you can hear."</div>
-        <div style="font-size:14px;color:#6B6960;" id="you-src">— Ram Dass</div>
-      </div>
-      <div style="font-size:13px;color:#888780;text-align:center;padding:0 22px 4px;">Stillward · v1.0 · Made with presence</div>
+      <div style="font-size:13px;color:#888780;text-align:center;padding:8px 22px 4px;">Stillward · v1.0 · Made with presence</div>
       <div style="text-align:center;font-size:14px;color:#8A8880;padding:0 22px 24px;">Made by <a href="https://matthew-schmidt-production.up.railway.app/" target="_blank" rel="noopener noreferrer" style="color:#8A8880;text-decoration:underline;">Matty</a></div>
     </div>
     <div class="bottom-nav">
@@ -1305,65 +1297,6 @@ function pulseLogo(prefix) {
   wrap.classList.add('tapped');
 }
 
-// ─── Share quote card ────────────────────────────────────
-function shareQuoteCard() {
-  const qEl = document.querySelector('#home .serif-italic');
-  const sEl = document.querySelector('#home .serif-italic + div');
-  const text = qEl ? qEl.textContent : '';
-  const src = sEl ? sEl.textContent : '';
-
-  const canvas = document.createElement('canvas');
-  canvas.width = 1080; canvas.height = 1080;
-  const ctx = canvas.getContext('2d');
-
-  // Background
-  ctx.fillStyle = '#FDF9F5';
-  ctx.fillRect(0, 0, 1080, 1080);
-
-  // Sage circle motif
-  ctx.beginPath(); ctx.arc(540, 260, 110, 0, Math.PI * 2);
-  ctx.fillStyle = '#EDF4F0'; ctx.fill();
-  ctx.beginPath();
-  ctx.moveTo(540, 175);
-  ctx.quadraticCurveTo(610, 260, 540, 345);
-  ctx.quadraticCurveTo(470, 260, 540, 175);
-  ctx.strokeStyle = '#7D9E89'; ctx.lineWidth = 4; ctx.stroke();
-  ctx.beginPath(); ctx.arc(540, 260, 8, 0, Math.PI * 2);
-  ctx.fillStyle = '#7D9E89'; ctx.fill();
-
-  // Quote text — wrapped
-  ctx.fillStyle = '#2C2C2A';
-  ctx.font = 'italic 52px Georgia, serif';
-  ctx.textAlign = 'center';
-  const words = text.split(' ');
-  const lines = []; let line = '';
-  words.forEach(w => {
-    const test = line + (line ? ' ' : '') + w;
-    if (ctx.measureText(test).width > 820 && line) { lines.push(line); line = w; }
-    else line = test;
-  });
-  if (line) lines.push(line);
-  const startY = 560 - (lines.length - 1) * 38;
-  lines.forEach((l, i) => ctx.fillText(l, 540, startY + i * 76));
-
-  // Attribution
-  ctx.font = '34px Georgia, serif';
-  ctx.fillStyle = '#5C5B56';
-  ctx.fillText(src, 540, startY + lines.length * 76 + 40);
-
-  // App name
-  ctx.font = '600 26px sans-serif';
-  ctx.fillStyle = '#7D9E89';
-  ctx.letterSpacing = '6px';
-  ctx.fillText('S T I L L W A R D', 540, 980);
-
-  // Download
-  const link = document.createElement('a');
-  link.download = 'stillward-quote.png';
-  link.href = canvas.toDataURL('image/png');
-  link.click();
-}
-
 // ─── Navigation ──────────────────────────────────────────
 function goScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -1472,6 +1405,27 @@ function setSessionLength(el) {
   saveData('sessionLength', sessionLength);
   el.parentElement.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
   el.classList.add('active');
+}
+
+// ─── Share the app ───────────────────────────────────────
+function shareApp() {
+  const url = 'https://stillward-production.up.railway.app/';
+  const shareData = { title: 'Stillward', text: 'A 3-minute guided return to yourself.', url };
+
+  if (navigator.share) {
+    navigator.share(shareData).catch(() => {});
+    return;
+  }
+
+  const desc = document.getElementById('share-stillward-desc');
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(url).then(() => {
+      if (!desc) return;
+      const original = desc.textContent;
+      desc.textContent = 'Link copied!';
+      setTimeout(() => { desc.textContent = original; }, 1800);
+    }).catch(() => {});
+  }
 }
 
 // ─── Teacher selection & filtering ───────────────────────
@@ -1953,12 +1907,6 @@ document.getElementById('you-name-input').value = userName;
 // Set home quote to today's daily quote on load
 currentQuoteIndex = getFilteredQuoteIndex();
 renderHome();
-
-// Set You screen closing quote to a random filtered quote
-const filteredQ = getFilteredQuotes();
-const yq = filteredQ[Math.floor(Math.random() * filteredQ.length)];
-document.getElementById('you-quote').textContent = yq.text;
-document.getElementById('you-src').textContent = yq.src;
 
 // Returning users skip onboarding — the door is already open
 if (sessions.length > 0 || localStorage.getItem('selectedInits')) {
