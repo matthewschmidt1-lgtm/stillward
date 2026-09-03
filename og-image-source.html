@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap');
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    width: 1200px; height: 630px;
+    background: #FDF9F5;
+    font-family: 'DM Sans', sans-serif;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid #E8E4DE;
+  }
+  .content {
+    display: flex; flex-direction: column; align-items: center; text-align: center;
+    position: relative; z-index: 1;
+  }
+  .wordmark {
+    font-size: 22px; letter-spacing: .28em; text-transform: uppercase;
+    color: #5C5B56; margin-top: 28px;
+  }
+  .tagline {
+    font-family: 'DM Serif Display', serif; font-style: italic;
+    font-size: 30px; color: #2C2C2A; margin-top: 22px; max-width: 640px; line-height: 1.4;
+  }
+  .sub {
+    font-size: 17px; color: #7a7970; margin-top: 16px; letter-spacing: .02em;
+  }
+</style>
+</head>
+<body>
+  <div class="ring" style="width:760px;height:760px;top:-65px;left:220px;"></div>
+  <div class="ring" style="width:560px;height:560px;top:35px;left:320px;"></div>
+
+  <div class="content">
+    <svg width="180" height="180" viewBox="0 0 160 160">
+      <circle cx="80" cy="80" r="72" fill="#EDF4F0"/>
+      <path d="M80 30 Q118 80 80 130 Q42 80 80 30Z" fill="#7D9E89" opacity=".14"/>
+      <path d="M80 30 Q118 80 80 130 Q42 80 80 30Z" fill="none" stroke="#7D9E89" stroke-width="2.6"/>
+      <line x1="80" y1="43" x2="80" y2="117" stroke="#7D9E89" stroke-width="1.6" stroke-linecap="round" opacity=".5"/>
+      <line x1="56" y1="60" x2="104" y2="96" stroke="#7D9E89" stroke-width="1.2" stroke-linecap="round" opacity=".25"/>
+      <line x1="104" y1="60" x2="56" y2="96" stroke="#7D9E89" stroke-width="1.2" stroke-linecap="round" opacity=".25"/>
+      <circle cx="80" cy="80" r="6" fill="#7D9E89" opacity=".9"/>
+      <path d="M148 40 Q160 54 148 70 Q136 54 148 40Z" fill="#7D9E89" opacity=".8" stroke="#7D9E89" stroke-width="1"/>
+    </svg>
+    <div class="wordmark">Stillward</div>
+    <div class="tagline">"The quieter you become, the more you can hear."</div>
+    <div class="sub">A 3-minute guided return to yourself</div>
+  </div>
+</body>
+</html>
