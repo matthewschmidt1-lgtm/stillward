@@ -560,8 +560,8 @@
       <div class="label" id="timer-lbl">Ram Dass · presence</div>
       <div style="width:34px;"></div>
     </div>
-    <div style="flex:1;display:flex;flex-direction:column;align-items:center;padding:0 22px 24px;">
-      <div style="position:relative;width:180px;height:180px;margin-bottom:14px;">
+    <div class="scroll" style="display:flex;flex-direction:column;align-items:center;padding:0 22px 12px;">
+      <div style="position:relative;width:180px;height:180px;margin-bottom:14px;flex-shrink:0;">
         <svg width="180" height="180" viewBox="0 0 180 180">
           <circle cx="90" cy="90" r="76" fill="none" stroke="#E8E4DE" stroke-width="6"/>
           <circle id="timer-ring" cx="90" cy="90" r="76" fill="none" stroke="#7D9E89" stroke-width="6"
@@ -574,7 +574,7 @@
         </div>
       </div>
       <!-- Breathing pacer -->
-      <div style="display:flex;flex-direction:column;align-items:center;margin-bottom:14px;">
+      <div style="display:flex;flex-direction:column;align-items:center;margin-bottom:14px;flex-shrink:0;">
         <style>
           @keyframes breathe {
             0%     { transform: scale(0.7); }
@@ -589,10 +589,12 @@
         </div>
         <div style="font-size:30px;color:var(--sage);font-weight:500;letter-spacing:.04em;" id="breath-lbl">Breathe in</div>
       </div>
-      <div style="font-size:15px;font-weight:500;color:var(--ink);text-align:center;margin-bottom:12px;" id="timer-msg">Follow the practice below</div>
-      <div style="background:var(--mist);border-radius:14px;padding:14px 16px;width:100%;margin-bottom:20px;flex:1;overflow-y:auto;">
+      <div style="font-size:15px;font-weight:500;color:var(--ink);text-align:center;margin-bottom:12px;flex-shrink:0;" id="timer-msg">Follow the practice below</div>
+      <div style="background:var(--mist);border-radius:14px;padding:14px 16px;width:100%;flex-shrink:0;">
         <div style="font-size:15px;color:var(--stone);line-height:1.8;font-style:italic;" id="timer-reminder">Sit where you are. Take one slow breath. When a thought arises, say "thinking" and return. Each return is a homecoming.</div>
       </div>
+    </div>
+    <div class="float-btn-wrap">
       <div style="display:flex;gap:10px;width:100%;">
         <button class="btn-sage" style="flex:1;padding:14px;" onclick="completeSession()">I'm done</button>
         <button id="pause-btn" onclick="togglePause()" style="width:52px;padding:14px;background:var(--mist);border:none;border-radius:14px;cursor:pointer;font-size:16px;">⏸</button>
