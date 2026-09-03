@@ -360,7 +360,7 @@
     <div class="scroll" style="padding: 0 0 20px;">
       <!-- Logo header -->
       <div style="padding:20px 22px 10px;text-align:center;">
-        <div style="position:relative;width:160px;height:160px;margin:0 auto 8px;">
+        <div id="home-logo-wrap" style="position:relative;width:160px;height:160px;margin:0 auto 8px;cursor:pointer;" onclick="pulseLogo()">
           <style>
             @keyframes leafOrbit {
               0%   { transform: rotate(0deg)   translate(34px, 0) rotate(0deg)   scale(1);    opacity:.9;  }
@@ -379,30 +379,67 @@
               0%,100% { transform: scale(1);    opacity:1;   }
               50%     { transform: scale(1.05); opacity:.93; }
             }
+            @keyframes homeLogoSpin {
+              from { transform: rotate(0deg); }
+              to   { transform: rotate(360deg); }
+            }
+            @keyframes logoBounce {
+              0%   { transform: scale(1); }
+              35%  { transform: scale(1.08); }
+              100% { transform: scale(1); }
+            }
+            @keyframes logoRipple {
+              0%   { transform: scale(.7);  opacity: .6; }
+              100% { transform: scale(1.35); opacity: 0; }
+            }
+            @keyframes logoMsgFade {
+              0%   { opacity: 0; transform: translate(-50%, 4px); }
+              15%  { opacity: 1; transform: translate(-50%, 0); }
+              80%  { opacity: 1; }
+              100% { opacity: 0; transform: translate(-50%, -4px); }
+            }
+            #home-logo-spin   { animation: homeLogoSpin 26s linear infinite; transform-origin: 80px 80px; }
             #home-logo-center { animation: homeBgPulse 5s ease-in-out infinite; transform-origin: 80px 80px; }
             #home-leaf-orbit  { animation: leafOrbit 7s ease-in-out infinite; transform-origin: 80px 80px; }
             #home-leaf-tilt   { animation: leafTilt  7s ease-in-out infinite; transform-origin: 14px 18px; }
+            #home-logo-wrap.tapped { animation: logoBounce .4s ease; }
+            #home-logo-ripple {
+              position: absolute; top: 8px; left: 8px; width: 144px; height: 144px;
+              border-radius: 50%; border: 2px solid var(--sage);
+              opacity: 0; pointer-events: none;
+            }
+            #home-logo-ripple.pulse { animation: logoRipple .9s ease-out; }
+            #home-logo-msg {
+              position: absolute; left: 50%; bottom: -4px; transform: translateX(-50%);
+              font-size: 14px; font-weight: 500; color: var(--sage); white-space: nowrap;
+              opacity: 0; pointer-events: none;
+            }
+            #home-logo-msg.show { animation: logoMsgFade 1.8s ease; }
           </style>
 
           <svg id="home-logo-svg" width="160" height="160" viewBox="0 0 160 160">
-            <g id="home-logo-center">
-              <circle cx="80" cy="80" r="72" fill="#EDF4F0"/>
-              <path d="M80 30 Q118 80 80 130 Q42 80 80 30Z" fill="#7D9E89" opacity=".11"/>
-              <path d="M80 30 Q118 80 80 130 Q42 80 80 30Z" fill="none" stroke="#7D9E89" stroke-width="2.2"/>
-              <line x1="80" y1="43" x2="80" y2="117" stroke="#7D9E89" stroke-width="1.4" stroke-linecap="round" opacity=".5"/>
-              <line x1="56" y1="60" x2="104" y2="96" stroke="#7D9E89" stroke-width="1" stroke-linecap="round" opacity=".25"/>
-              <line x1="104" y1="60" x2="56" y2="96" stroke="#7D9E89" stroke-width="1" stroke-linecap="round" opacity=".25"/>
-              <circle cx="80" cy="80" r="5" fill="#7D9E89" opacity=".9"/>
-            </g>
+            <g id="home-logo-spin">
+              <g id="home-logo-center">
+                <circle cx="80" cy="80" r="72" fill="#EDF4F0"/>
+                <path d="M80 30 Q118 80 80 130 Q42 80 80 30Z" fill="#7D9E89" opacity=".11"/>
+                <path d="M80 30 Q118 80 80 130 Q42 80 80 30Z" fill="none" stroke="#7D9E89" stroke-width="2.2"/>
+                <line x1="80" y1="43" x2="80" y2="117" stroke="#7D9E89" stroke-width="1.4" stroke-linecap="round" opacity=".5"/>
+                <line x1="56" y1="60" x2="104" y2="96" stroke="#7D9E89" stroke-width="1" stroke-linecap="round" opacity=".25"/>
+                <line x1="104" y1="60" x2="56" y2="96" stroke="#7D9E89" stroke-width="1" stroke-linecap="round" opacity=".25"/>
+                <circle cx="80" cy="80" r="5" fill="#7D9E89" opacity=".9"/>
+              </g>
 
-            <!-- Orbiting leaf -->
-            <g id="home-leaf-orbit">
-              <g id="home-leaf-tilt">
-                <path d="M14 2 Q28 18 14 34 Q0 18 14 2Z" fill="#7D9E89" opacity=".8" stroke="#7D9E89" stroke-width="1"/>
-                <line x1="14" y1="6" x2="14" y2="30" stroke="#EDF4F0" stroke-width=".9" stroke-linecap="round" opacity=".65"/>
+              <!-- Orbiting leaf -->
+              <g id="home-leaf-orbit">
+                <g id="home-leaf-tilt">
+                  <path d="M14 2 Q28 18 14 34 Q0 18 14 2Z" fill="#7D9E89" opacity=".8" stroke="#7D9E89" stroke-width="1"/>
+                  <line x1="14" y1="6" x2="14" y2="30" stroke="#EDF4F0" stroke-width=".9" stroke-linecap="round" opacity=".65"/>
+                </g>
               </g>
             </g>
           </svg>
+          <div id="home-logo-ripple"></div>
+          <div id="home-logo-msg"></div>
         </div>
         <div class="heading" id="home-greeting" style="margin-bottom:2px;">Welcome back.</div>
         <div style="font-size:15px;color:var(--stone);" id="home-reentry"></div>
@@ -449,9 +486,9 @@
     </div>
     <div class="bottom-nav">
       <div class="nav-item active"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="3" fill="#7D9E89"/><circle cx="11" cy="11" r="7" fill="none" stroke="#7D9E89" stroke-width="1" stroke-dasharray="2 2"/></svg><div class="nav-lbl" style="color:var(--sage);">Home</div></div>
+      <div class="nav-item" onclick="goScreen('you')"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="8" r="3.5" stroke="#8A8880" stroke-width="1.2" fill="none"/><path d="M4 19c0-3.866 3.134-7 7-7h0c3.866 0 7 3.134 7 7" stroke="#8A8880" stroke-width="1.2" stroke-linecap="round" fill="none"/></svg><div class="nav-lbl">You</div></div>
       <div class="nav-item" onclick="goScreen('p0')"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect x="3" y="5" width="16" height="2" rx="1" fill="#8A8880"/><rect x="3" y="10" width="11" height="2" rx="1" fill="#8A8880"/><rect x="3" y="15" width="13" height="2" rx="1" fill="#8A8880"/></svg><div class="nav-lbl">Practice</div></div>
       <div class="nav-item" onclick="goScreen('patterns')"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M4 16 Q7 8 11 11 Q15 14 18 6" stroke="#8A8880" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg><div class="nav-lbl">Patterns</div></div>
-      <div class="nav-item" onclick="goScreen('you')"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="8" r="3.5" stroke="#8A8880" stroke-width="1.2" fill="none"/><path d="M4 19c0-3.866 3.134-7 7-7h0c3.866 0 7 3.134 7 7" stroke="#8A8880" stroke-width="1.2" stroke-linecap="round" fill="none"/></svg><div class="nav-lbl">You</div></div>
     </div>
   </div>
 
@@ -666,9 +703,9 @@
     </div>
     <div class="bottom-nav">
       <div class="nav-item" onclick="goScreen('home')"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="3" fill="#8A8880"/><circle cx="11" cy="11" r="7" fill="none" stroke="#8A8880" stroke-width="1" stroke-dasharray="2 2"/></svg><div class="nav-lbl">Home</div></div>
+      <div class="nav-item" onclick="goScreen('you')"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="8" r="3.5" stroke="#8A8880" stroke-width="1.2" fill="none"/><path d="M4 19c0-3.866 3.134-7 7-7h0c3.866 0 7 3.134 7 7" stroke="#8A8880" stroke-width="1.2" stroke-linecap="round" fill="none"/></svg><div class="nav-lbl">You</div></div>
       <div class="nav-item" onclick="goScreen('p0')"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect x="3" y="5" width="16" height="2" rx="1" fill="#8A8880"/><rect x="3" y="10" width="11" height="2" rx="1" fill="#8A8880"/><rect x="3" y="15" width="13" height="2" rx="1" fill="#8A8880"/></svg><div class="nav-lbl">Practice</div></div>
       <div class="nav-item active"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M4 16 Q7 8 11 11 Q15 14 18 6" stroke="#7D9E89" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg><div class="nav-lbl" style="color:var(--sage);">Patterns</div></div>
-      <div class="nav-item" onclick="goScreen('you')"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="8" r="3.5" stroke="#8A8880" stroke-width="1.2" fill="none"/><path d="M4 19c0-3.866 3.134-7 7-7h0c3.866 0 7 3.134 7 7" stroke="#8A8880" stroke-width="1.2" stroke-linecap="round" fill="none"/></svg><div class="nav-lbl">You</div></div>
     </div>
   </div>
 
@@ -754,9 +791,9 @@
     </div>
     <div class="bottom-nav">
       <div class="nav-item" onclick="goScreen('home')"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="3" fill="#8A8880"/><circle cx="11" cy="11" r="7" fill="none" stroke="#8A8880" stroke-width="1" stroke-dasharray="2 2"/></svg><div class="nav-lbl">Home</div></div>
+      <div class="nav-item active"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="8" r="3.5" stroke="#7D9E89" stroke-width="1.2" fill="none"/><path d="M4 19c0-3.866 3.134-7 7-7h0c3.866 0 7 3.134 7 7" stroke="#7D9E89" stroke-width="1.2" stroke-linecap="round" fill="none"/></svg><div class="nav-lbl" style="color:var(--sage);">You</div></div>
       <div class="nav-item" onclick="goScreen('p0')"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect x="3" y="5" width="16" height="2" rx="1" fill="#8A8880"/><rect x="3" y="10" width="11" height="2" rx="1" fill="#8A8880"/><rect x="3" y="15" width="13" height="2" rx="1" fill="#8A8880"/></svg><div class="nav-lbl">Practice</div></div>
       <div class="nav-item" onclick="goScreen('patterns')"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M4 16 Q7 8 11 11 Q15 14 18 6" stroke="#8A8880" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg><div class="nav-lbl">Patterns</div></div>
-      <div class="nav-item active"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="8" r="3.5" stroke="#7D9E89" stroke-width="1.2" fill="none"/><path d="M4 19c0-3.866 3.134-7 7-7h0c3.866 0 7 3.134 7 7" stroke="#7D9E89" stroke-width="1.2" stroke-linecap="round" fill="none"/></svg><div class="nav-lbl" style="color:var(--sage);">You</div></div>
     </div>
   </div>
 
@@ -1198,6 +1235,37 @@ function renderHome() {
   refreshHomeQuote();
   renderReturns();
   renderRecentPractices();
+}
+
+// ─── Home logo tap interaction ──────────────────────────
+const logoMessages = ['Breathe.', 'Be here.', 'Just this.', 'Soften.', 'Notice.', 'You are here.'];
+let logoSpinResetTimeout = null;
+function pulseLogo() {
+  const wrap = document.getElementById('home-logo-wrap');
+  const spin = document.getElementById('home-logo-spin');
+  const ripple = document.getElementById('home-logo-ripple');
+  const msg = document.getElementById('home-logo-msg');
+
+  // Restart the ripple animation
+  ripple.classList.remove('pulse');
+  void ripple.offsetWidth;
+  ripple.classList.add('pulse');
+
+  // Show a fleeting message
+  msg.textContent = logoMessages[Math.floor(Math.random() * logoMessages.length)];
+  msg.classList.remove('show');
+  void msg.offsetWidth;
+  msg.classList.add('show');
+
+  // Briefly spin faster, then ease back to the slow ambient spin
+  if (logoSpinResetTimeout) clearTimeout(logoSpinResetTimeout);
+  spin.style.animationDuration = '1.2s';
+  logoSpinResetTimeout = setTimeout(() => { spin.style.animationDuration = '26s'; }, 1200);
+
+  // Tactile bounce
+  wrap.classList.remove('tapped');
+  void wrap.offsetWidth;
+  wrap.classList.add('tapped');
 }
 
 // ─── Share quote card ────────────────────────────────────
