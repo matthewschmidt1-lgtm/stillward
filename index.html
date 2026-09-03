@@ -1,0 +1,1840 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>Stillward — Return.</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap');
+
+  :root {
+    --parchment: #FDF9F5;
+    --sage: #7D9E89;
+    --sage-light: #EDF4F0;
+    --dusk: #1A5F8F;
+    --dusk-light: #E3EDF5;
+    --velvet: #5B2D8E;
+    --velvet-light: #EDE6F5;
+    --amber: #F2B825;
+    --amber-light: #FEF8DC;
+    --coral: #CC3F2E;
+    --coral-light: #F9E8E6;
+    --stone: #5C5B56;
+    --ink: #2C2C2A;
+    --ink-deep: #1A1A18;
+    --mist: #F0EDE7;
+    --border: #E8E4DE;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    background: #111110;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    font-family: 'DM Sans', sans-serif;
+    padding: 20px;
+  }
+
+  .device {
+    width: 390px;
+    height: 844px;
+    background: var(--parchment);
+    border-radius: 50px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 40px 120px rgba(0,0,0,.6), 0 0 0 1px rgba(255,255,255,.08);
+  }
+
+  /* On real phones: fill the full screen, no phone chrome */
+  @media (max-width: 480px) {
+    body {
+      background: var(--parchment);
+      display: block;
+      padding: 0;
+      min-height: 100dvh;
+    }
+    .device {
+      width: 100%;
+      height: 100dvh;
+      border-radius: 0;
+      box-shadow: none;
+    }
+    .notch-bar { display: none; }
+    .screen {
+      height: 100dvh;
+    }
+  }
+
+  .notch-bar {
+    height: 44px;
+    background: var(--parchment);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .notch {
+    width: 120px;
+    height: 34px;
+    background: #111110;
+    border-radius: 0 0 20px 20px;
+  }
+
+  .screen {
+    display: none;
+    flex-direction: column;
+    height: calc(844px - 44px);
+    overflow: hidden;
+  }
+
+  .screen.active { display: flex; }
+
+  /* Progress bar */
+  .prog-bar { height: 2px; background: var(--border); flex-shrink: 0; }
+  .prog-fill { height: 100%; background: var(--sage); border-radius: 1px; transition: width .4s ease; }
+
+  /* Scrollable content */
+  .scroll { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+  .scroll::-webkit-scrollbar { display: none; }
+
+  /* Typography */
+  .display { font-family: 'DM Serif Display', serif; font-size: 30px; color: var(--ink); line-height: 1.2; letter-spacing: -.01em; }
+  .heading { font-size: 22px; font-weight: 500; color: var(--ink); line-height: 1.3; letter-spacing: -.02em; }
+  .body-text { font-size: 15px; color: var(--stone); line-height: 1.75; }
+  .label { font-size: 11px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--stone); }
+  .serif-italic { font-family: 'DM Serif Display', serif; font-style: italic; font-size: 15px; color: var(--ink); line-height: 1.7; }
+
+  /* Buttons */
+  .btn-primary {
+    width: 100%; padding: 16px; background: var(--ink); color: var(--parchment);
+    font-size: 16px; font-weight: 500; border: none; border-radius: 16px;
+    cursor: pointer; font-family: 'DM Sans', sans-serif;
+    transition: opacity .15s; letter-spacing: -.01em;
+  }
+  .btn-primary:active { opacity: .85; transform: scale(.99); }
+
+  .btn-sage {
+    width: 100%; padding: 16px; background: var(--sage); color: #fff;
+    font-size: 16px; font-weight: 500; border: none; border-radius: 16px;
+    cursor: pointer; font-family: 'DM Sans', sans-serif;
+    transition: opacity .15s;
+  }
+  .btn-sage:active { opacity: .85; }
+
+  .btn-ghost {
+    width: 100%; padding: 13px; background: transparent; color: var(--stone);
+    font-size: 14px; border: none; cursor: pointer; font-family: 'DM Sans', sans-serif;
+  }
+
+  /* Top bar */
+  .top-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 22px 0; flex-shrink: 0;
+  }
+  .icon-btn {
+    width: 34px; height: 34px; border-radius: 50%;
+    background: var(--mist); border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  /* Choice cards */
+  .choice {
+    background: var(--mist); border-radius: 16px; padding: 18px 20px;
+    cursor: pointer; display: flex; align-items: center; justify-content: space-between;
+    transition: all .12s; border: 1.5px solid transparent;
+    margin-bottom: 10px;
+  }
+  .choice:active { transform: scale(.99); opacity: .88; }
+  .choice-title { font-size: 15px; font-weight: 500; color: var(--ink); margin-bottom: 3px; }
+  .choice-desc { font-size: 12px; color: var(--stone); line-height: 1.4; }
+  .arrow { color: #8A8880; font-size: 20px; line-height: 1; }
+
+  /* Wisdom block */
+  .wisdom-block { border-left: 2px solid var(--velvet); padding-left: 14px; margin: 16px 0; }
+
+  /* Teacher badge */
+  .t-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 5px 12px 5px 5px; border-radius: 20px; margin-bottom: 14px;
+  }
+  .t-dot {
+    width: 26px; height: 26px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9px; font-weight: 500; color: #fff;
+  }
+
+  /* Bottom nav */
+  .bottom-nav {
+    display: flex; background: var(--parchment);
+    border-top: 0.5px solid var(--border);
+    padding: 8px 0 16px; flex-shrink: 0;
+  }
+  .nav-item {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; gap: 4px; cursor: pointer; padding: 4px 0;
+  }
+  .nav-lbl { font-size: 11px; color: #8A8880; letter-spacing: .02em; }
+  .nav-item.active .nav-lbl { color: var(--sage); }
+
+  /* Stat chip */
+  .stat-chip { flex: 1; background: var(--parchment); border-radius: 12px; padding: 10px 6px; text-align: center; }
+  .stat-num { font-size: 20px; font-weight: 500; margin-bottom: 2px; }
+  .stat-lbl { font-size: 11px; color: var(--stone); letter-spacing: .04em; text-transform: uppercase; }
+
+  /* Setting row */
+  .setting-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 13px 22px; cursor: pointer;
+  }
+  .setting-row:active { background: var(--mist); }
+  .setting-icon { width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
+  /* Toggle */
+  .toggle { width: 40px; height: 24px; border-radius: 12px; background: var(--border); position: relative; cursor: pointer; transition: background .2s; flex-shrink: 0; }
+  .toggle.on { background: var(--sage); }
+  .toggle-knob { width: 20px; height: 20px; border-radius: 50%; background: #fff; position: absolute; top: 2px; left: 2px; transition: transform .2s; }
+  .toggle.on .toggle-knob { transform: translateX(16px); }
+
+  /* Teacher chip */
+  .t-chip {
+    padding: 7px 13px; border-radius: 20px; font-size: 12px; font-weight: 500;
+    cursor: pointer; border: 1.5px solid transparent; transition: all .15s;
+  }
+  .t-chip:not(.on) { opacity: .4; }
+
+  /* Pill buttons */
+  .pill { padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 500; cursor: pointer; border: none; background: var(--mist); color: var(--stone); font-family: 'DM Sans', sans-serif; transition: all .15s; }
+  .pill.active { background: var(--ink); color: var(--parchment); }
+
+  /* Divider */
+  .hr { height: 0.5px; background: var(--border); margin: 18px 22px; }
+
+  /* Section label */
+  .sec-lbl { font-size: 11px; font-weight: 500; color: var(--stone); letter-spacing: .07em; text-transform: uppercase; padding: 0 22px; margin-bottom: 10px; }
+
+  /* Recent chip */
+  .r-chip { flex-shrink: 0; border-radius: 14px; padding: 12px 16px; cursor: pointer; }
+  .rc-lbl { font-size: 11px; font-weight: 500; letter-spacing: .05em; text-transform: uppercase; margin-bottom: 5px; opacity: .7; }
+  .rc-title { font-size: 13px; font-weight: 500; line-height: 1.3; }
+  .rc-day { font-size: 12px; margin-top: 4px; opacity: .7; }
+
+  /* Streak pip */
+  .pip { width: 10px; height: 10px; border-radius: 50%; }
+
+  /* Cal dot */
+  .cal-dot { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+
+  /* Float button container */
+  .float-btn-wrap {
+    padding: 16px 22px 24px;
+    background: linear-gradient(to bottom, transparent, var(--parchment) 40%);
+    flex-shrink: 0;
+  }
+
+  /* Onboarding dots */
+  .ob-dots { display: flex; gap: 6px; justify-content: center; margin-bottom: 28px; }
+  .ob-dot { width: 6px; height: 6px; border-radius: 3px; background: var(--border); transition: all .3s; }
+  .ob-dot.active { width: 18px; background: var(--dusk); }
+  .ob-dot.done { background: var(--sage); }
+
+  /* Name input */
+  .name-input {
+    width: 100%; padding: 14px 16px; background: var(--mist);
+    border: 1.5px solid transparent; border-radius: 14px;
+    font-size: 17px; color: var(--ink); outline: none;
+    font-family: 'DM Sans', sans-serif; transition: all .15s;
+  }
+  .name-input:focus { border-color: var(--sage); background: var(--parchment); }
+
+  /* Timer ring */
+  #timer-ring { transition: stroke-dashoffset 1s linear; }
+
+  /* Feeling chip */
+  .feel-chip {
+    flex: 1; padding: 11px 6px; border-radius: 12px; text-align: center;
+    font-size: 12px; font-weight: 500; cursor: pointer;
+    background: var(--mist); color: var(--stone);
+    border: 1.5px solid transparent; transition: all .15s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .feel-chip.sel { border-color: var(--ink); color: var(--ink); background: var(--border); }
+
+  /* Animations */
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  .fadein { animation: fadeIn .3s ease forwards; }
+</style>
+</head>
+<body>
+
+<div class="device">
+  <div class="notch-bar"><div class="notch"></div></div>
+
+  <!-- ============ ONBOARDING 1: WELCOME ============ -->
+  <div class="screen active" id="ob1">
+    <div class="scroll" style="padding: 20px 26px 24px;">
+      <div class="ob-dots">
+        <div class="ob-dot active"></div><div class="ob-dot"></div><div class="ob-dot"></div>
+      </div>
+      <div style="text-align:center;margin-bottom:24px;padding-top:12px;">
+
+        <!-- Orbiting leaf logo — same as home -->
+        <div style="position:relative;width:160px;height:160px;margin:0 auto 16px;">
+          <svg width="160" height="160" viewBox="0 0 160 160">
+            <defs>
+              <style>
+                #ob1-logo-center { animation: homeBgPulse 5s ease-in-out infinite; transform-origin: 80px 80px; }
+                #ob1-leaf-orbit  { animation: leafOrbit 7s ease-in-out infinite; transform-origin: 80px 80px; }
+                #ob1-leaf-tilt   { animation: leafTilt  7s ease-in-out infinite; transform-origin: 14px 18px; }
+              </style>
+            </defs>
+            <g id="ob1-logo-center">
+              <circle cx="80" cy="80" r="72" fill="#EDF4F0"/>
+              <path d="M80 30 Q118 80 80 130 Q42 80 80 30Z" fill="#7D9E89" opacity=".11"/>
+              <path d="M80 30 Q118 80 80 130 Q42 80 80 30Z" fill="none" stroke="#7D9E89" stroke-width="2.2"/>
+              <line x1="80" y1="43" x2="80" y2="117" stroke="#7D9E89" stroke-width="1.4" stroke-linecap="round" opacity=".5"/>
+              <line x1="56" y1="60" x2="104" y2="96" stroke="#7D9E89" stroke-width="1" stroke-linecap="round" opacity=".25"/>
+              <line x1="104" y1="60" x2="56" y2="96" stroke="#7D9E89" stroke-width="1" stroke-linecap="round" opacity=".25"/>
+              <circle cx="80" cy="80" r="5" fill="#7D9E89" opacity=".9"/>
+            </g>
+            <g id="ob1-leaf-orbit">
+              <g id="ob1-leaf-tilt">
+                <path d="M14 2 Q28 18 14 34 Q0 18 14 2Z" fill="#7D9E89" opacity=".8" stroke="#7D9E89" stroke-width="1"/>
+                <line x1="14" y1="6" x2="14" y2="30" stroke="#EDF4F0" stroke-width=".9" stroke-linecap="round" opacity=".65"/>
+              </g>
+            </g>
+          </svg>
+        </div>
+
+        <div style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--stone);margin-bottom:20px;">Stillward</div>
+
+        <!-- Quote below logo -->
+        <div class="wisdom-block" style="text-align:left;margin-bottom:20px;">
+          <div class="serif-italic">"The quieter you become, the more you can hear."</div>
+          <div style="font-size:13px;color:var(--stone);margin-top:4px;">— Ram Dass</div>
+        </div>
+      </div>
+
+      <div class="display" style="margin-bottom:14px;">Welcome.</div>
+      <div class="body-text" style="margin-bottom:20px;">Three minutes. No pressure. Just a small return to yourself.</div>
+      <div style="margin-bottom:32px;"></div>
+      <button class="btn-primary" onclick="goScreen('ob3')">I'm ready</button>
+      <button class="btn-ghost" onclick="goScreen('ob3')">Just browsing</button>
+    </div>
+  </div>
+
+
+  <!-- ============ ONBOARDING 3: TEACHERS ============ -->
+  <div class="screen" id="ob3">
+    <div class="scroll" style="padding: 20px 26px 24px;">
+      <div class="ob-dots">
+        <div class="ob-dot done"></div><div class="ob-dot done"></div><div class="ob-dot active"></div>
+      </div>
+      <div class="display" style="margin-bottom:12px;">Who do you resonate with?</div>
+      <div class="body-text" style="margin-bottom:22px;">Tap a voice to begin. You can change this anytime.</div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;">
+        <div class="t-chip on" style="background:#EDF4F0;color:#3a5a4a;" onclick="selectTeacher(this)">Ram Dass</div>
+        <div class="t-chip on" style="background:#F9E8E6;color:#7a1a10;" onclick="selectTeacher(this)">Marianne Williamson</div>
+        <div class="t-chip on" style="background:#EDE6F5;color:#3d1a6a;" onclick="selectTeacher(this)">Almaas</div>
+        <div class="t-chip on" style="background:#FEF8DC;color:#7a5800;" onclick="selectTeacher(this)">Wayne Dyer</div>
+        <div class="t-chip on" style="background:#E3EDF5;color:#1A5F8F;" onclick="selectTeacher(this)">Jesus</div>
+        <div class="t-chip on" style="background:#F0EDE7;color:#444441;" onclick="selectTeacher(this)">Nisargadatta</div>
+        <div class="t-chip on" style="background:#F5EFE0;color:#6B4A00;" onclick="selectTeacher(this)">Buddha</div>
+        <div class="t-chip on" style="background:#E8F0EE;color:#1A4A3A;" onclick="selectTeacher(this)">Peter Crone</div>
+        <div class="t-chip on" style="background:var(--mist);color:var(--ink);" onclick="selectTeacher(this)">All of them</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ HOME SCREEN ============ -->
+  <div class="screen" id="home">
+    <div class="scroll" style="padding: 0 0 20px;">
+      <!-- Logo header -->
+      <div style="padding:20px 22px 10px;text-align:center;">
+        <div style="position:relative;width:160px;height:160px;margin:0 auto 8px;">
+          <style>
+            @keyframes leafOrbit {
+              0%   { transform: rotate(0deg)   translate(34px, 0) rotate(0deg)   scale(1);    opacity:.9;  }
+              25%  { transform: rotate(90deg)  translate(34px, 0) rotate(-90deg) scale(.85);  opacity:.72; }
+              50%  { transform: rotate(180deg) translate(34px, 0) rotate(-180deg) scale(.78); opacity:.58; }
+              75%  { transform: rotate(270deg) translate(34px, 0) rotate(-270deg) scale(.85); opacity:.72; }
+              100% { transform: rotate(360deg) translate(34px, 0) rotate(-360deg) scale(1);   opacity:.9;  }
+            }
+            @keyframes leafTilt {
+              0%,100% { transform: rotate(-20deg); }
+              25%     { transform: rotate(25deg);  }
+              50%     { transform: rotate(10deg);  }
+              75%     { transform: rotate(-25deg); }
+            }
+            @keyframes homeBgPulse {
+              0%,100% { transform: scale(1);    opacity:1;   }
+              50%     { transform: scale(1.05); opacity:.93; }
+            }
+            #home-logo-center { animation: homeBgPulse 5s ease-in-out infinite; transform-origin: 80px 80px; }
+            #home-leaf-orbit  { animation: leafOrbit 7s ease-in-out infinite; transform-origin: 80px 80px; }
+            #home-leaf-tilt   { animation: leafTilt  7s ease-in-out infinite; transform-origin: 14px 18px; }
+          </style>
+
+          <svg id="home-logo-svg" width="160" height="160" viewBox="0 0 160 160">
+            <g id="home-logo-center">
+              <circle cx="80" cy="80" r="72" fill="#EDF4F0"/>
+              <path d="M80 30 Q118 80 80 130 Q42 80 80 30Z" fill="#7D9E89" opacity=".11"/>
+              <path d="M80 30 Q118 80 80 130 Q42 80 80 30Z" fill="none" stroke="#7D9E89" stroke-width="2.2"/>
+              <line x1="80" y1="43" x2="80" y2="117" stroke="#7D9E89" stroke-width="1.4" stroke-linecap="round" opacity=".5"/>
+              <line x1="56" y1="60" x2="104" y2="96" stroke="#7D9E89" stroke-width="1" stroke-linecap="round" opacity=".25"/>
+              <line x1="104" y1="60" x2="56" y2="96" stroke="#7D9E89" stroke-width="1" stroke-linecap="round" opacity=".25"/>
+              <circle cx="80" cy="80" r="5" fill="#7D9E89" opacity=".9"/>
+            </g>
+
+            <!-- Orbiting leaf -->
+            <g id="home-leaf-orbit">
+              <g id="home-leaf-tilt">
+                <path d="M14 2 Q28 18 14 34 Q0 18 14 2Z" fill="#7D9E89" opacity=".8" stroke="#7D9E89" stroke-width="1"/>
+                <line x1="14" y1="6" x2="14" y2="30" stroke="#EDF4F0" stroke-width=".9" stroke-linecap="round" opacity=".65"/>
+              </g>
+            </g>
+          </svg>
+        </div>
+        <div class="heading" id="home-greeting" style="margin-bottom:2px;">Welcome back.</div>
+        <div style="font-size:13px;color:var(--stone);" id="home-reentry"></div>
+      </div>
+
+      <!-- Begin card -->
+      <div style="padding:0 22px;margin-bottom:20px;">
+        <div style="background:var(--sage);border-radius:20px;padding:22px 20px;cursor:pointer;" onclick="goScreen('p0')" id="begin-card">
+          <div style="font-size:11px;color:rgba(255,255,255,.85);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px;">3 minutes · today's practice</div>
+          <div style="font-size:21px;font-weight:500;color:#fff;line-height:1.3;margin-bottom:12px;letter-spacing:-.01em;">What's pulling at you right now?</div>
+          <div style="font-size:13px;color:rgba(255,255,255,.9);line-height:1.6;margin-bottom:18px;">Your still point is close. Let's find it together.</div>
+          <div style="display:inline-block;padding:9px 20px;border-radius:10px;font-size:13px;font-weight:500;background:rgba(255,255,255,.2);color:#fff;">Begin now</div>
+        </div>
+      </div>
+
+      <!-- Daily quote / today's intention -->
+      <div class="sec-lbl" id="home-quote-lbl">Today's wisdom</div>
+      <div style="padding:0 22px;margin-bottom:20px;">
+        <div style="border-left:2px solid var(--dusk);padding-left:14px;margin-bottom:10px;">
+          <div class="serif-italic" style="margin-bottom:5px;">"The quieter you become, the more you can hear."</div>
+          <div style="font-size:13px;color:var(--stone);">— Ram Dass</div>
+        </div>
+        <div onclick="shareQuoteCard()" style="display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--dusk);font-weight:500;cursor:pointer;padding:6px 0;">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v8M4 4l3-3 3 3M2 9v3h10V9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Share this quote
+        </div>
+      </div>
+
+      <!-- Recent practices (real history) -->
+      <div class="sec-lbl" id="recent-lbl" style="display:none;">Recent practices</div>
+      <div id="recent-practices" style="display:none;gap:8px;padding:0 22px;margin-bottom:20px;overflow-x:auto;padding-bottom:4px;">
+      </div>
+
+      <!-- Returns counter -->
+      <div style="padding:0 22px;margin-bottom:20px;">
+        <div style="background:var(--mist);border-radius:16px;padding:16px 18px;display:flex;align-items:center;gap:14px;">
+          <div style="text-align:center;min-width:56px;">
+            <div style="font-size:24px;font-weight:500;color:var(--sage);" id="returns-count">0</div>
+            <div style="font-size:12px;color:var(--stone);letter-spacing:.03em;">returns</div>
+          </div>
+          <div style="flex:1;font-size:13px;color:var(--stone);line-height:1.6;" id="returns-msg">Every practice is a return to yourself. This number only ever grows.</div>
+        </div>
+      </div>
+    </div>
+    <div class="bottom-nav">
+      <div class="nav-item active"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="3" fill="#7D9E89"/><circle cx="11" cy="11" r="7" fill="none" stroke="#7D9E89" stroke-width="1" stroke-dasharray="2 2"/></svg><div class="nav-lbl" style="color:var(--sage);">Home</div></div>
+      <div class="nav-item" onclick="goScreen('p0')"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect x="3" y="5" width="16" height="2" rx="1" fill="#8A8880"/><rect x="3" y="10" width="11" height="2" rx="1" fill="#8A8880"/><rect x="3" y="15" width="13" height="2" rx="1" fill="#8A8880"/></svg><div class="nav-lbl">Practice</div></div>
+      <div class="nav-item" onclick="goScreen('patterns')"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M4 16 Q7 8 11 11 Q15 14 18 6" stroke="#8A8880" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg><div class="nav-lbl">Patterns</div></div>
+      <div class="nav-item" onclick="goScreen('you')"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="8" r="3.5" stroke="#8A8880" stroke-width="1.2" fill="none"/><path d="M4 19c0-3.866 3.134-7 7-7h0c3.866 0 7 3.134 7 7" stroke="#8A8880" stroke-width="1.2" stroke-linecap="round" fill="none"/></svg><div class="nav-lbl">You</div></div>
+    </div>
+  </div>
+
+  <!-- ============ PRACTICE: Q0 — DOMAIN ============ -->
+  <div class="screen" id="p0">
+    <div class="prog-bar"><div class="prog-fill" style="width:10%"></div></div>
+    <div class="top-bar">
+      <button class="icon-btn" onclick="goScreen('home')"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 7l5 5" stroke="#888780" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <div class="label">Where are you today?</div>
+      <button class="icon-btn" onclick="goScreen('home')" style="font-size:13px;color:var(--stone);">✕</button>
+    </div>
+    <div class="scroll" style="padding:16px 22px;">
+      <div class="display" style="margin-bottom:8px;">What area of life needs attention?</div>
+      <div class="serif-italic" style="font-size:13px;color:#6B6960;margin-bottom:22px;">"Every journey begins with knowing where you stand."</div>
+      <div style="font-size:13px;color:#6B6960;margin-bottom:16px;font-style:italic;">Tap to select and continue</div>
+      <div class="choice" onclick="pickDomain('personal')">
+        <div>
+          <div class="choice-title">Personal</div>
+          <div class="choice-desc">Mind, body, emotions, and inner life</div>
+        </div><div class="arrow">›</div>
+      </div>
+      <div class="choice" onclick="pickDomain('relationships')">
+        <div>
+          <div class="choice-title">Relationships</div>
+          <div class="choice-desc">Connection, conflict, distance, and love</div>
+        </div><div class="arrow">›</div>
+      </div>
+      <div class="choice" onclick="pickDomain('work')">
+        <div>
+          <div class="choice-title">Work</div>
+          <div class="choice-desc">Purpose, clarity, overwhelm, and meaning</div>
+        </div><div class="arrow">›</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ PRACTICE: Q1 ============ -->
+  <div class="screen" id="p1">
+    <div class="prog-bar"><div class="prog-fill" style="width:33%"></div></div>
+    <div class="top-bar">
+      <button class="icon-btn" onclick="goScreen('p0')"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 7l5 5" stroke="#888780" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <div class="label">2 of 3</div>
+      <button class="icon-btn" onclick="goScreen('home')" style="font-size:13px;color:var(--stone);">✕</button>
+    </div>
+    <div class="scroll" style="padding:16px 22px;">
+      <div class="display" style="margin-bottom:8px;" id="p1-heading">What's pulling at you right now?</div>
+      <div class="serif-italic" style="font-size:13px;color:#6B6960;margin-bottom:22px;">"This too shall pass — but first, let's meet it."</div>
+      <div style="font-size:13px;color:#6B6960;margin-bottom:16px;font-style:italic;">Tap to select and continue</div>
+      <div id="p1-choices"></div>
+    </div>
+  </div>
+
+  <!-- ============ PRACTICE: Q2 ============ -->
+  <div class="screen" id="p2">
+    <div class="prog-bar"><div class="prog-fill" style="width:66%"></div></div>
+    <div class="top-bar">
+      <button class="icon-btn" onclick="goScreen('p1')"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 7l5 5" stroke="#888780" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <div class="label">3 of 3</div>
+      <button class="icon-btn" onclick="goScreen('home')" style="font-size:13px;color:var(--stone);">✕</button>
+    </div>
+    <div class="scroll" style="padding:16px 22px;">
+      <div class="display" style="margin-bottom:8px;">And your energy?</div>
+      <div class="serif-italic" style="font-size:13px;color:#6B6960;margin-bottom:22px;">"Neither pushing nor collapsing — just noticing."</div>
+      <div style="font-size:13px;color:#6B6960;margin-bottom:16px;font-style:italic;">Tap to select and continue</div>
+      <div class="choice" onclick="pickEnergy('high')"><div><div class="choice-title">Activated</div><div class="choice-desc">Agitated, buzzing, wired, can't settle</div></div><div class="arrow">›</div></div>
+      <div class="choice" onclick="pickEnergy('low')"><div><div class="choice-title">Depleted</div><div class="choice-desc">Heavy, foggy, flat, drained</div></div><div class="arrow">›</div></div>
+    </div>
+  </div>
+
+  <!-- ============ PRACTICE: CARD ============ -->
+  <div class="screen" id="p3" style="position:relative;">
+    <div class="prog-bar"><div class="prog-fill" style="width:65%"></div></div>
+    <div class="top-bar" style="margin-bottom:10px;">
+      <button class="icon-btn" onclick="goScreen('p2')"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 7l5 5" stroke="#888780" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <div class="label">Your practice</div>
+      <button class="icon-btn" onclick="goScreen('home')" style="font-size:13px;color:var(--stone);">✕</button>
+    </div>
+    <div class="scroll" style="padding:0 22px 130px;">
+      <div class="t-badge" id="p3-badge" style="background:#EDF4F0;">
+        <div class="t-dot" id="p3-dot" style="background:#7D9E89;">RD</div>
+        <div style="font-size:12px;font-weight:500;" id="p3-teacher" style="color:#3a5a4a;">Ram Dass · presence</div>
+      </div>
+      <div class="heading" id="p3-title" style="margin-bottom:12px;">Be here now — just this breath</div>
+      <div class="body-text" id="p3-body" style="margin-bottom:16px;">Your mind is moving fast. This practice gently returns the wheel to you — not by fighting thoughts, but by coming home to this breath.</div>
+      <div class="wisdom-block" style="margin-bottom:12px;">
+        <div class="serif-italic" id="p3-wisdom">"The quieter you become, the more you can hear."</div>
+        <div style="font-size:13px;color:var(--stone);margin-top:4px;" id="p3-wsrc">— Ram Dass</div>
+      </div>
+      <div style="background:var(--mist);border-radius:12px;padding:12px 14px;margin-bottom:18px;">
+        <div style="font-size:11px;font-weight:500;color:var(--stone);letter-spacing:.06em;text-transform:uppercase;margin-bottom:5px;">What this means</div>
+        <div style="font-size:14px;color:var(--ink);line-height:1.65;" id="p3-explain">When your mind slows down and stops chattering, you become more aware of what's actually happening — inside and around you.</div>
+      </div>
+      <div style="font-size:12px;font-weight:500;color:var(--ink);letter-spacing:.07em;text-transform:uppercase;margin-bottom:8px;">The practice</div>
+      <div class="body-text" id="p3-steps">Sit where you are. Take one slow breath — feel it completely. When a thought arises, say "thinking" and return. Each return is a small homecoming. Stay for 3 minutes.</div>
+    </div>
+    <div class="float-btn-wrap">
+      <button class="btn-primary" onclick="startTimer()">Begin — 3 minutes</button>
+    </div>
+  </div>
+
+  <!-- ============ PRACTICE: TIMER ============ -->
+  <div class="screen" id="p4">
+    <div class="prog-bar"><div class="prog-fill" style="width:85%"></div></div>
+    <div class="top-bar" style="margin-bottom:16px;">
+      <button class="icon-btn" onclick="goScreen('p3')"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 7l5 5" stroke="#888780" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <div class="label" id="timer-lbl">Ram Dass · presence</div>
+      <div style="width:34px;"></div>
+    </div>
+    <div style="flex:1;display:flex;flex-direction:column;align-items:center;padding:0 22px 24px;">
+      <div style="position:relative;width:180px;height:180px;margin-bottom:14px;">
+        <svg width="180" height="180" viewBox="0 0 180 180">
+          <circle cx="90" cy="90" r="76" fill="none" stroke="#E8E4DE" stroke-width="6"/>
+          <circle id="timer-ring" cx="90" cy="90" r="76" fill="none" stroke="#7D9E89" stroke-width="6"
+            stroke-dasharray="477.5" stroke-dashoffset="0" stroke-linecap="round"
+            transform="rotate(-90 90 90)"/>
+        </svg>
+        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;">
+          <div style="font-size:42px;font-weight:500;color:var(--ink);letter-spacing:-.03em;line-height:1;" id="timer-display">3:00</div>
+          <div style="font-size:13px;color:var(--stone);margin-top:4px;">remaining</div>
+        </div>
+      </div>
+      <!-- Breathing pacer -->
+      <div style="display:flex;flex-direction:column;align-items:center;margin-bottom:14px;">
+        <style>
+          @keyframes breathe {
+            0%   { transform: scale(0.7); }
+            40%  { transform: scale(1); }
+            50%  { transform: scale(1); }
+            95%  { transform: scale(0.7); }
+            100% { transform: scale(0.7); }
+          }
+          #breath-circle { animation: breathe 10s ease-in-out infinite; }
+        </style>
+        <div style="width:64px;height:64px;display:flex;align-items:center;justify-content:center;margin-bottom:6px;">
+          <div id="breath-circle" style="width:56px;height:56px;border-radius:50%;background:var(--sage-light);border:2px solid var(--sage);"></div>
+        </div>
+        <div style="font-size:13px;color:var(--sage);font-weight:500;letter-spacing:.04em;" id="breath-lbl">Breathe in</div>
+      </div>
+      <div style="font-size:15px;font-weight:500;color:var(--ink);text-align:center;margin-bottom:12px;" id="timer-msg">Follow the practice below</div>
+      <div style="background:var(--mist);border-radius:14px;padding:14px 16px;width:100%;margin-bottom:20px;flex:1;overflow-y:auto;">
+        <div style="font-size:13px;color:var(--stone);line-height:1.8;font-style:italic;" id="timer-reminder">Sit where you are. Take one slow breath. When a thought arises, say "thinking" and return. Each return is a homecoming.</div>
+      </div>
+      <div style="display:flex;gap:10px;width:100%;">
+        <button class="btn-sage" style="flex:1;padding:14px;" onclick="completeSession()">I'm done</button>
+        <button id="pause-btn" onclick="togglePause()" style="width:52px;padding:14px;background:var(--mist);border:none;border-radius:14px;cursor:pointer;font-size:16px;">⏸</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ PRACTICE: DONE ============ -->
+  <div class="screen" id="p5">
+    <div class="prog-bar"><div class="prog-fill" style="width:100%"></div></div>
+    <div style="flex:1;display:flex;flex-direction:column;align-items:center;padding:36px 26px 28px;">
+      <div style="width:72px;height:72px;border-radius:50%;background:var(--sage-light);display:flex;align-items:center;justify-content:center;margin-bottom:20px;">
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><path d="M7 16l6 6 12-12" stroke="#7D9E89" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="display" style="text-align:center;margin-bottom:10px;">You came back<br>to yourself.</div>
+      <div class="body-text" style="text-align:center;margin-bottom:22px;">Even a small return is a real one. Notice what's different — even a little.</div>
+      <div class="wisdom-block" style="width:100%;margin-bottom:24px;">
+        <div class="serif-italic" id="done-quote">"The quieter you become, the more you can hear."</div>
+        <div style="font-size:13px;color:var(--stone);margin-top:4px;" id="done-src">— Ram Dass</div>
+      </div>
+      <div style="font-size:12px;font-weight:500;color:var(--stone);letter-spacing:.07em;text-transform:uppercase;margin-bottom:10px;width:100%;">How do you feel?</div>
+      <div style="display:flex;gap:8px;margin-bottom:18px;width:100%;">
+        <div class="feel-chip" onclick="selectFeeling(this)">Lighter</div>
+        <div class="feel-chip" onclick="selectFeeling(this)">Clearer</div>
+        <div class="feel-chip" onclick="selectFeeling(this)">Calmer</div>
+        <div class="feel-chip" onclick="selectFeeling(this)">Still heavy</div>
+      </div>
+      <div id="keep-practice-btn" onclick="keepPractice(this)" style="display:flex;align-items:center;justify-content:center;gap:7px;width:100%;padding:12px;border-radius:12px;background:var(--mist);font-size:13px;font-weight:500;color:var(--ink);cursor:pointer;margin-bottom:14px;">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 12.5S1.5 9 1.5 5.2C1.5 3 3.2 1.5 5 1.5c1 0 1.7.5 2 1 .3-.5 1-1 2-1 1.8 0 3.5 1.5 3.5 3.7C12.5 9 7 12.5 7 12.5Z" stroke="currentColor" stroke-width="1.2" fill="none" stroke-linejoin="round"/></svg>
+        Keep this practice
+      </div>
+      <button class="btn-primary" onclick="goScreen('home')">Back to home</button>
+    </div>
+  </div>
+
+  <!-- ============ PATTERNS ============ -->
+  <div class="screen" id="patterns">
+    <div style="display:flex;border-bottom:0.5px solid var(--border);background:var(--parchment);flex-shrink:0;">
+      <div id="tab-map" style="flex:1;padding:12px 4px 10px;font-size:13px;font-weight:500;text-align:center;cursor:pointer;color:var(--dusk);border-bottom:2px solid var(--dusk);letter-spacing:.02em;" onclick="switchTab('map')">Your map</div>
+      <div id="tab-teachers" style="flex:1;padding:12px 4px 10px;font-size:13px;font-weight:500;text-align:center;cursor:pointer;color:var(--stone);border-bottom:2px solid transparent;letter-spacing:.02em;" onclick="switchTab('teachers')">Teachers</div>
+      <div id="tab-timeline" style="flex:1;padding:12px 4px 10px;font-size:13px;font-weight:500;text-align:center;cursor:pointer;color:var(--stone);border-bottom:2px solid transparent;letter-spacing:.02em;" onclick="switchTab('timeline')">Timeline</div>
+    </div>
+    <div class="scroll" id="tab-content" style="padding:20px 22px 20px;">
+      <!-- Map view by default -->
+      <div class="label" style="margin-bottom:4px;">Pattern tracking</div>
+      <div class="heading" style="margin-bottom:4px;">What the data sees</div>
+      <div style="font-size:13px;color:var(--stone);margin-bottom:18px;">Based on your last 24 sessions</div>
+      <div style="display:flex;gap:8px;margin-bottom:18px;">
+        <div class="stat-chip"><div class="stat-num" style="color:var(--sage);">24</div><div class="stat-lbl">Sessions</div></div>
+        <div class="stat-chip"><div class="stat-num" style="color:var(--dusk);">72</div><div class="stat-lbl">Minutes</div></div>
+        <div class="stat-chip"><div class="stat-num" style="color:var(--amber);">14</div><div class="stat-lbl">Streak</div></div>
+        <div class="stat-chip"><div class="stat-num" style="color:var(--velvet);">6</div><div class="stat-lbl">Teachers</div></div>
+      </div>
+      <div style="font-size:13px;font-weight:500;color:var(--ink);margin-bottom:10px;letter-spacing:.02em;">What brings you here</div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;"><div style="font-size:13px;color:var(--ink);min-width:100px;">Racing mind</div><div style="flex:1;height:8px;background:var(--border);border-radius:4px;overflow:hidden;"><div style="width:75%;height:100%;background:var(--sage);border-radius:4px;"></div></div><div style="font-size:12px;color:var(--stone);min-width:16px;">9</div></div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;"><div style="font-size:13px;color:var(--ink);min-width:100px;">Emotional weight</div><div style="flex:1;height:8px;background:var(--border);border-radius:4px;overflow:hidden;"><div style="width:50%;height:100%;background:var(--coral);border-radius:4px;"></div></div><div style="font-size:12px;color:var(--stone);min-width:16px;">6</div></div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;"><div style="font-size:13px;color:var(--ink);min-width:100px;">Lost/overwhelmed</div><div style="flex:1;height:8px;background:var(--border);border-radius:4px;overflow:hidden;"><div style="width:42%;height:100%;background:var(--velvet);border-radius:4px;"></div></div><div style="font-size:12px;color:var(--stone);min-width:16px;">5</div></div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;"><div style="font-size:13px;color:var(--ink);min-width:100px;">Body tension</div><div style="flex:1;height:8px;background:var(--border);border-radius:4px;overflow:hidden;"><div style="width:33%;height:100%;background:var(--amber);border-radius:4px;"></div></div><div style="font-size:12px;color:var(--stone);min-width:16px;">4</div></div>
+      <div style="background:#E8F3F0;border-radius:14px;padding:14px 16px;margin-bottom:10px;">
+        <div style="font-size:12px;font-weight:500;color:#0F6E56;letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px;">Pattern noticed</div>
+        <div style="font-size:13px;font-weight:500;color:#085041;margin-bottom:4px;">Wednesday is your heaviest day</div>
+        <div style="font-size:13px;color:#0F6E56;line-height:1.6;">7 of your sessions happened mid-week. Consider a morning practice on Wednesdays.</div>
+      </div>
+      <div style="background:#EDE6F5;border-radius:14px;padding:14px 16px;">
+        <div style="font-size:12px;font-weight:500;color:var(--velvet);letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px;">Most returned to</div>
+        <div style="font-size:13px;font-weight:500;color:#3d1a6a;margin-bottom:4px;">Presence practice lands deepest</div>
+        <div style="font-size:13px;color:var(--velvet);line-height:1.6;">You've visited Ram Dass 9 times. Your still point lives in presence.</div>
+      </div>
+    </div>
+    <div class="bottom-nav">
+      <div class="nav-item" onclick="goScreen('home')"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="3" fill="#8A8880"/><circle cx="11" cy="11" r="7" fill="none" stroke="#8A8880" stroke-width="1" stroke-dasharray="2 2"/></svg><div class="nav-lbl">Home</div></div>
+      <div class="nav-item" onclick="goScreen('p0')"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect x="3" y="5" width="16" height="2" rx="1" fill="#8A8880"/><rect x="3" y="10" width="11" height="2" rx="1" fill="#8A8880"/><rect x="3" y="15" width="13" height="2" rx="1" fill="#8A8880"/></svg><div class="nav-lbl">Practice</div></div>
+      <div class="nav-item active"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M4 16 Q7 8 11 11 Q15 14 18 6" stroke="#7D9E89" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg><div class="nav-lbl" style="color:var(--sage);">Patterns</div></div>
+      <div class="nav-item" onclick="goScreen('you')"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="8" r="3.5" stroke="#8A8880" stroke-width="1.2" fill="none"/><path d="M4 19c0-3.866 3.134-7 7-7h0c3.866 0 7 3.134 7 7" stroke="#8A8880" stroke-width="1.2" stroke-linecap="round" fill="none"/></svg><div class="nav-lbl">You</div></div>
+    </div>
+  </div>
+
+  <!-- ============ YOU SCREEN ============ -->
+  <div class="screen" id="you">
+    <div class="scroll">
+      <div style="background:var(--mist);padding:26px 22px 22px;margin-bottom:18px;">
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;">
+          <div id="you-avatar" style="width:58px;height:58px;border-radius:50%;background:var(--sage);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:500;color:#fff;flex-shrink:0;">F</div>
+          <div>
+            <div class="heading" id="you-name">Friend</div>
+            <div style="font-size:13px;color:var(--stone);margin-top:2px;">Practicing since April 2026</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <div class="stat-chip"><div class="stat-num" style="color:var(--sage);">24</div><div class="stat-lbl">Sessions</div></div>
+          <div class="stat-chip"><div class="stat-num" style="color:var(--dusk);">72</div><div class="stat-lbl">Minutes</div></div>
+          <div class="stat-chip"><div class="stat-num" style="color:var(--amber);">14</div><div class="stat-lbl">Streak</div></div>
+          <div class="stat-chip"><div class="stat-num" style="color:var(--velvet);">6</div><div class="stat-lbl">Teachers</div></div>
+        </div>
+      </div>
+      <div class="sec-lbl">Your name</div>
+      <div style="padding:0 22px;margin-bottom:6px;">
+        <input id="you-name-input" class="name-input" type="text" placeholder="Your first name" value="Friend" oninput="updateYouName(this.value)"/>
+      </div>
+      <div style="font-size:12px;color:#6B6960;padding:0 22px;margin-bottom:4px;">Stays on your device.</div>
+      <div class="hr"></div>
+      <div class="sec-lbl">Your teachers</div>
+      <div style="font-size:12px;color:#6B6960;padding:0 22px;margin-bottom:10px;">Tap to include or exclude a voice. Your quotes and practices follow this.</div>
+      <div id="you-teacher-chips" style="display:flex;flex-wrap:wrap;gap:7px;padding:0 22px;margin-bottom:14px;">
+        <div class="t-chip" data-init="RD" style="background:#EDF4F0;color:#3a5a4a;" onclick="toggleTeacherFromYou(this)">Ram Dass</div>
+        <div class="t-chip" data-init="MW" style="background:#F9E8E6;color:#7a1a10;" onclick="toggleTeacherFromYou(this)">Williamson</div>
+        <div class="t-chip" data-init="AH" style="background:#EDE6F5;color:#3d1a6a;" onclick="toggleTeacherFromYou(this)">Almaas</div>
+        <div class="t-chip" data-init="WD" style="background:#FEF8DC;color:#7a5800;" onclick="toggleTeacherFromYou(this)">Dyer</div>
+        <div class="t-chip" data-init="JC" style="background:#E3EDF5;color:#1A5F8F;" onclick="toggleTeacherFromYou(this)">Jesus</div>
+        <div class="t-chip" data-init="NM" style="background:#F0EDE7;color:#444441;" onclick="toggleTeacherFromYou(this)">Nisargadatta</div>
+        <div class="t-chip" data-init="BU" style="background:#F5EFE0;color:#6B4A00;" onclick="toggleTeacherFromYou(this)">Buddha</div>
+        <div class="t-chip" data-init="PC" style="background:#E8F0EE;color:#1A4A3A;" onclick="toggleTeacherFromYou(this)">Peter Crone</div>
+      </div>
+      <div class="hr"></div>
+      <div class="sec-lbl">Saved practices</div>
+      <div id="saved-practices" style="padding:0 22px;margin-bottom:14px;">
+        <div style="font-size:13px;color:var(--stone);" id="saved-empty">Practices you keep will live here.</div>
+      </div>
+      <div class="hr"></div>
+      <div class="sec-lbl">Daily reminder</div>
+      <div class="setting-row">
+        <div style="display:flex;align-items:center;gap:14px;">
+          <div class="setting-icon" style="background:#FEF8DC;"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 2C9 2 4.5 4.5 4.5 9.5v1.5L3.5 12v.5h11V12l-1-1V9.5C13.5 4.5 9 2 9 2Z" stroke="#7a5800" stroke-width="1.1" fill="none" stroke-linejoin="round"/><path d="M7.5 13.5a1.5 1.5 0 003 0" stroke="#7a5800" stroke-width="1.1" stroke-linecap="round" fill="none"/></svg></div>
+          <div><div style="font-size:14px;font-weight:500;color:var(--ink);">Reminder on</div><div style="font-size:13px;color:var(--stone);">A gentle nudge once a day</div></div>
+        </div>
+        <div class="toggle on" onclick="this.classList.toggle('on')"><div class="toggle-knob"></div></div>
+      </div>
+      <div style="display:flex;gap:7px;padding:8px 22px 4px;flex-wrap:wrap;">
+        <div class="pill" onclick="setPill(this)">6 am</div>
+        <div class="pill" onclick="setPill(this)">7 am</div>
+        <div class="pill active" onclick="setPill(this)">8 am</div>
+        <div class="pill" onclick="setPill(this)">12 pm</div>
+        <div class="pill" onclick="setPill(this)">5 pm</div>
+        <div class="pill" onclick="setPill(this)">9 pm</div>
+      </div>
+      <div class="hr"></div>
+      <div class="sec-lbl">Session length</div>
+      <div id="length-pills" style="display:flex;gap:7px;padding:0 22px 4px;flex-wrap:wrap;">
+        <div class="pill active" data-min="3" onclick="setSessionLength(this)">3 min</div>
+        <div class="pill" data-min="5" onclick="setSessionLength(this)">5 min</div>
+        <div class="pill" data-min="10" onclick="setSessionLength(this)">10 min</div>
+        <div class="pill" data-min="20" onclick="setSessionLength(this)">20 min</div>
+        <div class="pill" onclick="setPill(this)">30 min</div>
+      </div>
+      <div class="hr"></div>
+      <div class="setting-row"><div style="display:flex;align-items:center;gap:14px;"><div class="setting-icon" style="background:#E3EDF5;"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 14l3-3 3 3 3-6 3 6" stroke="#1A5F8F" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></div><div><div style="font-size:14px;font-weight:500;color:var(--ink);">Show pattern insights</div><div style="font-size:13px;color:var(--stone);">Surface your practice patterns</div></div></div><div class="toggle on" onclick="this.classList.toggle('on')"><div class="toggle-knob"></div></div></div>
+      <div class="setting-row"><div style="display:flex;align-items:center;gap:14px;"><div class="setting-icon" style="background:#EDF4F0;"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M4 10 Q6 5 9 8 Q12 11 14 6" stroke="#7D9E89" stroke-width="1.2" stroke-linecap="round" fill="none"/><circle cx="9" cy="8.5" r="1.5" fill="#7D9E89"/></svg></div><div><div style="font-size:14px;font-weight:500;color:var(--ink);">Ambient sound</div><div style="font-size:13px;color:var(--stone);">Play soft sound during practice</div></div></div><div class="toggle" onclick="this.classList.toggle('on')"><div class="toggle-knob"></div></div></div>
+      <div class="hr"></div>
+      <div class="setting-row"><div style="display:flex;align-items:center;gap:14px;"><div class="setting-icon" style="background:var(--mist);"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="7" stroke="#888780" stroke-width="1" fill="none"/><path d="M9 8v5M9 6v.5" stroke="#888780" stroke-width="1.3" stroke-linecap="round"/></svg></div><div><div style="font-size:14px;font-weight:500;color:var(--ink);">The teachers</div><div style="font-size:13px;color:var(--stone);">Who guides these practices</div></div></div><div style="color:#8A8880;font-size:18px;">›</div></div>
+      <div class="setting-row"><div style="display:flex;align-items:center;gap:14px;"><div class="setting-icon" style="background:var(--mist);"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="3" y="3" width="12" height="12" rx="3" stroke="#888780" stroke-width="1" fill="none"/><path d="M6 9h6M9 6v6" stroke="#888780" stroke-width="1.2" stroke-linecap="round"/></svg></div><div><div style="font-size:14px;font-weight:500;color:var(--ink);">Share Stillward</div><div style="font-size:13px;color:var(--stone);">Give someone a still point</div></div></div><div style="color:#8A8880;font-size:18px;">›</div></div>
+      <div class="hr"></div>
+      <div style="padding:0 22px 8px;">
+        <div class="serif-italic" style="margin-bottom:4px;" id="you-quote">"The quieter you become, the more you can hear."</div>
+        <div style="font-size:12px;color:#6B6960;" id="you-src">— Ram Dass</div>
+      </div>
+      <div style="font-size:11px;color:#888780;text-align:center;padding:0 22px 24px;">Stillward · v1.0 · Made with presence</div>
+    </div>
+    <div class="bottom-nav">
+      <div class="nav-item" onclick="goScreen('home')"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="3" fill="#8A8880"/><circle cx="11" cy="11" r="7" fill="none" stroke="#8A8880" stroke-width="1" stroke-dasharray="2 2"/></svg><div class="nav-lbl">Home</div></div>
+      <div class="nav-item" onclick="goScreen('p0')"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect x="3" y="5" width="16" height="2" rx="1" fill="#8A8880"/><rect x="3" y="10" width="11" height="2" rx="1" fill="#8A8880"/><rect x="3" y="15" width="13" height="2" rx="1" fill="#8A8880"/></svg><div class="nav-lbl">Practice</div></div>
+      <div class="nav-item" onclick="goScreen('patterns')"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M4 16 Q7 8 11 11 Q15 14 18 6" stroke="#8A8880" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg><div class="nav-lbl">Patterns</div></div>
+      <div class="nav-item active"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="8" r="3.5" stroke="#7D9E89" stroke-width="1.2" fill="none"/><path d="M4 19c0-3.866 3.134-7 7-7h0c3.866 0 7 3.134 7 7" stroke="#7D9E89" stroke-width="1.2" stroke-linecap="round" fill="none"/></svg><div class="nav-lbl" style="color:var(--sage);">You</div></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ─── State ───────────────────────────────────────────────
+let userName = 'Friend';
+let domain = 'personal';
+let flavor = 'mental';
+let timerInterval = null;
+let secondsLeft = 180;
+let paused = false;
+
+// ─── Practice pools — 3 per state, rotates each visit ────
+// lastPracticeIdx tracks which practice was last shown per state
+const lastPracticeIdx = {};
+
+const practicePools = {
+
+  mental_high: [
+    { init:'RD', badgeBg:'#EDF4F0', dotBg:'#7D9E89', teacherCl:'#3a5a4a', label:'Ram Dass · presence', title:'Be here now — just this breath', body:'Your mind is moving fast. This practice gently returns the wheel to you — not by fighting thoughts, but by coming home to this breath.', wisdom:'"The quieter you become, the more you can hear."', wsrc:'— Ram Dass', wexplain:'When your mind slows down and stops chattering, you become more aware of what\'s actually happening — inside and around you. Stillness isn\'t empty; it\'s full of things you couldn\'t notice while the noise was running.', steps:'Sit where you are. Take one slow breath — feel it completely, the coolness in, the warmth out. When a thought arises, say "thinking" and return. Each return is a small homecoming. Stay for 3 minutes.', ring:'#7D9E89' },
+    { init:'WD', badgeBg:'#FEF8DC', dotBg:'#F2B825', teacherCl:'#7a5800', label:'Wayne Dyer · intention', title:'What intention is underneath the noise?', body:'A racing mind is often a sign that something you care about deeply is unresolved. Wayne Dyer taught that behind every anxious thought is a desire — and behind every desire is an intention. Let\'s find it.', wisdom:'"You don\'t attract what you want. You attract what you are."', wsrc:'— Wayne Dyer', wexplain:'What shows up in your life reflects who you are being on the inside — not just what you\'re chasing. Your state of mind, your beliefs, your energy — these draw things toward you more than effort alone ever can.', steps:'Close your eyes. Let the thoughts race for a moment without chasing them. Then ask: what is all this mental activity actually about? What do I want that I\'m afraid I won\'t get? Sit with one honest answer for 3 minutes.', ring:'#F2B825' },
+    { init:'NM', badgeBg:'#F0EDE7', dotBg:'#888780', teacherCl:'#444441', label:'Nisargadatta · pure awareness', title:'You are the sky, not the weather', body:'Nisargadatta pointed at the simplest truth: you are not your thoughts. You are the awareness in which thoughts arise. The racing mind is weather. You are the sky it moves through.', wisdom:'"You are not what you think you are. You are the awareness behind the thought."', wsrc:'— Nisargadatta Maharaj', wexplain:'Your thoughts are not you — they\'re things you notice. Beneath every thought is the quiet awareness doing the noticing. That awareness is always calm, always present, and it\'s closer to who you really are than any thought could be.', steps:'Sit still. Instead of following any thought, simply notice that you are aware. Not aware of anything in particular — just aware. When a thought arises, don\'t push it away. Simply notice: "there is a thought." Return to the bare sense of awareness. Stay for 3 minutes.', ring:'#888780' },
+    { init:'BU', badgeBg:'#F5EFE0', dotBg:'#B8860B', teacherCl:'#6B4A00', label:'Buddha · working with anger', title:'Anger is a coal you\'re holding', body:'The Buddha taught that holding onto anger is like grasping a burning coal with the intent of throwing it at someone else — you are the one who gets burned. This practice doesn\'t suppress anger; it helps you set it down.', wisdom:'"Holding on to anger is like grasping a hot coal with the intent of throwing it at someone else — you are the one who gets burned."', wsrc:'— The Buddha', wexplain:'Anger feels like power, but it\'s costing you more than the person you\'re angry at. Every moment you hold it, it burns you — not them. Setting it down isn\'t weakness. It\'s choosing your own peace over their punishment.', steps:'Sit and feel the anger in your body — don\'t run from it. Notice where it lives: jaw, chest, stomach. Take three slow breaths into that place. Now ask: what is underneath the anger? Fear? Hurt? Disrespect? Name the softer thing. Breathe into that for 3 minutes.', ring:'#B8860B' },
+    { init:'JC', badgeBg:'#E3EDF5', dotBg:'#1A5F8F', teacherCl:'#1A5F8F', label:'Jesus · peace in the storm', title:'Peace — be still', body:'Jesus stood in a boat amid a raging storm and spoke three words: "Peace, be still." The storm obeyed. Your racing mind is the storm. This practice invites that same authority — not force, but a deep, calm command to return to stillness.', wisdom:'"Peace I leave with you; my peace I give you."', wsrc:'— Jesus (John 14:27)', wexplain:'This isn\'t the peace of having everything figured out. It\'s a peace that exists independent of circumstances — given, not earned. It\'s available right now, underneath the noise, if you stop and let it be there.', steps:'Sit still. Take one slow breath and say inwardly: "Peace — be still." Not as a demand, but as an invitation. With each breath, let that phrase settle deeper. When thoughts surge, return to those three words. Stay for 3 minutes.', ring:'#1A5F8F' }
+  ],
+
+  mental_low: [
+    { init:'AH', badgeBg:'#EDE6F5', dotBg:'#5B2D8E', teacherCl:'#3d1a6a', label:'Almaas · essence inquiry', title:'What quality is missing right now?', body:'Beneath every fog there is an essential quality trying to surface — clarity, strength, joy. The flatness itself is pointing at what wants to emerge.', wisdom:'"The soul is always whole. What feels like a hole is a doorway."', wsrc:'— A.H. Almaas', wexplain:'That hollow feeling isn\'t a sign something is broken — it\'s an opening. What feels like emptiness is actually your soul pointing toward something it needs. The gap itself is showing you the way forward.', steps:'Close your eyes. Feel the fog in your body — where do you sense it? Ask gently: if this were the absence of something, what might that be? Sit with whatever word comes for 3 minutes.', ring:'#5B2D8E' },
+    { init:'RD', badgeBg:'#EDF4F0', dotBg:'#7D9E89', teacherCl:'#3a5a4a', label:'Ram Dass · loving awareness', title:'I am loving awareness', body:'Ram Dass\'s simplest and deepest practice. When the mind is foggy and flat, don\'t try to think your way out. Instead, rest in the one thing that is always already clear: the quiet awareness that knows the fog is there.', wisdom:'"I am loving awareness. I am loving awareness. I am loving awareness."', wsrc:'— Ram Dass', wexplain:'No matter what you\'re feeling, something in you is quietly noticing it — and that something is gentle, not judgmental. Ram Dass invites you to identify with that witness, that loving presence, rather than with the fog itself.', steps:'Sit comfortably. Close your eyes. Breathe slowly. Begin to repeat inwardly, at the pace of your breath: "I am loving awareness." Not as an idea — as a felt sense. Let the phrase do the work. If the mind drifts, return to the words. Stay for 3 minutes.', ring:'#7D9E89' },
+    { init:'JC', badgeBg:'#E3EDF5', dotBg:'#1A5F8F', teacherCl:'#1A5F8F', label:'Jesus · rest & receive', title:'Let yourself be filled', body:'Jesus understood depletion. He regularly withdrew from crowds to rest, to pray, to receive. This practice is not about doing — it is about allowing yourself to be replenished by simply being still and open.', wisdom:'"Ask and it shall be given. Seek and you shall find."', wsrc:'— Jesus (Matthew 7:7)', wexplain:'You don\'t have to earn what you need — you just have to be willing to receive it. This isn\'t about deserving; it\'s about opening. When you ask honestly and stay open, something meets you there.', steps:'Sit or lie down. Open your hands, palms facing up, in your lap. This is a gesture of receiving. Breathe slowly. With each inhale, imagine something gentle and nourishing entering — light, warmth, peace. With each exhale, release any effort. Stay in this receptive posture for 3 minutes.', ring:'#1A5F8F' }
+  ],
+
+  physical_high: [
+    { init:'MW', badgeBg:'#F9E8E6', dotBg:'#CC3F2E', teacherCl:'#7a1a10', label:'Williamson · love over fear', title:'Your body is calling for love', body:'Every experience is either love or a call for love. Physical tension is your body calling — not for correction, but for genuine care.', wisdom:'"Love is what we were born with. Fear is what we learned here."', wsrc:'— Marianne Williamson', wexplain:'We arrive in this world open and loving — fear and tension are things we pick up along the way. That means they\'re not permanent. Beneath the tightness is your original self, which is still intact and always available.', steps:'Place both hands on the most tense part of your body. Breathe into that place. Say inwardly: "I\'m here. I\'m not leaving." With each breath, imagine warmth spreading from your hands. Stay for 3 minutes.', ring:'#CC3F2E' },
+    { init:'RD', badgeBg:'#EDF4F0', dotBg:'#7D9E89', teacherCl:'#3a5a4a', label:'Ram Dass · embodied presence', title:'Land in the body — all the way in', body:'Ram Dass taught that we spend most of our lives living from the neck up. When the body is tense and wired, the invitation is to drop back down — to inhabit the whole of yourself, not just the thinking part.', wisdom:'"The spiritual journey is not about going somewhere. It\'s about arriving here."', wsrc:'— Ram Dass', wexplain:'We often think growth means reaching some new destination. But Ram Dass is saying the opposite — real peace comes from fully arriving in this moment, this body, this breath. You don\'t need to go anywhere. You just need to be here.', steps:'Feel your feet on the floor. Really feel them — the pressure, the temperature, the texture beneath them. Now feel your legs, your seat, your back. Take a breath and feel your chest expand. Let your awareness travel slowly through the whole body, arriving in each place before moving on. Stay for 3 minutes.', ring:'#7D9E89' },
+    { init:'WD', badgeBg:'#FEF8DC', dotBg:'#F2B825', teacherCl:'#7a5800', label:'Wayne Dyer · energy shift', title:'Change your energy — intention leads', body:'Wayne Dyer believed that energy follows intention. When the body is activated and tight, the fastest lever isn\'t willpower — it\'s a clear, calm intention that the nervous system can follow.', wisdom:'"If you change the way you look at things, the things you look at change."', wsrc:'— Wayne Dyer', wexplain:'Your experience of any situation is shaped by how you\'re seeing it. Shift your perspective — even slightly — and the thing itself starts to feel different. The situation may not change, but your relationship to it can.', steps:'Set a simple intention aloud or inwardly: "I am returning to calm." Take three slow breaths — each one a little longer than the last. On each exhale, let your shoulders drop. After the three breaths, sit quietly and notice: where in your body does calm already exist? Follow that thread for 3 minutes.', ring:'#F2B825' },
+    { init:'PC', badgeBg:'#E8F0EE', dotBg:'#2A7A5A', teacherCl:'#1A4A3A', label:'Peter Crone · anger & story', title:'The story beneath the tension', body:'Peter Crone teaches that anger and physical tension are always the symptom of a story we\'re telling — about what should have happened, or what someone owed us. The body is tight because the mind is gripping. This practice finds the grip.', wisdom:'"You can\'t change the past, but you can change the story you tell about it."', wsrc:'— Peter Crone', wexplain:'The past is fixed — but the meaning you\'ve attached to it isn\'t. The story you\'re telling about what happened shapes how you feel right now. When you change the story, the charge in your body can finally begin to release.', steps:'Feel the tension in your body. Now ask: what story am I telling right now? "They shouldn\'t have..." or "This isn\'t fair because..." Say the story out loud or in your mind — just once. Then ask: what would it feel like to put this story down, just for these 3 minutes? Breathe into that possibility.', ring:'#2A7A5A' },
+    { init:'JC', badgeBg:'#E3EDF5', dotBg:'#1A5F8F', teacherCl:'#1A5F8F', label:'Jesus · breath as prayer', title:'Let your breath become a prayer', body:'Many contemplative traditions teach that the breath itself can be a form of prayer — a continuous returning to presence. When the body is tense and wired, this practice transforms each exhale into a release and each inhale into a receiving.', wisdom:'"Do not let your hearts be troubled and do not be afraid."', wsrc:'— Jesus (John 14:27)', wexplain:'Fear and tension live in the body as much as in the mind. This is a direct invitation to let the heart itself be at rest — not by resolving everything, but by trusting that you are held even now.', steps:'Sit upright but relaxed. On each inhale, breathe in the word "peace." On each exhale, breathe out the word "release." Let these words move at the pace of your natural breath. If tension persists, breathe directly into it — not to fight it, but to meet it. Stay for 3 minutes.', ring:'#1A5F8F' }
+  ],
+
+  physical_low: [
+    { init:'JC', badgeBg:'#E3EDF5', dotBg:'#1A5F8F', teacherCl:'#1A5F8F', label:'Jesus · rest & trust', title:'Consider the lilies — rest into what holds you', body:'The lilies don\'t toil or strive, yet they flourish. When the body is depleted, rest into what already sustains you rather than pushing harder.', wisdom:'"Come to me, all you who are weary, and I will give you rest."', wsrc:'— Jesus (Matthew 11:28)', wexplain:'This is a direct invitation to stop pushing and let yourself be held. You don\'t have to earn rest or deserve it. When you\'re exhausted and come as you are, something meets you there and carries what you can\'t carry alone.', steps:'Sit or lie down. Let your body be completely held by whatever surface is beneath you. With each exhale, give more weight to what holds you. Say: "I am held. I don\'t have to hold myself right now." Stay for 3 minutes.', ring:'#1A5F8F' },
+    { init:'MW', badgeBg:'#F9E8E6', dotBg:'#CC3F2E', teacherCl:'#7a1a10', label:'Williamson · self-compassion', title:'You\'ve been carrying a lot', body:'Marianne Williamson reminds us that self-care is not selfish — it is the very condition of being able to love others. When the body is depleted, the most radical act is gentleness toward yourself.', wisdom:'"The key to abundance is meeting limited circumstances with unlimited thoughts."', wsrc:'— Marianne Williamson', wexplain:'Even when your outer resources feel scarce — time, energy, money — your inner response doesn\'t have to be scarce too. You can meet a hard situation with an open, generous mind. That inner shift changes what feels possible.', steps:'Place one hand on your chest and one on your belly. Feel the rise and fall of your breath. Say inwardly: "I give myself permission to rest." Repeat it slowly, several times, until it begins to feel true. Notice any resistance — and let that be okay too. Stay for 3 minutes.', ring:'#CC3F2E' },
+    { init:'NM', badgeBg:'#F0EDE7', dotBg:'#888780', teacherCl:'#444441', label:'Nisargadatta · just being', title:'There is nothing you need to do right now', body:'Nisargadatta\'s teaching cuts through effort entirely. When the body is exhausted, even the effort to relax can feel like another demand. This practice asks nothing of you — only that you stop asking anything of yourself.', wisdom:'"The real does not die. The unreal never lived."', wsrc:'— Nisargadatta Maharaj', wexplain:'What is truly you — your awareness, your presence — can\'t be destroyed or depleted. Only the false things we cling to (roles, worries, performances) ever feel like they\'re slipping. Let them go. What remains is what you actually are.', steps:'Sit or lie completely still. Don\'t try to meditate. Don\'t try to relax. Don\'t try to do anything at all. Just let the body be exactly as it is — heavy, tired, whatever it is. Notice that something in you is already awake and witnessing, without effort. Rest in that for 3 minutes.', ring:'#888780' }
+  ],
+
+  emotional_high: [
+    { init:'MW', badgeBg:'#F9E8E6', dotBg:'#CC3F2E', teacherCl:'#7a1a10', label:'Williamson · love over fear', title:'This feeling is a call, not a verdict', body:'Anxiety and anger are calls for love that haven\'t been answered yet. When we meet strong emotion with judgment, it doubles. With compassion, it can move.', wisdom:'"Our deepest fear is not that we are inadequate. Our deepest fear is that we are powerful beyond measure."', wsrc:'— Marianne Williamson', wexplain:'What holds us back most isn\'t self-doubt — it\'s the unconscious fear of how big we could actually be. Owning your own strength, goodness, and light is more frightening than staying small. This quote is an invitation to stop hiding from yourself.', steps:'Breathe slowly. Name what you feel without judgment — just the word. "Anxiety." "Anger." Ask: if this feeling were a person, what would they need to hear? Say it inwardly. Sit with what shifts for 3 minutes.', ring:'#CC3F2E' },
+    { init:'AH', badgeBg:'#EDE6F5', dotBg:'#5B2D8E', teacherCl:'#3d1a6a', label:'Almaas · precise naming', title:'Name it more precisely', body:'Almaas taught that vague emotion stays vague. When we name what we\'re feeling with real precision — not just "stressed" but "afraid of being dismissed and unseen" — the emotion can finally be met. Precision is the practice.', wisdom:'"Inquiry is not a technique. It is a way of being."', wsrc:'— A.H. Almaas', wexplain:'Real inquiry isn\'t a tool you pick up and put down — it\'s a way of moving through life with genuine curiosity about your own experience. Staying honestly curious, rather than defensive or reactive, is itself the practice.', steps:'Ask: what am I actually feeling right now — beneath the word "stressed" or "anxious"? Go one layer deeper. Is it fear? Shame? Grief? Longing? Find the most honest word you can. Then ask: where do I feel it in my body? Sit with both the word and the sensation for 3 minutes.', ring:'#5B2D8E' },
+    { init:'RD', badgeBg:'#EDF4F0', dotBg:'#7D9E89', teacherCl:'#3a5a4a', label:'Ram Dass · witness', title:'You are not the emotion — you\'re the one watching', body:'Ram Dass often said: "You are not your emotions. You are the loving awareness watching your emotions." Strong feelings seem to be who we are in the moment. This practice creates just enough distance to remember what\'s actually true.', wisdom:'"Emotions are like waves. Watch them disappear in the vast calm ocean."', wsrc:'— Ram Dass', wexplain:'Emotions are powerful but temporary — like waves moving through water. You are the ocean, not the wave. No matter how intense a feeling gets, something in you remains steady beneath it, watching it rise and eventually settle.', steps:'Close your eyes. Feel the activated emotion fully — don\'t push it away. Now gently shift your perspective: instead of being the emotion, imagine you are the one watching it. Say inwardly: "There is anxiety here. I am the one who notices it." Sit in that slight spaciousness for 3 minutes.', ring:'#7D9E89' },
+    { init:'JC', badgeBg:'#E3EDF5', dotBg:'#1A5F8F', teacherCl:'#1A5F8F', label:'Jesus · met in the storm', title:'Your emotion is not too much', body:'When the disciples were terrified in the storm, Jesus didn\'t dismiss their fear — he met it and then stilled it. Strong emotion is not a sign of weak faith. It\'s a signal that something real is happening that needs to be met.', wisdom:'"Blessed are those who mourn, for they will be comforted."', wsrc:'— Jesus (Matthew 5:4)', wexplain:'Strong emotion — grief, anger, fear — is honored here, not dismissed. The promise isn\'t that feeling will stop, but that it won\'t be faced alone. There is comfort available in the midst of it, not only after.', steps:'Name what you\'re feeling without softening it. Say it plainly: "I am angry." "I am afraid." "I am overwhelmed." Then say: "And I am not alone in this." Breathe with both truths for 3 minutes.', ring:'#1A5F8F' }
+  ],
+
+  emotional_low: [
+    { init:'JC', badgeBg:'#E3EDF5', dotBg:'#1A5F8F', teacherCl:'#1A5F8F', label:'Jesus · compassionate presence', title:'You are seen — even in the quiet of this', body:'Jesus didn\'t offer solutions to suffering — he sat with it. This practice meets numbness with simple, unhurried presence. You don\'t have to perform wellness here.', wisdom:'"Blessed are those who mourn, for they will be comforted."', wsrc:'— Jesus (Matthew 5:4)', wexplain:'Grief and sadness are not signs of weakness or failure — they are honored here. This is a promise that sorrow is not the end of the story. You don\'t have to rush through it or hide it. Comfort comes to those who let themselves feel.', steps:'Sit quietly. Place a hand on your heart. Say inwardly: "Even this is met with love." Not to change the feeling — just to not be alone with it. Rest here for 3 minutes.', ring:'#1A5F8F' },
+    { init:'MW', badgeBg:'#F9E8E6', dotBg:'#CC3F2E', teacherCl:'#7a1a10', label:'Williamson · turning toward love', title:'There is a love that doesn\'t require you to be okay', body:'Marianne Williamson writes that love is not a feeling — it\'s a presence. When we are numb or flat, love doesn\'t demand that we feel more. It simply stays. This practice invites that quality of staying into the room.', wisdom:'"Every ending is a new beginning. Through the grace of God we can always start again."', wsrc:'— Marianne Williamson', wexplain:'No matter what has closed, collapsed, or ended — something new is always trying to begin. You are never truly stuck. Even in the flattest moments, a door is quietly opening somewhere. You get to start again.', steps:'Imagine someone who loves you completely — real or imagined, living or not. Bring their face or presence into your awareness. Let them sit with you in the flatness. You don\'t have to speak or perform. Let yourself be in the company of that love for 3 minutes.', ring:'#CC3F2E' },
+    { init:'RD', badgeBg:'#EDF4F0', dotBg:'#7D9E89', teacherCl:'#3a5a4a', label:'Ram Dass · soft awareness', title:'Just be with what is', body:'Some of Ram Dass\'s most powerful teaching was the simplest: be with what is. Not fixing, not improving, not even understanding — just a quality of quiet accompaniment toward your own experience.', wisdom:'"The most important aspect of love is not in giving or receiving — it\'s in the being."', wsrc:'— Ram Dass', wexplain:'Love isn\'t primarily an action or a transaction — it\'s a quality of presence. Simply being fully here, with yourself or another, without an agenda, is one of the deepest expressions of love there is.', steps:'Let go of any agenda for this practice. Don\'t try to feel better. Don\'t try to understand the numbness. Simply sit with your experience the way you\'d sit with a dear friend who is going through something hard — present, unhurried, without needing anything to be different. Stay for 3 minutes.', ring:'#7D9E89' }
+  ],
+
+  existential_high: [
+    { init:'WD', badgeBg:'#FEF8DC', dotBg:'#F2B825', teacherCl:'#7a5800', label:'Wayne Dyer · intention', title:'Return to your original intention', body:'We each carry a unique music into this life. Overwhelm often means we\'ve drifted from that original note. This practice reminds you what you\'re actually here for.', wisdom:'"Don\'t die with your music still in you."', wsrc:'— Wayne Dyer', wexplain:'Every person carries something unique — a gift, a voice, a way of being — that only they can offer. Dyer is asking: don\'t leave this life without expressing it. The greatest regret isn\'t failure — it\'s never having tried.', steps:'Sit still. Let the urgency breathe. Ask: what do I genuinely care about — not what I should, but what I actually do? Let one thing surface. Ask: is what overwhelms me connected to that? Sit with the honest answer for 3 minutes.', ring:'#F2B825' },
+    { init:'AH', badgeBg:'#EDE6F5', dotBg:'#5B2D8E', teacherCl:'#3d1a6a', label:'Almaas · essential strength', title:'There is a strength in you that hasn\'t been touched', body:'Almaas identified strength as one of the essential qualities of the soul — not earned strength, not performed strength, but a ground-level solidity that exists before effort. This practice is about contacting it.', wisdom:'"Real strength is not the absence of vulnerability — it is the capacity to be present with it."', wsrc:'— A.H. Almaas', wexplain:'Strength doesn\'t mean not being affected. It means you can stay present even when something is hard — you don\'t have to shut down, run away, or pretend. That willingness to remain open in difficulty is the truest form of strength.', steps:'Feel into the center of your body — around the belly and solar plexus. Breathe into that area. Imagine a quiet solidity there, like bedrock beneath soil. It doesn\'t have to feel strong. Just notice that something in you has been holding through everything. Acknowledge that for 3 minutes.', ring:'#5B2D8E' },
+    { init:'NM', badgeBg:'#F0EDE7', dotBg:'#888780', teacherCl:'#444441', label:'Nisargadatta · the unchanging', title:'Step back from the turning world', body:'Nisargadatta taught that at the center of all experience there is something that does not move, does not change, is never overwhelmed. T.S. Eliot called it the still point of the turning world. You are that.', wisdom:'"Wisdom is knowing I am nothing. Love is knowing I am everything."', wsrc:'— Nisargadatta Maharaj', wexplain:'Wisdom is releasing the ego — recognizing you\'re not the center of the universe, that you are small and part of something vast. Love is the opposite realization — that you are connected to everything, and nothing is truly separate from you. Both are true at once.', steps:'Sit still. Let the sense of overwhelm be present without trying to resolve it. Then ask: who is aware of being overwhelmed? Follow that question inward — not to an answer, but to a quality of stillness behind the question itself. Rest there for 3 minutes.', ring:'#888780' },
+    { init:'JC', badgeBg:'#E3EDF5', dotBg:'#1A5F8F', teacherCl:'#1A5F8F', label:'Jesus · ask and receive', title:'Ask honestly — then listen', body:'Jesus taught that honest asking is met with honest answering. When we feel overwhelmed and lost, the practice is not to have all the answers — it\'s to ask the real question and stay open to what arrives.', wisdom:'"Ask and it shall be given. Seek and you shall find."', wsrc:'— Jesus (Matthew 7:7)', wexplain:'The asking has to be real — not performative, not hedged. When you bring your actual confusion and your actual need honestly forward, something responds. Not always immediately or in the form expected, but something moves.', steps:'Sit quietly. Bring your most honest question — not the polished version, the real one. Say it inwardly or aloud. Then sit in silence and simply remain open. Don\'t force an answer. Just stay available for 3 minutes.', ring:'#1A5F8F' }
+  ],
+
+  existential_low: [
+    { init:'NM', badgeBg:'#F0EDE7', dotBg:'#888780', teacherCl:'#444441', label:'Nisargadatta · pure awareness', title:'You are already what you\'re looking for', body:'What you are seeking is the very awareness that is seeking. The still point is not somewhere to arrive. It\'s what you already are, underneath the search.', wisdom:'"There is nothing to practice. To know yourself, be yourself."', wsrc:'— Nisargadatta Maharaj', wexplain:'You don\'t need a technique or a method to find yourself — you just need to stop pretending to be something you\'re not. Self-knowledge isn\'t achieved through effort. It\'s revealed when you drop the performance and simply are.', steps:'Stop seeking for a moment. Just sit. Notice the silence between your thoughts — even half a second. That gap is full of what you are before the search begins. Return to the gap whenever thoughts arise for 3 minutes.', ring:'#888780' },
+    { init:'WD', badgeBg:'#FEF8DC', dotBg:'#F2B825', teacherCl:'#7a5800', label:'Wayne Dyer · purpose', title:'Your life is asking you something', body:'Wayne Dyer believed that a sense of purposelessness is not emptiness — it is a question that hasn\'t been asked honestly yet. The feeling of lostness is often the soul clearing space for something more true to emerge.', wisdom:'"Abundance is not something we acquire. It is something we tune into."', wsrc:'— Wayne Dyer', wexplain:'Abundance — of meaning, connection, joy — isn\'t something you chase and catch. It\'s a frequency you align with. When you shift your inner state, you start noticing what was always there. You don\'t get more; you become more aware of what you have.', steps:'Ask yourself honestly: if I knew I couldn\'t fail, and nobody would judge me, what would I do with my life? Don\'t edit the answer. Let whatever comes, come. It doesn\'t need to be practical. Sit with the image or feeling that arises for 3 minutes.', ring:'#F2B825' },
+    { init:'JC', badgeBg:'#E3EDF5', dotBg:'#1A5F8F', teacherCl:'#1A5F8F', label:'Jesus · the kingdom within', title:'What you\'re looking for is already inside', body:'Jesus said the kingdom of heaven is within you — not somewhere to travel to, not something to earn or build, but a quality of life that is already present and waiting to be noticed. This practice looks inward, not outward.', wisdom:'"The kingdom of heaven is within you."', wsrc:'— Jesus (Luke 17:21)', wexplain:'Peace, meaning, and belonging aren\'t destinations you arrive at after working hard enough. They\'re qualities that already exist inside you, waiting to be noticed. You don\'t need to go anywhere. Turn inward and look.', steps:'Close your eyes. Ask: if meaning, peace, and direction were already present inside me right now — where would I find them? Don\'t look for a big answer. Look for a small one. A flicker. A thread. Follow whatever you notice for 3 minutes.', ring:'#1A5F8F' }
+  ],
+
+  // ── RELATIONSHIPS ──────────────────────────────────────────
+
+  relationships_conflict_high: [
+    { init:'PC', badgeBg:'#E8F0EE', dotBg:'#2A7A5A', teacherCl:'#1A4A3A', label:'Peter Crone · the story', title:'What story are you telling about them?', body:'Every conflict has two sides — what happened, and the story we\'re telling about what it means. Peter Crone teaches that our suffering lives in the story, not the event itself.', wisdom:'"You can\'t change the past, but you can change the story you tell about it."', wsrc:'— Peter Crone', wexplain:'The facts of what happened are fixed — but the meaning you\'ve assigned them isn\'t. When you change the story from "they wronged me" to "they were afraid," the charge begins to shift. The story is where your freedom lives.', steps:'Think of the conflict. State what happened in one plain sentence — just facts. Then notice the story layered on top: "which means they don\'t care" or "which means I\'m not respected." Sit with just the facts for 3 minutes, letting the story soften.', ring:'#2A7A5A' },
+    { init:'MW', badgeBg:'#F9E8E6', dotBg:'#CC3F2E', teacherCl:'#7a1a10', label:'Williamson · love or fear', title:'Is this coming from love or fear?', body:'Marianne Williamson teaches that every communication is either an expression of love or a call for love. Conflict is always a call — from you, from them, or both. When you can see it that way, the response changes.', wisdom:'"In every moment, we make a choice between love and fear."', wsrc:'— Marianne Williamson', wexplain:'Beneath almost every conflict is fear — fear of not being respected, not being loved, not mattering. When you can see the fear underneath someone\'s anger (including your own), compassion becomes possible even when agreement isn\'t.', steps:'Think of the person you\'re in conflict with. Ask: what are they afraid of right now? Then ask: what am I afraid of? Let both answers be present without needing to resolve them. Breathe into the shared vulnerability for 3 minutes.', ring:'#CC3F2E' },
+    { init:'BU', badgeBg:'#F5EFE0', dotBg:'#B8860B', teacherCl:'#6B4A00', label:'Buddha · release attachment', title:'What are you holding that you could set down?', body:'The Buddha taught that suffering comes from attachment — including attachment to being right, being seen, being vindicated. In conflict, the question is not just who is right, but what you\'re clinging to that is costing you peace.', wisdom:'"Holding on to anger is like grasping a hot coal with the intent of throwing it at someone else — you are the one who gets burned."', wsrc:'— The Buddha', wexplain:'Anger in conflict always burns the holder more than the target. Releasing isn\'t condoning — it\'s choosing your own peace over the cold comfort of resentment.', steps:'Feel the conflict in your body. Name what you\'re most attached to: being right, being apologized to, being understood. Hold that attachment gently and ask: what would it feel like to set this down, just for now? Breathe for 3 minutes.', ring:'#B8860B' },
+    { init:'JC', badgeBg:'#E3EDF5', dotBg:'#1A5F8F', teacherCl:'#1A5F8F', label:'Jesus · love your enemy', title:'What would it mean to wish them well?', body:'Jesus gave perhaps the most radical instruction in history: love your enemies. Not agree with them, not excuse them — love them. In conflict, this practice doesn\'t ask you to resolve anything. It asks something harder: to hold the other person in your care.', wisdom:'"Love one another as I have loved you."', wsrc:'— Jesus (John 15:12)', wexplain:'This standard of love isn\'t conditional on the other person\'s behavior. It moves first, even when it\'s not returned. That\'s what makes it radical — and what makes it freeing. You don\'t need them to change for you to release the grip.', steps:'Bring the person you\'re in conflict with to mind. Without excusing anything, say inwardly: "I wish you well. I wish you peace." Notice any resistance. Breathe into it. Try once more. Stay with the practice for 3 minutes.', ring:'#1A5F8F' }
+  ],
+
+  relationships_conflict_low: [
+    { init:'RD', badgeBg:'#EDF4F0', dotBg:'#7D9E89', teacherCl:'#3a5a4a', label:'Ram Dass · loving awareness', title:'Can you hold them in loving awareness?', body:'After conflict has cooled, Ram Dass\'s practice of loving awareness becomes available. Not bypassing what happened, but expanding the container enough to hold the person and the pain simultaneously.', wisdom:'"Treat everyone you meet as if they are God in disguise."', wsrc:'— Ram Dass', wexplain:'This doesn\'t mean excusing harm. It means recognizing that beneath the person who hurt you is a soul also struggling, also seeking love and safety. That recognition doesn\'t erase the conflict — it makes compassion possible alongside it.', steps:'Bring the person to mind. Say inwardly: "You are struggling too. I don\'t have to agree with you to wish you well." Stay with that quiet wish for 3 minutes.', ring:'#7D9E89' },
+    { init:'JC', badgeBg:'#E3EDF5', dotBg:'#1A5F8F', teacherCl:'#1A5F8F', label:'Jesus · forgiveness', title:'Forgiveness as an act of freedom', body:'Jesus taught forgiveness not as excusing the offense but as releasing yourself from being defined by it. After conflict has gone quiet, forgiveness is the practice that finally lets you put it down.', wisdom:'"Forgive, and you will be forgiven."', wsrc:'— Jesus (Luke 6:37)', wexplain:'Forgiveness is not saying what happened was okay. It\'s deciding that you will no longer let it occupy your present. Every moment you withhold forgiveness, you keep yourself tied to the moment of injury.', steps:'Sit quietly. Name what you\'re still carrying from this conflict. Say inwardly: "I release this — not because it didn\'t matter, but because I choose my peace." Notice what softens. Repeat as needed for 3 minutes.', ring:'#1A5F8F' },
+    { init:'PC', badgeBg:'#E8F0EE', dotBg:'#2A7A5A', teacherCl:'#1A4A3A', label:'Peter Crone · conditioning', title:'This pattern came from somewhere', body:'Peter Crone teaches that our reactions in conflict are rarely about the present moment alone — they\'re echoes of older wounds. The low-grade exhaustion after conflict is often an invitation to look at the pattern beneath it.', wisdom:'"Your limitations are not in your circumstances — they\'re in your conditioning."', wsrc:'— Peter Crone', wexplain:'The way you respond in conflict — shutting down, escalating, people-pleasing — was learned somewhere. It made sense once. Seeing the pattern with curiosity, not judgment, is the first step to choosing differently.', steps:'Think about the conflict. Notice your pattern: did you shut down? Over-explain? Escalate? Ask gently: where did I first learn to do that? Don\'t force an answer — just stay curious for 3 minutes.', ring:'#2A7A5A' }
+  ],
+
+  relationships_distance_high: [
+    { init:'RD', badgeBg:'#EDF4F0', dotBg:'#7D9E89', teacherCl:'#3a5a4a', label:'Ram Dass · presence', title:'Can you be fully here — even in the distance?', body:'Distance between people often grows when both parties are anywhere but the present. Ram Dass teaches that real connection only happens in the now — and returning to now is always the first move.', wisdom:'"We are all just walking each other home."', wsrc:'— Ram Dass', wexplain:'Even in distance and disconnection, we are still on the same journey. Showing up, even imperfectly, is enough.', steps:'Think of the person you feel distant from. Instead of analyzing why, simply become present to how much you care about them. Let that caring be in the room — not as a demand, but as a quiet fact. Breathe with that for 3 minutes.', ring:'#7D9E89' },
+    { init:'MW', badgeBg:'#F9E8E6', dotBg:'#CC3F2E', teacherCl:'#7a1a10', label:'Williamson · extending love', title:'Love extended — even across the gap', body:'Marianne Williamson writes that love extended is the only thing that heals distance. Not explained, not demanded — simply extended. This practice is about being the one who moves first.', wisdom:'"We are not held back by the love we didn\'t receive in the past, but by the love we\'re not extending in the present."', wsrc:'— Marianne Williamson', wexplain:'What keeps us stuck in disconnection isn\'t past wounds — it\'s our current withholding. Someone has to go first. This practice invites you to be that person.', steps:'Think of one small act of love you could extend toward this person — a message, a question, a kind thought. Let the intention form. Breathe into the willingness for 3 minutes.', ring:'#CC3F2E' },
+    { init:'AH', badgeBg:'#EDE6F5', dotBg:'#5B2D8E', teacherCl:'#3d1a6a', label:'Almaas · what distance says', title:'What is the distance really saying?', body:'Almaas teaches that emotional distance is often the soul\'s way of protecting something tender. The gap between two people contains information — about what was hurt, what was needed, what hasn\'t been said.', wisdom:'"The heart knows what the mind cannot yet accept."', wsrc:'— A.H. Almaas', wexplain:'Sometimes we distance ourselves before we even understand why. The heart has already registered something — hurt, fear, disappointment — before the mind catches up.', steps:'Sit quietly with the feeling of distance. Ask your heart: what does this distance feel like it\'s protecting? What is too tender to risk right now? Don\'t try to fix it — let the answer surface gently for 3 minutes.', ring:'#5B2D8E' },
+    { init:'JC', badgeBg:'#E3EDF5', dotBg:'#1A5F8F', teacherCl:'#1A5F8F', label:'Jesus · love reaches across', title:'Love moves first', body:'Throughout the Gospels, Jesus consistently moved toward people who were isolated, distant, or excluded. The pattern is always the same: love reaches across the gap rather than waiting for the other to close it.', wisdom:'"We love because he first loved us."', wsrc:'— 1 John 4:19', wexplain:'Love isn\'t a response — it\'s an initiative. Waiting for the other person to close the distance first is understandable, but it keeps the gap intact. Someone has to move. This practice invites you to be the one who does.', steps:'Think of the person you feel distant from. Without any expectation of response, send them a simple inward wish: "I see you. I\'m here if you need me." Let that intention be enough for now. Breathe with it for 3 minutes.', ring:'#1A5F8F' }
+  ],
+
+  relationships_distance_low: [
+    { init:'JC', badgeBg:'#E3EDF5', dotBg:'#1A5F8F', teacherCl:'#1A5F8F', label:'Jesus · you are not alone', title:'You are seen even in this aloneness', body:'Jesus understood what it was to feel separated — from the crowd, from understanding, from the people you love. His teaching holds both the ache of aloneness and the assurance that something always remains with you.', wisdom:'"Do not let your hearts be troubled and do not be afraid."', wsrc:'— Jesus (John 14:27)', wexplain:'This isn\'t an instruction to stop feeling — it\'s a reminder that there\'s a presence available even in the moments when human connection has temporarily failed. You are not as alone as the distance makes you feel.', steps:'Sit with the loneliness of this distance. Place a hand on your heart. Say: "I am here with myself. That is something." Breathe into that small but real companionship for 3 minutes.', ring:'#1A5F8F' },
+    { init:'BU', badgeBg:'#F5EFE0', dotBg:'#B8860B', teacherCl:'#6B4A00', label:'Buddha · loving-kindness', title:'Send them love across the distance', body:'The Buddhist practice of metta — loving-kindness — is done inwardly, without any action required from the other person. It is one of the most powerful ways to soften the ache of disconnection.', wisdom:'"You yourself, as much as anybody in the entire universe, deserve your love and affection."', wsrc:'— The Buddha', wexplain:'Loving-kindness begins with yourself — you can\'t genuinely send it outward if you haven\'t first acknowledged your own worthiness of it.', steps:'Sit quietly. Begin with yourself: "May I be happy. May I be well. May I be at peace." Then bring the distant person to mind: "May you be happy. May you be well. May you be at peace." Repeat slowly for 3 minutes.', ring:'#B8860B' },
+    { init:'RD', badgeBg:'#EDF4F0', dotBg:'#7D9E89', teacherCl:'#3a5a4a', label:'Ram Dass · love as being', title:'Love doesn\'t require presence to be real', body:'Ram Dass often spoke of love as a quality of being rather than a transaction. When physical or emotional distance separates us from someone, the love itself doesn\'t disappear — it just changes form.', wisdom:'"The most important aspect of love is not in giving or receiving — it\'s in the being."', wsrc:'— Ram Dass', wexplain:'Love isn\'t primarily something you do — it\'s something you are. Even in distance, even in silence, the love remains real.', steps:'Think of the person you\'re distant from. Without needing to contact them or resolve anything, allow yourself to feel the love you have for them — quietly, without agenda. Sit in that love as its own complete thing for 3 minutes.', ring:'#7D9E89' }
+  ],
+
+  relationships_longing_high: [
+    { init:'AH', badgeBg:'#EDE6F5', dotBg:'#5B2D8E', teacherCl:'#3d1a6a', label:'Almaas · longing as doorway', title:'Your longing is pointing at something real', body:'Almaas teaches that our deepest longings are not mere wishes — they are the soul\'s navigation system. What you ache for most is pointing toward an essential quality that wants to come alive in you.', wisdom:'"The soul is always whole. What feels like a hole is a doorway."', wsrc:'— A.H. Almaas', wexplain:'Like hunger tells you about food, longing tells you about what your soul is reaching toward. The ache is not the problem. It\'s the compass.', steps:'Feel the longing fully — where is it in your body? Name what you\'re longing for precisely. Then ask: if I had this, what quality would it give me? Love? Safety? Being known? Breathe into that quality directly for 3 minutes.', ring:'#5B2D8E' },
+    { init:'MW', badgeBg:'#F9E8E6', dotBg:'#CC3F2E', teacherCl:'#7a1a10', label:'Williamson · grief as love', title:'Grief is love with nowhere to go', body:'Marianne Williamson reminds us that grief — including the grief of longing — is love itself, continuing even when the object of love is absent. Letting yourself grieve is letting yourself love.', wisdom:'"Every ending is a new beginning. Through the grace of God we can always start again."', wsrc:'— Marianne Williamson', wexplain:'Even the sharpest grief carries within it the seed of something new. What you\'re losing or missing is real. And something, eventually, begins again. Both things are true.', steps:'Let the longing or grief be present. Say inwardly: "This is love. It hurts because it\'s real." Breathe into the bigness of what you feel. Let it be what it is for 3 minutes.', ring:'#CC3F2E' },
+    { init:'JC', badgeBg:'#E3EDF5', dotBg:'#1A5F8F', teacherCl:'#1A5F8F', label:'Jesus · comforted in mourning', title:'Your grief is held', body:'Jesus said "blessed are those who mourn" — not that grief is good, but that it is held, honored, and met. Longing and loss don\'t have to be carried alone.', wisdom:'"Blessed are those who mourn, for they will be comforted."', wsrc:'— Jesus (Matthew 5:4)', wexplain:'Mourning is not failure — it\'s acknowledgment that something mattered. The grief you bring honestly is met honestly.', steps:'Sit with your longing. Don\'t minimize it. Place a hand on your heart and say: "This matters. It\'s okay that it hurts." Rest in that honest acknowledgment for 3 minutes.', ring:'#1A5F8F' }
+  ],
+
+  relationships_longing_low: [
+    { init:'BU', badgeBg:'#F5EFE0', dotBg:'#B8860B', teacherCl:'#6B4A00', label:'Buddha · impermanence', title:'All things pass — and all things mattered', body:'The Buddha taught that impermanence is not a tragedy — it is the nature of all things. What has been real was real. That cannot be taken.', wisdom:'"In the end, only three things matter: how much you loved, how gently you lived, and how gracefully you let go."', wsrc:'— The Buddha', wexplain:'The measure of a life isn\'t what lasted — it\'s the quality of love and presence you brought. If you loved genuinely, that mattered. Letting go gracefully is the final act of love.', steps:'Think of what you\'re longing for or have lost. Say inwardly: "It was real. It mattered. I loved." Let gratitude and grief coexist for a moment. Breathe with that fullness for 3 minutes.', ring:'#B8860B' },
+    { init:'NM', badgeBg:'#F0EDE7', dotBg:'#888780', teacherCl:'#444441', label:'Nisargadatta · the unchanging', title:'What in you has not been touched by this loss?', body:'Nisargadatta pointed to the awareness behind all experience — the part that watches grief and longing without being defined by it. Even in your deepest longing, something in you remains whole.', wisdom:'"The real does not die. The unreal never lived."', wsrc:'— Nisargadatta Maharaj', wexplain:'What is truly you cannot be taken by loss. Only the forms change. The awareness in which it all happens — that remains. And that is what you are.', steps:'Feel the longing. Then ask: who is aware of this feeling? Notice that something in you — quiet, steady, unchanged — is witnessing even this. Rest in that witness for 3 minutes.', ring:'#888780' },
+    { init:'RD', badgeBg:'#EDF4F0', dotBg:'#7D9E89', teacherCl:'#3a5a4a', label:'Ram Dass · souls on a journey', title:'The love doesn\'t end with the separation', body:'Ram Dass believed that souls journey together — the connections we make are not accidental and do not fully end. Longing, in this light, is not just loss — it is recognition of a bond that transcends circumstance.', wisdom:'"We are all just walking each other home."', wsrc:'— Ram Dass', wexplain:'We are companions to each other — for a season, a lifetime, or a moment. Someone doesn\'t stop being part of your journey just because they\'re no longer in your daily life.', steps:'Think of the person or connection you long for. Feel the realness of what you shared. Say inwardly: "Thank you for walking with me." Let that gratitude be the whole practice for 3 minutes.', ring:'#7D9E89' },
+    { init:'JC', badgeBg:'#E3EDF5', dotBg:'#1A5F8F', teacherCl:'#1A5F8F', label:'Jesus · the father who runs', title:'You will be met on your way back', body:'In the parable of the prodigal son, the father doesn\'t wait at the door — he sees his child from a distance and runs. Longing, in this teaching, is not one-sided. Something is always already moving toward you.', wisdom:'"While he was still a great way off, his father saw him and ran."', wsrc:'— Jesus (Luke 15:20)', wexplain:'You don\'t have to complete the whole journey back to be met. The moment you turn — the moment you begin — something moves toward you. Longing is not just your reaching. It\'s the first step of a reunion already in motion.', steps:'Sit with your longing. Instead of only feeling the ache of what\'s absent, ask: is something also moving toward me? Let that possibility be present — as a question, not a demand. Breathe with it for 3 minutes.', ring:'#1A5F8F' }
+  ],
+
+  relationships_connection_high: [
+    { init:'MW', badgeBg:'#F9E8E6', dotBg:'#CC3F2E', teacherCl:'#7a1a10', label:'Williamson · love as presence', title:'Let yourself be seen', body:'True connection requires the willingness to be fully seen rather than strategically presented. Love is the natural result of two people dropping their armor at the same time.', wisdom:'"Love is what we were born with. Fear is what we learned here."', wsrc:'— Marianne Williamson', wexplain:'We arrive open. Fear closes us. But love is the original state, not the achievement. When we feel safe enough to remember that, genuine connection becomes possible again.', steps:'Think of someone you want to be more open with. Ask: what am I afraid would happen if I let them see me more fully? Sit with that fear without judgment. Notice what it would feel like to set it down, just for a moment. Breathe for 3 minutes.', ring:'#CC3F2E' },
+    { init:'BU', badgeBg:'#F5EFE0', dotBg:'#B8860B', teacherCl:'#6B4A00', label:'Buddha · loving-kindness', title:'Begin with yourself — then extend', body:'The Buddhist metta practice teaches that genuine love for others begins with genuine love for yourself. You cannot sustainably offer what you haven\'t first received — even from yourself.', wisdom:'"You yourself, as much as anybody in the entire universe, deserve your love and affection."', wsrc:'— The Buddha', wexplain:'This is the foundation of all real connection: self-compassion. When you genuinely include yourself in your circle of care, love flows outward more naturally.', steps:'Begin with yourself. Say slowly: "May I be happy. May I be well. May I be at peace." Let this sink in. Then bring someone you love to mind and extend the same wishes. Breathe for 3 minutes.', ring:'#B8860B' },
+    { init:'RD', badgeBg:'#EDF4F0', dotBg:'#7D9E89', teacherCl:'#3a5a4a', label:'Ram Dass · soul to soul', title:'Meet them soul to soul, not role to role', body:'Ram Dass talked about meeting people as souls — beyond their jobs, moods, and history with us. When we remember who is actually in front of us, the quality of connection shifts completely.', wisdom:'"Treat everyone you meet as if they are God in disguise."', wsrc:'— Ram Dass', wexplain:'Every person you encounter is carrying more than you can see — a whole inner world, a history, a longing to be recognized. Real connection starts with this recognition.', steps:'Think of someone you want more connection with. Instead of thinking about the relationship, think about them — who they really are beneath the surface. Let genuine curiosity arise. Sit with that wonder for 3 minutes.', ring:'#7D9E89' },
+    { init:'JC', badgeBg:'#E3EDF5', dotBg:'#1A5F8F', teacherCl:'#1A5F8F', label:'Jesus · where two gather', title:'Something is present when you truly show up', body:'Jesus said "where two or three are gathered in my name, there I am." Whatever your theology, the teaching is clear: genuine, intentional presence between people carries something more than the sum of the individuals. Real connection is sacred.', wisdom:'"Love one another as I have loved you."', wsrc:'— Jesus (John 15:12)', wexplain:'The invitation to love as Jesus loved is an invitation to unconditional presence — showing up fully, without an agenda, without conditions. That kind of love doesn\'t just connect people. It transforms them.', steps:'Think of someone you want to connect more deeply with. Imagine sitting across from them with complete presence — no phone, no agenda, no performance. Just genuine attention. What would you want them to know? Hold that in your heart for 3 minutes.', ring:'#1A5F8F' }
+  ],
+
+  relationships_connection_low: [
+    { init:'JC', badgeBg:'#E3EDF5', dotBg:'#1A5F8F', teacherCl:'#1A5F8F', label:'Jesus · love as foundation', title:'Love is not what you earn — it\'s what you are', body:'Jesus taught love not as a feeling to manufacture but as the ground of being. When connection feels flat or elusive, the invitation is not to try harder — but to remember what love actually is.', wisdom:'"Love one another as I have loved you."', wsrc:'— Jesus (John 15:12)', wexplain:'This is the standard — not transactional love that mirrors what you receive, but love that moves first, love that holds even when it isn\'t returned. That kind of love doesn\'t deplete — it renews.', steps:'Think of someone in your life. Instead of considering what the relationship gives you, ask: how can I love this person today, simply — without needing anything in return? Let one small, genuine answer arrive. Hold it for 3 minutes.', ring:'#1A5F8F' },
+    { init:'NM', badgeBg:'#F0EDE7', dotBg:'#888780', teacherCl:'#444441', label:'Nisargadatta · shared awareness', title:'At the deepest level, you are not separate', body:'Nisargadatta\'s most radical teaching is that the sense of separation between self and other is itself a kind of illusion. At the level of pure awareness, there is no gap. Connection is not something to achieve — it is already true.', wisdom:'"When you know that you are nothing, you are everything."', wsrc:'— Nisargadatta Maharaj', wexplain:'When you release the ego\'s need to protect its separateness, you realize you are part of the same fabric as everything — including the person in front of you. That recognition is the deepest form of connection.', steps:'Sit quietly. Instead of thinking about another person, simply rest in the awareness you share — the same sky, the same moment, the same underlying presence. Let the sense of separation soften for 3 minutes.', ring:'#888780' },
+    { init:'AH', badgeBg:'#EDE6F5', dotBg:'#5B2D8E', teacherCl:'#3d1a6a', label:'Almaas · essence in contact', title:'Let your essence meet theirs', body:'Almaas teaches that real intimacy is essence meeting essence — two people dropping into their own depths simultaneously, and recognizing what they find there.', wisdom:'"Presence is not something you achieve. It is what you are when you stop pretending to be something else."', wsrc:'— A.H. Almaas', wexplain:'Real presence in relationship comes from dropping the performance. When you stop pretending, something real appears. And real presence is what invites real presence in return.', steps:'Think of a relationship where you want more depth. Ask: where am I performing rather than being? What would it feel like to simply be — without managing how I\'m perceived? Breathe into that honesty for 3 minutes.', ring:'#5B2D8E' }
+  ],
+
+  // ── WORK ───────────────────────────────────────────────────
+
+  work_overwhelm_high: [
+    { init:'BU', badgeBg:'#F5EFE0', dotBg:'#B8860B', teacherCl:'#6B4A00', label:'Buddha · this moment only', title:'Just this. Not everything.', body:'When overwhelm hits, the mind holds everything at once. The Buddha\'s teaching is ruthlessly simple: return to this breath, this task, this moment. Not everything. Just this.', wisdom:'"Do not dwell in the past, do not dream of the future — concentrate the mind on the present moment."', wsrc:'— The Buddha', wexplain:'Overwhelm lives in time — the weight of everything that was and everything that might be, all arriving at once. The present moment is almost always manageable. It\'s only when we pile the past and future on top that it becomes unbearable.', steps:'Put down every concern that is not happening right now, in this body, in this room. Name one thing — just one — that actually needs your attention in this moment. Breathe with that single thing for 3 minutes.', ring:'#B8860B' },
+    { init:'WD', badgeBg:'#FEF8DC', dotBg:'#F2B825', teacherCl:'#7a5800', label:'Wayne Dyer · intention', title:'Set an intention beneath the chaos', body:'Wayne Dyer taught that overwhelm signals that you\'ve lost contact with your deeper intention. The noise of tasks drowns out the original "why." This practice reorients you to what actually matters.', wisdom:'"Begin to see yourself as a soul with a body rather than a body with a soul."', wsrc:'— Wayne Dyer', wexplain:'You are not a productivity machine temporarily housed in a human body. You are a soul navigating the demands of a workday. Remembering that changes what you\'re willing to carry.', steps:'Close your eyes. Beneath all the tasks, ask: what is this work ultimately in service of? What do I care about that this work connects to? Let one honest answer surface. Breathe into your original purpose for 3 minutes.', ring:'#F2B825' },
+    { init:'NM', badgeBg:'#F0EDE7', dotBg:'#888780', teacherCl:'#444441', label:'Nisargadatta · the witness', title:'You are not the overwhelm', body:'Nisargadatta\'s teaching: you are the awareness in which overwhelm arises. The tasks are real; the suffering is the identification with them. Step back — not to escape, but to see clearly.', wisdom:'"Suffering is due entirely to clinging or resisting — it is a sign of our unwillingness to move on."', wsrc:'— Nisargadatta Maharaj', wexplain:'Overwhelm intensifies when we cling to what should be done or resist what\'s in front of us. When we can simply see what\'s here and meet it — without grasping or pushing — the weight lifts.', steps:'Sit still. Notice the overwhelm without trying to solve it. Ask: who is aware of being overwhelmed? Follow that question inward to the part of you that is watching. Rest in the awareness — not the task list — for 3 minutes.', ring:'#888780' },
+    { init:'JC', badgeBg:'#E3EDF5', dotBg:'#1A5F8F', teacherCl:'#1A5F8F', label:'Jesus · the yoke', title:'Is the burden yours to carry alone?', body:'Jesus said his yoke is easy and his burden light — not because life is without difficulty, but because the weight is shared. Overwhelm often peaks when we forget we don\'t have to carry everything alone.', wisdom:'"Come to me, all you who are weary, and I will give you rest."', wsrc:'— Jesus (Matthew 11:28)', wexplain:'The invitation is specific: bring the weight here. Not after you\'ve handled it, not when things calm down — now, as it is, in the middle of the overwhelm. The rest isn\'t a reward for finishing. It\'s available right now.', steps:'Identify one thing you\'re carrying that feels too heavy. Say inwardly: "I don\'t have to carry this alone right now." Take three slow breaths and with each exhale, imagine releasing a fraction of the weight. Stay for 3 minutes.', ring:'#1A5F8F' }
+  ],
+
+  work_overwhelm_low: [
+    { init:'JC', badgeBg:'#E3EDF5', dotBg:'#1A5F8F', teacherCl:'#1A5F8F', label:'Jesus · lay it down', title:'You don\'t have to carry this alone', body:'Jesus\'s invitation to rest is most powerful in the valley of depletion. When work has taken everything and there\'s nothing left, this is precisely the moment the offer is extended.', wisdom:'"Come to me, all you who are weary, and I will give you rest."', wsrc:'— Jesus (Matthew 11:28)', wexplain:'This is not an invitation to the energetic or capable. It\'s for the weary — specifically. The very state you\'re in right now is the qualifying condition. You don\'t have to earn rest. You just have to receive it.', steps:'Sit or lie completely still. Let the tiredness be here. Say inwardly: "I lay this down. I let myself be held." With each breath, release a little more of what you\'ve been carrying. Stay for 3 minutes.', ring:'#1A5F8F' },
+    { init:'PC', badgeBg:'#E8F0EE', dotBg:'#2A7A5A', teacherCl:'#1A4A3A', label:'Peter Crone · urgency story', title:'Question the story that says you must push through', body:'Peter Crone teaches that our most exhausting stories are often the ones about what we have to do, accomplish, prove. When depleted, the practice is examining the "have to" — and finding out if it\'s true.', wisdom:'"Peace is not the absence of problems. It\'s the absence of the need for things to be different."', wsrc:'— Peter Crone', wexplain:'Peace doesn\'t wait for the workload to shrink. It comes from releasing the war with your current reality. What if you could exhale now?', steps:'Name the most pressing "I have to" in your work right now. Ask honestly: is this actually urgent, or does it just feel urgent? What would happen if it waited an hour? Breathe into the answer for 3 minutes.', ring:'#2A7A5A' },
+    { init:'BU', badgeBg:'#F5EFE0', dotBg:'#B8860B', teacherCl:'#6B4A00', label:'Buddha · self-compassion', title:'You have been carrying a great deal', body:'The Buddha\'s teaching on compassion applies equally to yourself. When depleted from work, self-criticism — "I should be doing more" — is itself a drain. This practice turns compassion inward.', wisdom:'"You yourself, as much as anybody in the entire universe, deserve your love and affection."', wsrc:'— The Buddha', wexplain:'You extend compassion to others as a matter of course. The same standard applies to you — fully, without conditions. The voice that says you should be doing more right now is not wisdom. It\'s exhaustion pretending to be discipline.', steps:'Say inwardly: "I have worked hard. I have cared. I am allowed to rest." Notice any resistance. Let the resistance be there, and say it again. Repeat slowly until something softens. Stay for 3 minutes.', ring:'#B8860B' }
+  ],
+
+  work_stagnation_high: [
+    { init:'WD', badgeBg:'#FEF8DC', dotBg:'#F2B825', teacherCl:'#7a5800', label:'Wayne Dyer · your music', title:'The music in you is still there', body:'Wayne Dyer\'s most urgent teaching: don\'t leave this life with your music unplayed. Stagnation is not a life sentence — it\'s a signal that something essential is waiting to be expressed.', wisdom:'"Don\'t die with your music still in you."', wsrc:'— Wayne Dyer', wexplain:'Every person carries something unique that no one else can offer. When you\'re going through the motions, that something is still there — waiting. Stagnation is often the soul\'s protest against a life that isn\'t yet fully yours.', steps:'Ask honestly: what do I actually want to be doing? Not what\'s practical — what is calling to me? Let the answer arrive without editing. Even a flicker of desire is information. Breathe into that flicker for 3 minutes.', ring:'#F2B825' },
+    { init:'PC', badgeBg:'#E8F0EE', dotBg:'#2A7A5A', teacherCl:'#1A4A3A', label:'Peter Crone · stuck is a story', title:'Stuck is a story, not a fact', body:'Peter Crone teaches that "I\'m stuck" is always a narrative — a conclusion drawn from experience. But the story can be examined, questioned, and rewritten. You are not stuck. You are in a story that feels stuck.', wisdom:'"Most people are living in a story — and mistaking that story for reality."', wsrc:'— Peter Crone', wexplain:'The experience of stagnation feels utterly real — but it\'s not the same as stagnation being permanent or total. A different story is possible, right now, in the same circumstances.', steps:'State the story: "I am stuck because..." Let it fully form. Then ask: is this absolutely true? What would I do today if I knew I wasn\'t stuck? Breathe into that opening for 3 minutes.', ring:'#2A7A5A' },
+    { init:'AH', badgeBg:'#EDE6F5', dotBg:'#5B2D8E', teacherCl:'#3d1a6a', label:'Almaas · essence blocked', title:'What essential quality is blocked here?', body:'Almaas teaches that stagnation in work is often an essential quality — creativity, strength, joy — that has been covered over by habit, fear, or constraint. The practice is identifying what\'s missing and contacting it directly.', wisdom:'"Every contraction is an invitation to expand."', wsrc:'— A.H. Almaas', wexplain:'The tightness of stagnation isn\'t the end state — it\'s the pressure before expansion. Every place you feel contracted is pointing toward what wants to open.', steps:'Feel the stagnation in your body. Ask: if this feeling were the absence of something, what quality might that be? Creativity? Aliveness? Purpose? Breathe into that quality directly for 3 minutes.', ring:'#5B2D8E' },
+    { init:'JC', badgeBg:'#E3EDF5', dotBg:'#1A5F8F', teacherCl:'#1A5F8F', label:'Jesus · the seed', title:'Something is growing underground', body:'Jesus used the image of a seed planted in soil — invisible for a season, then suddenly breaking through. Stagnation in work is often not an ending but a germination. What looks like nothing happening may be exactly when the most important things are forming.', wisdom:'"With God all things are possible."', wsrc:'— Jesus (Matthew 19:26)', wexplain:'The limitation you\'re facing — the stuckness, the flatness — is not the final word. What appears impossible from inside the stuck place often looks completely different from a wider view. Something is always still possible.', steps:'Sit with the stagnation without trying to solve it. Ask: what might be quietly forming right now that I can\'t yet see? Let that question be an opening rather than a demand. Breathe into the possibility for 3 minutes.', ring:'#1A5F8F' }
+  ],
+
+  work_stagnation_low: [
+    { init:'RD', badgeBg:'#EDF4F0', dotBg:'#7D9E89', teacherCl:'#3a5a4a', label:'Ram Dass · loving awareness', title:'Even the flatness can be held', body:'When work feels empty and nothing in you cares, Ram Dass\'s most basic practice becomes essential: loving awareness. Not trying to generate enthusiasm — just witnessing the flatness with kindness.', wisdom:'"I am loving awareness."', wsrc:'— Ram Dass', wexplain:'Loving awareness doesn\'t require you to feel good. It asks you to be present to what is — including flatness — with a quality of gentleness rather than judgment.', steps:'Sit still. Feel the flatness. Say inwardly: "I am loving awareness. I see what\'s here. I\'m not pushing it away." Repeat slowly at the pace of your breath for 3 minutes.', ring:'#7D9E89' },
+    { init:'NM', badgeBg:'#F0EDE7', dotBg:'#888780', teacherCl:'#444441', label:'Nisargadatta · being over doing', title:'You don\'t have to produce anything right now', body:'Nisargadatta\'s most radical teaching: your worth is not tied to your output. You existed before this job and you will exist after it. What you are is not what you produce.', wisdom:'"There is nothing to practice. To know yourself, be yourself."', wsrc:'— Nisargadatta Maharaj', wexplain:'The deepest knowing doesn\'t come through doing more — it comes from simply being. When work feels meaningless, the invitation is to remember that you are already something before and beyond the work.', steps:'Sit. Do nothing. Don\'t try to generate insight or motivation. Simply be present in your body, in this moment, without producing anything. Notice what remains when all the doing stops. Stay for 3 minutes.', ring:'#888780' },
+    { init:'JC', badgeBg:'#E3EDF5', dotBg:'#1A5F8F', teacherCl:'#1A5F8F', label:'Jesus · consider the lilies', title:'Your worth is not your productivity', body:'Jesus pointed to the lilies not as an instruction to stop working, but as a reminder: your value is not contingent on your output. You are more than what you produce.', wisdom:'"Consider the lilies of the field — they neither toil nor spin, yet they flourish."', wsrc:'— Jesus (Matthew 6:28)', wexplain:'In a world that equates worth with productivity, this is a radical claim. You are not valuable because of what you accomplish. You flourish because of what you are.', steps:'Notice any part of you that equates your worth with your output today. Say inwardly: "My value is not contingent on my productivity." Let that be the whole practice for 3 minutes.', ring:'#1A5F8F' }
+  ],
+
+  work_clarity_high: [
+    { init:'AH', badgeBg:'#EDE6F5', dotBg:'#5B2D8E', teacherCl:'#3d1a6a', label:'Almaas · inquiry', title:'Stay with the question — don\'t rush the answer', body:'Almaas teaches that real clarity emerges from sustained, honest inquiry — not from forcing conclusions. When you don\'t know what to do, the practice is not to decide faster, but to inquire more honestly.', wisdom:'"Inquiry is not a technique. It is a way of being."', wsrc:'— A.H. Almaas', wexplain:'Inquiry is a state of genuine openness. When you truly don\'t know, and can stay in that not-knowing with curiosity rather than anxiety, real clarity has room to arrive.', steps:'Hold the question you\'re uncertain about. Instead of answering it, simply sit with it as a companion. Ask: what do I know that I\'m not yet letting myself know? Stay curious for 3 minutes.', ring:'#5B2D8E' },
+    { init:'NM', badgeBg:'#F0EDE7', dotBg:'#888780', teacherCl:'#444441', label:'Nisargadatta · clear seeing', title:'Clarity comes when you stop the noise', body:'Nisargadatta taught that clarity is not produced — it is revealed when the noise stops. The mind\'s constant analysis often obscures what is already clearly visible.', wisdom:'"The more you know yourself, the more clarity there is."', wsrc:'— Nisargadatta Maharaj', wexplain:'Clarity about what to do externally is often preceded by knowing what you are internally. When you know your real priorities, the external decision becomes less difficult.', steps:'Set the decision aside completely. Ask: who am I beneath this problem? What do I actually value? Let the decision wait while you remember yourself for 3 minutes.', ring:'#888780' },
+    { init:'PC', badgeBg:'#E8F0EE', dotBg:'#2A7A5A', teacherCl:'#1A4A3A', label:'Peter Crone · what you already know', title:'You already know more than you\'re admitting', body:'Peter Crone teaches that confusion is often the mind protecting us from an answer we\'re not yet ready to act on. Real clarity is available — if we\'re willing to hear it.', wisdom:'"When you change the conversation you\'re having with yourself, everything changes."', wsrc:'— Peter Crone', wexplain:'The internal conversation running in your mind shapes everything. When you shift from "I can\'t figure this out" to "I wonder what I already know," different answers emerge.', steps:'Ask yourself directly: if I already knew what to do here, what would it be? Don\'t edit the first answer. Then ask: what\'s stopping me from following it? Breathe with both answers for 3 minutes.', ring:'#2A7A5A' },
+    { init:'JC', badgeBg:'#E3EDF5', dotBg:'#1A5F8F', teacherCl:'#1A5F8F', label:'Jesus · ask and listen', title:'The answer is closer than you think', body:'Jesus consistently pointed people inward and upward for their answers rather than to external authority alone. Clarity, in this tradition, is not manufactured — it is received by those who ask honestly and listen patiently.', wisdom:'"Ask and it shall be given. Seek and you shall find."', wsrc:'— Jesus (Matthew 7:7)', wexplain:'The promise isn\'t that answers come instantly or in the form you expect. It\'s that honest seeking is not in vain. When you genuinely don\'t know and you genuinely ask — something responds. Stay open long enough to notice it.', steps:'State your question plainly. Then sit in silence — not analyzing, not planning, just listening. If nothing comes, that\'s okay. The posture of open listening is itself the practice. Stay available for 3 minutes.', ring:'#1A5F8F' }
+  ],
+
+  work_clarity_low: [
+    { init:'WD', badgeBg:'#FEF8DC', dotBg:'#F2B825', teacherCl:'#7a5800', label:'Wayne Dyer · tuning in', title:'Tune back into your original signal', body:'Wayne Dyer believed that clarity is not built through analysis — it is received. Like a radio signal, you tune in by quieting the interference. When too tired to think, this is the practice.', wisdom:'"Abundance is not something we acquire. It is something we tune into."', wsrc:'— Wayne Dyer', wexplain:'Clarity, like abundance, isn\'t manufactured — it\'s accessed. When you stop grasping for the answer and become quiet and receptive, what was obscured by noise becomes audible again.', steps:'Stop thinking about the decision entirely. Sit in quiet. After two minutes, ask the question once — simply, without pressure — and listen for the first quiet response. Trust what arrives. Stay for 3 minutes total.', ring:'#F2B825' },
+    { init:'RD', badgeBg:'#EDF4F0', dotBg:'#7D9E89', teacherCl:'#3a5a4a', label:'Ram Dass · here now', title:'The clarity you need is here, not ahead', body:'Ram Dass taught that we look for answers in the future when the clarity we need is always available in the present moment. What does this moment actually tell you?', wisdom:'"Be here now."', wsrc:'— Ram Dass', wexplain:'Not "figure out the future." Not "analyze the past." The instruction is immediate: be here, now. The present moment contains more information than the anxious mind gives it credit for.', steps:'Come completely into this moment. Feel your body, your breath, the surface beneath you. Ask: not "what should I do eventually?" but "what do I know right now?" Let the answer be small and immediate. Breathe with it for 3 minutes.', ring:'#7D9E89' },
+    { init:'BU', badgeBg:'#F5EFE0', dotBg:'#B8860B', teacherCl:'#6B4A00', label:'Buddha · tending the mind', title:'Clarity begins in the mind you bring', body:'The Buddha taught that the mind is the forerunner of all things. When flat and unclear, the first move is not to think harder, but to tend the mind itself.', wisdom:'"The mind is everything. What you think, you become."', wsrc:'— The Buddha', wexplain:'You cannot think your way to clarity with an exhausted mind. The quality of the instrument determines the quality of the output. Tending your mind — resting it, gentling it — is not a detour from clarity. It is the path.', steps:'Give your analytical mind permission to rest completely. Don\'t try to solve anything. Just breathe and let the mind settle like water going still. Notice after a few minutes: does anything become slightly clearer? Stay for 3 minutes.', ring:'#B8860B' },
+    { init:'JC', badgeBg:'#E3EDF5', dotBg:'#1A5F8F', teacherCl:'#1A5F8F', label:'Jesus · light of the world', title:'You were made to shine', body:'Jesus said "you are the light of the world" — not might be, not could become, but are. When clarity feels absent, this practice returns to the simple truth that something in you already knows its purpose and is already oriented toward it.', wisdom:'"You are the light of the world."', wsrc:'— Jesus (Matthew 5:14)', wexplain:'This isn\'t flattery — it\'s an assignment. Light doesn\'t deliberate about whether to shine. It shines because that\'s what it is. You carry something only you can offer. Returning to that simple fact is sometimes the clearest direction available.', steps:'Sit quietly. Ask: what is the light I carry that only I can offer — in this work, in this moment? Don\'t overthink it. Let the first honest answer be enough. Breathe with it for 3 minutes.', ring:'#1A5F8F' }
+  ],
+
+  work_meaning_high: [
+    { init:'WD', badgeBg:'#FEF8DC', dotBg:'#F2B825', teacherCl:'#7a5800', label:'Wayne Dyer · purpose', title:'What did you come here to offer?', body:'Wayne Dyer believed that each of us carries a specific purpose — a form of service only we can give. When the "why" feels absent, this practice returns to the original question: what am I actually here for?', wisdom:'"Go for it now. The future is promised to no one."', wsrc:'— Wayne Dyer', wexplain:'Purpose doesn\'t wait for the perfect conditions. It waits for the decision to begin. The future is genuinely uncertain — which means the only moment to bring your real gift is now.', steps:'Ask: if I set aside the job title, salary, and expectations — what is the contribution only I can make? What would I do even if no one was watching? Let one honest answer surface and breathe into it for 3 minutes.', ring:'#F2B825' },
+    { init:'RD', badgeBg:'#EDF4F0', dotBg:'#7D9E89', teacherCl:'#3a5a4a', label:'Ram Dass · service as love', title:'Work as an act of love', body:'Ram Dass taught that real service — work done from the heart rather than for recognition — is one of the highest spiritual practices. When meaning feels absent, return to love as the motivation.', wisdom:'"The quieter you become, the more you can hear."', wsrc:'— Ram Dass', wexplain:'When you quiet the noise of ambition, recognition, and comparison, something else becomes audible: the simple human reason you showed up in the first place. Meaning lives in that quieter signal.', steps:'Ask: who does my work actually serve? Not abstractly — concretely. A specific person, a real need, a genuine contribution. Let that person or need be present in the room with you. Work from that for 3 minutes.', ring:'#7D9E89' },
+    { init:'JC', badgeBg:'#E3EDF5', dotBg:'#1A5F8F', teacherCl:'#1A5F8F', label:'Jesus · the kingdom within', title:'Meaning is not found — it\'s brought', body:'Jesus taught that the source of meaning is not somewhere you arrive. It is something you bring with you. The work doesn\'t have to change for it to become meaningful. You do.', wisdom:'"The kingdom of heaven is within you."', wsrc:'— Jesus (Luke 17:21)', wexplain:'Meaning is not out there in better circumstances or more recognition. It is available right now, from the inside. The question is not "is this meaningful?" but "am I bringing meaning to this?"', steps:'Ask: if I brought my full presence, real care, and deepest values to this work today — what would change? The work stays the same. You don\'t. Breathe into who you want to be in your work for 3 minutes.', ring:'#1A5F8F' }
+  ],
+
+  work_meaning_low: [
+    { init:'NM', badgeBg:'#F0EDE7', dotBg:'#888780', teacherCl:'#444441', label:'Nisargadatta · being before role', title:'You are something before you are an employee', body:'Nisargadatta pointed to the pure fact of being — the "I am" — that exists before all roles and functions. When meaning feels hollow, returning to this fundamental aliveness is the ground beneath the ground.', wisdom:'"The sense \'I am\' is always with you."', wsrc:'— Nisargadatta Maharaj', wexplain:'Before you are a professional, a role, a function — you are. That bare fact of existing, of being aware, is the foundation on which everything else rests. When everything else feels empty, return to that. It is always full.', steps:'Set aside the work entirely. Sit with the simple fact that you exist — that you are aware, that something in you is present right now. Rest in the "I am" before anything is added to it. Stay for 3 minutes.', ring:'#888780' },
+    { init:'PC', badgeBg:'#E8F0EE', dotBg:'#2A7A5A', teacherCl:'#1A4A3A', label:'Peter Crone · awareness begins', title:'Awareness is already the change', body:'Peter Crone teaches that simply becoming aware of a pattern is itself transformative. The recognition that something isn\'t working is the beginning, not an admission of failure.', wisdom:'"Awareness is the beginning of change."', wsrc:'— Peter Crone', wexplain:'You don\'t need to have solved this yet. The fact that you\'re asking "does this work mean something?" means something is already shifting. Awareness doesn\'t wait for action. It is the first action.', steps:'Acknowledge honestly: something about my relationship to work needs to change. Don\'t try to figure out what — just let the acknowledgment be clear and complete. Breathe with that honest recognition for 3 minutes.', ring:'#2A7A5A' },
+    { init:'AH', badgeBg:'#EDE6F5', dotBg:'#5B2D8E', teacherCl:'#3d1a6a', label:'Almaas · essence below role', title:'What of you remains when the job is gone?', body:'Almaas teaches that beneath every role we play is the essence — the real person. When meaning runs dry, the practice is finding what of you exists independent of the work entirely.', wisdom:'"Essence is what remains when the personality is not running the show."', wsrc:'— A.H. Almaas', wexplain:'Strip away the job title, the deadlines, the performance — what remains? Your curiosity, your care, your way of seeing things. That is your essence, and it doesn\'t belong to any employer.', steps:'Ask: who am I when I\'m not working? What do I notice, care about, and love when there\'s no agenda? Let that person be present right now. Breathe with your essence — not your role — for 3 minutes.', ring:'#5B2D8E' },
+    { init:'JC', badgeBg:'#E3EDF5', dotBg:'#1A5F8F', teacherCl:'#1A5F8F', label:'Jesus · the kingdom within', title:'Meaning is already inside you', body:'Jesus said the kingdom of heaven is within — not somewhere you arrive, but something you already carry. When work feels hollow, this practice returns to the inner source of meaning that no job title, project, or outcome can give or take away.', wisdom:'"The kingdom of heaven is within you."', wsrc:'— Jesus (Luke 17:21)', wexplain:'Meaning is not out there in better circumstances or more recognition. It is available right now, from the inside. The question is not "is this meaningful?" but "am I bringing meaning to this?"', steps:'Set aside everything external — the work, the outcomes, the performance. Ask: what do I carry inside me that is already meaningful, regardless of what I produce today? Let one true answer surface. Breathe with it for 3 minutes.', ring:'#1A5F8F' }
+  ]
+
+};
+
+// ─── Pick next practice from pool, never repeating consecutively ──
+function getNextPractice(key) {
+  const rawPool = practicePools[key] || practicePools.mental_high;
+
+  // Try to find practices by selected teacher in this pool
+  let pool = rawPool.filter(p => selectedInits.has(p.init));
+
+  // If none in this pool, search ALL pools for this teacher
+  if (pool.length === 0) {
+    pool = Object.values(practicePools)
+      .flat()
+      .filter(p => selectedInits.has(p.init));
+  }
+
+  // Ultimate fallback: use the raw pool
+  if (pool.length === 0) pool = rawPool;
+
+  const last = lastPracticeIdx[key] !== undefined ? lastPracticeIdx[key] : -1;
+  let available = pool.map((_, i) => i).filter(i => i !== last);
+  // If filtering left only one practice (which was just shown), allow the repeat
+  if (available.length === 0) available = pool.map((_, i) => i);
+  const picked = available[Math.floor(Math.random() * available.length)];
+  lastPracticeIdx[key] = picked;
+  return pool[picked];
+}
+
+// ─── Quote library — 10 quotes per teacher, 8 teachers ────
+const quotes = [
+  // Ram Dass (10)
+  { text:'"The quieter you become, the more you can hear."', src:'— Ram Dass' },
+  { text:'"We are all just walking each other home."', src:'— Ram Dass' },
+  { text:'"The most important aspect of love is not in giving or receiving — it\'s in the being."', src:'— Ram Dass' },
+  { text:'"Treat everyone you meet as if they are God in disguise."', src:'— Ram Dass' },
+  { text:'"Be here now."', src:'— Ram Dass' },
+  { text:'"I am loving awareness."', src:'— Ram Dass' },
+  { text:'"The spiritual journey is not about going somewhere. It\'s about arriving here."', src:'— Ram Dass' },
+  { text:'"Emotions are like waves. Watch them disappear in the vast calm ocean."', src:'— Ram Dass' },
+  { text:'"You are loved just for being who you are, just for existing."', src:'— Ram Dass' },
+  { text:'"The thinking mind is what is busy. You have to keep coming back to the now."', src:'— Ram Dass' },
+
+  // Wayne Dyer (10)
+  { text:'"Don\'t die with your music still in you."', src:'— Wayne Dyer' },
+  { text:'"You cannot always control what goes on outside. But you can always control what goes on inside."', src:'— Wayne Dyer' },
+  { text:'"When you change the way you look at things, the things you look at change."', src:'— Wayne Dyer' },
+  { text:'"Abundance is not something we acquire. It is something we tune into."', src:'— Wayne Dyer' },
+  { text:'"Begin to see yourself as a soul with a body rather than a body with a soul."', src:'— Wayne Dyer' },
+  { text:'"You don\'t attract what you want. You attract what you are."', src:'— Wayne Dyer' },
+  { text:'"If you change the way you look at things, the things you look at change."', src:'— Wayne Dyer' },
+  { text:'"Your life is what your thoughts make it."', src:'— Wayne Dyer' },
+  { text:'"The highest form of ignorance is when you reject something you don\'t know anything about."', src:'— Wayne Dyer' },
+  { text:'"Go for it now. The future is promised to no one."', src:'— Wayne Dyer' },
+
+  // A.H. Almaas (10)
+  { text:'"The soul is always whole. What feels like a hole is a doorway."', src:'— A.H. Almaas' },
+  { text:'"The more you know yourself, the more clarity there is."', src:'— A.H. Almaas' },
+  { text:'"Essence is what remains when the personality is not running the show."', src:'— A.H. Almaas' },
+  { text:'"Real strength is not the absence of vulnerability — it is the capacity to be present with it."', src:'— A.H. Almaas' },
+  { text:'"Inquiry is not a technique. It is a way of being."', src:'— A.H. Almaas' },
+  { text:'"Presence is not something you achieve. It is what you are when you stop pretending to be something else."', src:'— A.H. Almaas' },
+  { text:'"To truly know yourself is to know the divine."', src:'— A.H. Almaas' },
+  { text:'"The heart knows what the mind cannot yet accept."', src:'— A.H. Almaas' },
+  { text:'"What you are looking for is what is looking."', src:'— A.H. Almaas' },
+  { text:'"Every contraction is an invitation to expand."', src:'— A.H. Almaas' },
+
+  // Marianne Williamson (10)
+  { text:'"Love is what we were born with. Fear is what we learned here."', src:'— Marianne Williamson' },
+  { text:'"Our deepest fear is not that we are inadequate. Our deepest fear is that we are powerful beyond measure."', src:'— Marianne Williamson' },
+  { text:'"Every ending is a new beginning. Through the grace of God we can always start again."', src:'— Marianne Williamson' },
+  { text:'"The key to abundance is meeting limited circumstances with unlimited thoughts."', src:'— Marianne Williamson' },
+  { text:'"In every moment, we make a choice between love and fear."', src:'— Marianne Williamson' },
+  { text:'"You must learn a new way to think before you can master a new way to be."', src:'— Marianne Williamson' },
+  { text:'"Joy is what happens to us when we allow ourselves to recognize how good things really are."', src:'— Marianne Williamson' },
+  { text:'"The practice of forgiveness is our most important contribution to the healing of the world."', src:'— Marianne Williamson' },
+  { text:'"Miracles occur naturally as expressions of love."', src:'— Marianne Williamson' },
+  { text:'"We are not held back by the love we didn\'t receive in the past, but by the love we\'re not extending in the present."', src:'— Marianne Williamson' },
+
+  // Nisargadatta Maharaj (10)
+  { text:'"There is nothing to practice. To know yourself, be yourself."', src:'— Nisargadatta Maharaj' },
+  { text:'"The sense \'I am\' is always with you. Only you have attributed things to it which are not there."', src:'— Nisargadatta Maharaj' },
+  { text:'"You are not what you think you are. You are the awareness behind the thought."', src:'— Nisargadatta Maharaj' },
+  { text:'"Wisdom is knowing I am nothing. Love is knowing I am everything. Between the two, my life moves."', src:'— Nisargadatta Maharaj' },
+  { text:'"The real does not die. The unreal never lived."', src:'— Nisargadatta Maharaj' },
+  { text:'"When you know that you are nothing, you are everything."', src:'— Nisargadatta Maharaj' },
+  { text:'"The mind creates the abyss, the heart crosses it."', src:'— Nisargadatta Maharaj' },
+  { text:'"To see the universe as it is, you must step beyond the net."', src:'— Nisargadatta Maharaj' },
+  { text:'"Suffering is due entirely to clinging or resisting — it is a sign of our unwillingness to move on."', src:'— Nisargadatta Maharaj' },
+  { text:'"Your beingness is itself the awareness of all that is."', src:'— Nisargadatta Maharaj' },
+
+  // Jesus (10)
+  { text:'"Come to me, all you who are weary, and I will give you rest."', src:'— Jesus (Matthew 11:28)' },
+  { text:'"Blessed are those who mourn, for they will be comforted."', src:'— Jesus (Matthew 5:4)' },
+  { text:'"Consider the lilies of the field — they neither toil nor spin, yet they flourish."', src:'— Jesus (Matthew 6:28)' },
+  { text:'"The kingdom of heaven is within you."', src:'— Jesus (Luke 17:21)' },
+  { text:'"Ask and it shall be given. Seek and you shall find."', src:'— Jesus (Matthew 7:7)' },
+  { text:'"Love one another as I have loved you."', src:'— Jesus (John 15:12)' },
+  { text:'"Do not let your hearts be troubled and do not be afraid."', src:'— Jesus (John 14:27)' },
+  { text:'"Blessed are the pure in heart, for they will see God."', src:'— Jesus (Matthew 5:8)' },
+  { text:'"Peace I leave with you; my peace I give you."', src:'— Jesus (John 14:27)' },
+  { text:'"With God all things are possible."', src:'— Jesus (Matthew 19:26)' },
+
+  // Buddha (10)
+  { text:'"Holding on to anger is like grasping a hot coal with the intent of throwing it at someone else — you are the one who gets burned."', src:'— The Buddha' },
+  { text:'"The mind is everything. What you think, you become."', src:'— The Buddha' },
+  { text:'"Peace comes from within. Do not seek it without."', src:'— The Buddha' },
+  { text:'"You yourself, as much as anybody in the entire universe, deserve your love and affection."', src:'— The Buddha' },
+  { text:'"In the end, only three things matter: how much you loved, how gently you lived, and how gracefully you let go of things not meant for you."', src:'— The Buddha' },
+  { text:'"The root of suffering is attachment."', src:'— The Buddha' },
+  { text:'"Three things cannot be long hidden: the sun, the moon, and the truth."', src:'— The Buddha' },
+  { text:'"If you find no one to support you on the spiritual path, walk alone."', src:'— The Buddha' },
+  { text:'"Do not dwell in the past, do not dream of the future — concentrate the mind on the present moment."', src:'— The Buddha' },
+  { text:'"What we think, we become."', src:'— The Buddha' },
+
+  // Peter Crone (10)
+  { text:'"You can\'t change the past, but you can change the story you tell about it."', src:'— Peter Crone' },
+  { text:'"The quality of your life is determined by the quality of your thinking."', src:'— Peter Crone' },
+  { text:'"Suffering is always the effect of wrong thought in some direction."', src:'— Peter Crone' },
+  { text:'"Your limitations are not in your circumstances — they\'re in your conditioning."', src:'— Peter Crone' },
+  { text:'"Peace is not the absence of problems. It\'s the absence of the need for things to be different."', src:'— Peter Crone' },
+  { text:'"The people who trigger us most are our greatest teachers."', src:'— Peter Crone' },
+  { text:'"When you change the conversation you\'re having with yourself, everything changes."', src:'— Peter Crone' },
+  { text:'"Forgiveness is not condoning what happened — it\'s freeing yourself from being defined by it."', src:'— Peter Crone' },
+  { text:'"Most people are living in a story — and mistaking that story for reality."', src:'— Peter Crone' },
+  { text:'"Awareness is the beginning of change."', src:'— Peter Crone' }
+];
+
+// ─── Quote rotation logic ─────────────────────────────────
+// Daily seed: picks a quote based on today's date — same all day
+function getDailyQuoteIndex() {
+  const now = new Date();
+  const seed = now.getFullYear() * 10000 + (now.getMonth() + 1) * 100 + now.getDate();
+  return seed % quotes.length;
+}
+
+// Current quote state — starts as daily quote, updates after practice
+let currentQuoteIndex = getDailyQuoteIndex();
+let lastPracticeQuote = null; // stores the wisdom from the last completed practice
+
+// ─── Persistent data layer ───────────────────────────────
+// sessions: [{d:'YYYY-MM-DD', t:'RD', title, key, feeling, quote, src, min}]
+function loadData(key, fallback) {
+  try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; }
+  catch(e) { return fallback; }
+}
+function saveData(key, val) {
+  try { localStorage.setItem(key, JSON.stringify(val)); } catch(e) {}
+}
+
+let sessions = loadData('sessions', []);
+let savedPractices = loadData('savedPractices', []);
+let sessionLength = loadData('sessionLength', 3);
+let todaysIntention = loadData('todaysIntention', null); // {text, src, date}
+
+function todayStr() {
+  const n = new Date();
+  return n.getFullYear() + '-' + String(n.getMonth()+1).padStart(2,'0') + '-' + String(n.getDate()).padStart(2,'0');
+}
+
+function daysBetween(dateStr1, dateStr2) {
+  return Math.round((new Date(dateStr2) - new Date(dateStr1)) / 86400000);
+}
+
+// ─── Home screen rendering ───────────────────────────────
+function setHomeQuote(text, src) {
+  const qEl = document.querySelector('#home .serif-italic');
+  const sEl = document.querySelector('#home .serif-italic + div');
+  if (qEl) qEl.textContent = text;
+  if (sEl) sEl.textContent = src;
+}
+
+function refreshHomeQuote() {
+  // Today's intention: practiced quote pinned until tomorrow
+  if (todaysIntention && todaysIntention.date === todayStr()) {
+    document.getElementById('home-quote-lbl').textContent = "Today's intention";
+    setHomeQuote(todaysIntention.text, todaysIntention.src);
+    return;
+  }
+  document.getElementById('home-quote-lbl').textContent = "Today's wisdom";
+  const filtered = getFilteredQuotes();
+  const now = new Date();
+  const seed = now.getFullYear() * 10000 + (now.getMonth() + 1) * 100 + now.getDate();
+  const q = filtered[seed % filtered.length];
+  setHomeQuote(q.text, q.src);
+}
+
+function renderHomeGreeting() {
+  const h = new Date().getHours();
+  let greeting = 'Welcome back.';
+  if (h < 5)       greeting = 'Still awake?';
+  else if (h < 12) greeting = 'Good morning.';
+  else if (h < 17) greeting = 'Good afternoon.';
+  else if (h < 21) greeting = 'Good evening.';
+  else             greeting = 'Winding down?';
+  document.getElementById('home-greeting').textContent = greeting;
+
+  // Gentle re-entry message
+  const reentry = document.getElementById('home-reentry');
+  reentry.textContent = '';
+  if (sessions.length > 0) {
+    const lastDate = sessions[sessions.length - 1].d;
+    const gap = daysBetween(lastDate, todayStr());
+    if (gap >= 3) {
+      reentry.textContent = "It's been a little while. The door was always open.";
+    }
+  }
+}
+
+function renderReturns() {
+  const count = sessions.length;
+  document.getElementById('returns-count').textContent = count;
+  const msg = document.getElementById('returns-msg');
+  if (count === 0) {
+    msg.textContent = 'Every practice is a return to yourself. This number only ever grows.';
+  } else if (count === 1) {
+    msg.textContent = 'Your first return. It counts — they all do.';
+  } else {
+    // Evidence loop teaser on home
+    const recent = sessions.slice(-14);
+    const positive = recent.filter(s => s.feeling && s.feeling !== 'Still heavy').length;
+    const withFeeling = recent.filter(s => s.feeling).length;
+    if (withFeeling >= 3 && positive / withFeeling >= 0.6) {
+      msg.textContent = 'After ' + positive + ' of your last ' + withFeeling + ' practices, you said you felt better. Your own evidence.';
+    } else {
+      msg.textContent = count + ' returns to yourself. This number only ever grows — no streaks to break.';
+    }
+  }
+}
+
+function renderRecentPractices() {
+  const container = document.getElementById('recent-practices');
+  const lbl = document.getElementById('recent-lbl');
+  const recent = sessions.slice(-4).reverse();
+  if (recent.length === 0) { container.style.display = 'none'; lbl.style.display = 'none'; return; }
+  container.style.display = 'flex'; lbl.style.display = 'block';
+
+  const teacherStyle = {
+    RD: ['#EDF4F0','#3a5a4a','Ram Dass'], MW: ['#F9E8E6','#7a1a10','Williamson'],
+    AH: ['#EDE6F5','#3d1a6a','Almaas'],   WD: ['#FEF8DC','#7a5800','Dyer'],
+    JC: ['#E3EDF5','#1A5F8F','Jesus'],    NM: ['#F0EDE7','#444441','Nisargadatta'],
+    BU: ['#F5EFE0','#6B4A00','Buddha'],   PC: ['#E8F0EE','#1A4A3A','Peter Crone']
+  };
+  container.innerHTML = recent.map(s => {
+    const st = teacherStyle[s.t] || ['#F0EDE7','#444441',s.t];
+    const gap = daysBetween(s.d, todayStr());
+    const when = gap === 0 ? 'Today' : gap === 1 ? 'Yesterday' : gap < 7 ? gap + ' days ago' : 'Earlier';
+    return '<div class="r-chip" style="background:' + st[0] + ';">' +
+      '<div class="rc-lbl" style="color:' + st[1] + ';">' + st[2] + '</div>' +
+      '<div class="rc-title" style="color:' + st[1] + ';">' + (s.title || 'Practice') + '</div>' +
+      '<div class="rc-day" style="color:' + st[1] + ';opacity:.7;">' + when + '</div></div>';
+  }).join('');
+}
+
+function renderHome() {
+  renderHomeGreeting();
+  refreshHomeQuote();
+  renderReturns();
+  renderRecentPractices();
+}
+
+// ─── Share quote card ────────────────────────────────────
+function shareQuoteCard() {
+  const qEl = document.querySelector('#home .serif-italic');
+  const sEl = document.querySelector('#home .serif-italic + div');
+  const text = qEl ? qEl.textContent : '';
+  const src = sEl ? sEl.textContent : '';
+
+  const canvas = document.createElement('canvas');
+  canvas.width = 1080; canvas.height = 1080;
+  const ctx = canvas.getContext('2d');
+
+  // Background
+  ctx.fillStyle = '#FDF9F5';
+  ctx.fillRect(0, 0, 1080, 1080);
+
+  // Sage circle motif
+  ctx.beginPath(); ctx.arc(540, 260, 110, 0, Math.PI * 2);
+  ctx.fillStyle = '#EDF4F0'; ctx.fill();
+  ctx.beginPath();
+  ctx.moveTo(540, 175);
+  ctx.quadraticCurveTo(610, 260, 540, 345);
+  ctx.quadraticCurveTo(470, 260, 540, 175);
+  ctx.strokeStyle = '#7D9E89'; ctx.lineWidth = 4; ctx.stroke();
+  ctx.beginPath(); ctx.arc(540, 260, 8, 0, Math.PI * 2);
+  ctx.fillStyle = '#7D9E89'; ctx.fill();
+
+  // Quote text — wrapped
+  ctx.fillStyle = '#2C2C2A';
+  ctx.font = 'italic 52px Georgia, serif';
+  ctx.textAlign = 'center';
+  const words = text.split(' ');
+  const lines = []; let line = '';
+  words.forEach(w => {
+    const test = line + (line ? ' ' : '') + w;
+    if (ctx.measureText(test).width > 820 && line) { lines.push(line); line = w; }
+    else line = test;
+  });
+  if (line) lines.push(line);
+  const startY = 560 - (lines.length - 1) * 38;
+  lines.forEach((l, i) => ctx.fillText(l, 540, startY + i * 76));
+
+  // Attribution
+  ctx.font = '34px Georgia, serif';
+  ctx.fillStyle = '#5C5B56';
+  ctx.fillText(src, 540, startY + lines.length * 76 + 40);
+
+  // App name
+  ctx.font = '600 26px sans-serif';
+  ctx.fillStyle = '#7D9E89';
+  ctx.letterSpacing = '6px';
+  ctx.fillText('S T I L L W A R D', 540, 980);
+
+  // Download
+  const link = document.createElement('a');
+  link.download = 'stillward-quote.png';
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+}
+
+// ─── Navigation ──────────────────────────────────────────
+function goScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById(id);
+  if (el) {
+    el.classList.add('active');
+    el.scrollTop = 0;
+    const inner = el.querySelector('.scroll');
+    if (inner) inner.scrollTop = 0;
+  }
+  // Reset window scroll for mobile Safari
+  window.scrollTo(0, 0);
+  document.documentElement.scrollTop = 0;
+  document.body.scrollTop = 0;
+  if (id !== 'p4' && timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+  if (id === 'home') renderHome();
+  if (id === 'you') renderYouScreen();
+  if (id === 'patterns') switchTab('map');
+}
+
+// ─── You screen ──────────────────────────────────────────
+function updateYouName(val) {
+  userName = val.trim() || 'Friend';
+  saveData('userName', userName);
+  document.getElementById('you-name').textContent = userName;
+  document.getElementById('you-avatar').textContent = userName.charAt(0).toUpperCase();
+}
+
+function toggleTeacherFromYou(el) {
+  const init = el.getAttribute('data-init');
+  if (selectedInits.has(init)) {
+    // Don't allow removing the last teacher
+    if (selectedInits.size === 1) return;
+    selectedInits.delete(init);
+  } else {
+    selectedInits.add(init);
+  }
+  saveData('selectedInits', [...selectedInits]);
+  renderYouTeacherChips();
+}
+
+function renderYouTeacherChips() {
+  document.querySelectorAll('#you-teacher-chips .t-chip').forEach(chip => {
+    const init = chip.getAttribute('data-init');
+    const on = selectedInits.has(init);
+    chip.classList.toggle('on', on);
+    chip.style.opacity = on ? '1' : '0.35';
+  });
+}
+
+function renderSavedPractices() {
+  const container = document.getElementById('saved-practices');
+  if (savedPractices.length === 0) {
+    container.innerHTML = '<div style="font-size:13px;color:var(--stone);">Practices you keep will live here.</div>';
+    return;
+  }
+  container.innerHTML = savedPractices.map((p, i) =>
+    '<div style="display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:0.5px solid var(--border);">' +
+      '<div style="flex:1;">' +
+        '<div style="font-size:13px;font-weight:500;color:var(--ink);">' + p.title + '</div>' +
+        '<div style="font-size:12px;color:var(--stone);margin-top:2px;">' + p.label + '</div>' +
+      '</div>' +
+      '<div onclick="removeSavedPractice(' + i + ')" style="font-size:16px;color:var(--stone);cursor:pointer;opacity:.5;padding:0 4px;">×</div>' +
+    '</div>'
+  ).join('');
+}
+
+function removeSavedPractice(i) {
+  savedPractices.splice(i, 1);
+  saveData('savedPractices', savedPractices);
+  renderSavedPractices();
+}
+
+function renderYouStats() {
+  const count = sessions.length;
+  const mins = sessions.reduce((sum, s) => sum + (s.min || 3), 0);
+  const teachers = new Set(sessions.map(s => s.t)).size;
+  // Days practiced (unique dates)
+  const days = new Set(sessions.map(s => s.d)).size;
+  const chips = document.querySelectorAll('#you .stat-chip');
+  if (chips.length >= 4) {
+    chips[0].querySelector('.stat-num').textContent = count;
+    chips[0].querySelector('.stat-lbl').textContent = 'Returns';
+    chips[1].querySelector('.stat-num').textContent = mins;
+    chips[1].querySelector('.stat-lbl').textContent = 'Minutes';
+    chips[2].querySelector('.stat-num').textContent = days;
+    chips[2].querySelector('.stat-lbl').textContent = 'Days';
+    chips[3].querySelector('.stat-num').textContent = teachers;
+    chips[3].querySelector('.stat-lbl').textContent = 'Teachers';
+  }
+}
+
+function renderYouScreen() {
+  renderYouTeacherChips();
+  renderSavedPractices();
+  renderYouStats();
+  // Restore session length pill
+  document.querySelectorAll('#length-pills .pill').forEach(p => {
+    p.classList.toggle('active', parseInt(p.getAttribute('data-min')) === sessionLength);
+  });
+}
+
+function setSessionLength(el) {
+  sessionLength = parseInt(el.getAttribute('data-min'));
+  saveData('sessionLength', sessionLength);
+  el.parentElement.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ─── Teacher selection & filtering ───────────────────────
+
+const teacherInitMap = {
+  'Ram Dass':            'RD',
+  'Marianne Williamson': 'MW',
+  'Almaas':             'AH',
+  'Wayne Dyer':         'WD',
+  'Jesus':              'JC',
+  'Nisargadatta':       'NM',
+  'Buddha':             'BU',
+  'Peter Crone':        'PC'
+};
+
+// Start with all teachers selected
+let selectedInits = new Set(Object.values(teacherInitMap));
+
+function selectTeacher(el) {
+  const name = el.textContent.trim();
+
+  if (name === 'All of them') {
+    // Select all, go forward
+    selectedInits = new Set(Object.values(teacherInitMap));
+  } else {
+    // Single teacher selected — only show their content
+    const init = teacherInitMap[name];
+    if (init) selectedInits = new Set([init]);
+  }
+
+  // Persist to localStorage
+  localStorage.setItem('selectedInits', JSON.stringify([...selectedInits]));
+
+  // Clear any last practice quote so home shows a teacher-filtered daily quote
+  lastPracticeQuote = null;
+
+  goScreen('home');
+}
+
+function getFilteredQuotes() {
+  // Map each init code to the exact string that appears at the start of quote src fields
+  const initToSrcPrefix = {
+    'RD': '— Ram Dass',
+    'MW': '— Marianne Williamson',
+    'AH': '— A.H. Almaas',
+    'WD': '— Wayne Dyer',
+    'JC': '— Jesus',
+    'NM': '— Nisargadatta',
+    'BU': '— The Buddha',
+    'PC': '— Peter Crone'
+  };
+  const filtered = quotes.filter(q => {
+    for (const init of selectedInits) {
+      const prefix = initToSrcPrefix[init];
+      if (prefix && q.src.startsWith(prefix)) return true;
+    }
+    return false;
+  });
+  return filtered.length > 0 ? filtered : quotes;
+}
+
+function getFilteredQuoteIndex() {
+  const day = Math.floor(Date.now() / 86400000);
+  const filtered = getFilteredQuotes();
+  return day % filtered.length;
+}
+
+function getFilteredPracticePool(pool) {
+  if (!pool) return [];
+  const filtered = pool.filter(p => selectedInits.has(p.init));
+  return filtered.length > 0 ? filtered : pool;
+}
+
+// ─── Practice flow ───────────────────────────────────────
+// ─── Domain/state definitions ─────────────────────────────
+const domainStates = {
+  personal: {
+    heading: "What's pulling at you right now?",
+    choices: [
+      { key:'mental',       title:'Racing mind',       desc:'Thoughts looping, can\'t focus, can\'t land' },
+      { key:'physical',     title:'Body tension',      desc:'Tight, breathless, restless, wired' },
+      { key:'emotional',    title:'Emotional weight',  desc:'Anxious, irritated, sad, or numb' },
+      { key:'existential',  title:'Lost or overwhelmed', desc:'Disconnected from meaning or direction' }
+    ]
+  },
+  relationships: {
+    heading: "What's alive in your relationships?",
+    choices: [
+      { key:'conflict',     title:'Conflict or tension',  desc:'Friction, resentment, or unresolved hurt' },
+      { key:'distance',     title:'Distance or disconnect', desc:'Feeling apart, unseen, or disconnected' },
+      { key:'longing',      title:'Longing or loss',      desc:'Missing someone, grieving a connection' },
+      { key:'connection',   title:'Opening to love',      desc:'Wanting to give or receive more fully' }
+    ]
+  },
+  work: {
+    heading: "What's present in your work life?",
+    choices: [
+      { key:'overwhelm',    title:'Overwhelm',            desc:'Too much, too fast, can\'t find the ground' },
+      { key:'stagnation',   title:'Stagnation',           desc:'Stuck, flat, going through the motions' },
+      { key:'clarity',      title:'Seeking clarity',      desc:'Unsure what to do or which way to move' },
+      { key:'meaning',      title:'Questioning meaning',  desc:'Why does this matter? What am I here for?' }
+    ]
+  }
+};
+
+function pickDomain(val) {
+  domain = val;
+  const ds = domainStates[val];
+  document.getElementById('p1-heading').textContent = ds.heading;
+  const container = document.getElementById('p1-choices');
+  container.innerHTML = ds.choices.map(c =>
+    `<div class="choice" onclick="pickFlavor('${c.key}')">
+      <div><div class="choice-title">${c.title}</div><div class="choice-desc">${c.desc}</div></div>
+      <div class="arrow">›</div>
+    </div>`
+  ).join('');
+  goScreen('p1');
+}
+
+function pickFlavor(val) {
+  flavor = val;
+  goScreen('p2');
+}
+
+let currentPractice = null;
+let currentKey = null;
+
+function pickEnergy(val) {
+  const key = (domain === 'personal' ? flavor : domain + '_' + flavor) + '_' + val;
+  const p = getNextPractice(key);
+  currentPractice = p;
+  currentKey = key;
+  // Apply to practice card
+  document.getElementById('p3-badge').style.background = p.badgeBg;
+  document.getElementById('p3-dot').style.background = p.dotBg;
+  document.getElementById('p3-dot').textContent = p.init;
+  document.getElementById('p3-teacher').style.color = p.teacherCl;
+  document.getElementById('p3-teacher').textContent = p.label;
+  document.getElementById('p3-title').textContent = p.title;
+  document.getElementById('p3-body').textContent = p.body;
+  document.getElementById('p3-wisdom').textContent = p.wisdom;
+  document.getElementById('p3-wsrc').textContent = p.wsrc;
+  document.getElementById('p3-explain').textContent = p.wexplain;
+  document.getElementById('p3-steps').textContent = p.steps;
+  // Apply to timer
+  document.getElementById('timer-ring').style.stroke = p.ring;
+  document.getElementById('timer-lbl').textContent = p.label;
+  document.getElementById('timer-reminder').textContent = p.steps;
+  // Apply to done
+  document.getElementById('done-quote').textContent = p.wisdom;
+  document.getElementById('done-src').textContent = p.wsrc;
+  // Store this practice's wisdom — will show on home after session
+  lastPracticeQuote = { text: p.wisdom, src: p.wsrc };
+  goScreen('p3');
+}
+
+// ─── Timer ───────────────────────────────────────────────
+let breathInterval = null;
+
+function startTimer() {
+  goScreen('p4');
+  const totalSec = sessionLength * 60;
+  secondsLeft = totalSec; paused = false;
+  document.getElementById('pause-btn').textContent = '⏸';
+  document.getElementById('timer-msg').textContent = 'Follow the practice below';
+  updateTimerDisplay();
+  if (timerInterval) clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    if (!paused) {
+      secondsLeft--;
+      updateTimerDisplay();
+      if (secondsLeft === 60) {
+        document.getElementById('timer-msg').textContent = 'Last minute — stay with it';
+      }
+      if (secondsLeft <= 0) { clearInterval(timerInterval); completeSession(); }
+    }
+  }, 1000);
+  // Breath label sync — matches the 10s CSS cycle (0-4s in, 4-5s hold, 5-9.5s out)
+  if (breathInterval) clearInterval(breathInterval);
+  let breathT = 0;
+  const breathLbl = document.getElementById('breath-lbl');
+  breathLbl.textContent = 'Breathe in';
+  breathInterval = setInterval(() => {
+    if (paused) return;
+    breathT = (breathT + 0.5) % 10;
+    if (breathT < 4)        breathLbl.textContent = 'Breathe in';
+    else if (breathT < 5)   breathLbl.textContent = 'Hold';
+    else                    breathLbl.textContent = 'Breathe out';
+  }, 500);
+}
+
+function updateTimerDisplay() {
+  const totalSec = sessionLength * 60;
+  const m = Math.floor(secondsLeft / 60), s = secondsLeft % 60;
+  document.getElementById('timer-display').textContent = m + ':' + (s < 10 ? '0' : '') + s;
+  const pct = 1 - secondsLeft / totalSec;
+  document.getElementById('timer-ring').setAttribute('stroke-dashoffset', (pct * 477.5).toFixed(1));
+}
+
+function togglePause() {
+  paused = !paused;
+  document.getElementById('pause-btn').textContent = paused ? '▶' : '⏸';
+}
+
+// ─── Session recording ───────────────────────────────────
+function completeSession() {
+  if (breathInterval) { clearInterval(breathInterval); breathInterval = null; }
+  // Record the session
+  if (currentPractice) {
+    sessions.push({
+      d: todayStr(),
+      t: currentPractice.init,
+      title: currentPractice.title,
+      key: currentKey,
+      feeling: null,
+      quote: currentPractice.wisdom,
+      src: currentPractice.wsrc,
+      min: sessionLength
+    });
+    saveData('sessions', sessions);
+    // Pin today's intention
+    todaysIntention = { text: currentPractice.wisdom, src: currentPractice.wsrc, date: todayStr() };
+    saveData('todaysIntention', todaysIntention);
+  }
+  // Reset keep button state
+  const kb = document.getElementById('keep-practice-btn');
+  kb.style.background = 'var(--mist)';
+  kb.style.color = 'var(--ink)';
+  kb.innerHTML = kb.innerHTML.replace('Kept ✓', 'Keep this practice');
+  goScreen('p5');
+}
+
+// ─── Done screen ─────────────────────────────────────────
+function selectFeeling(el) {
+  document.querySelectorAll('.feel-chip').forEach(c => c.classList.remove('sel'));
+  el.classList.add('sel');
+  // Save feeling to the most recent session
+  if (sessions.length > 0) {
+    sessions[sessions.length - 1].feeling = el.textContent.trim();
+    saveData('sessions', sessions);
+  }
+}
+
+function keepPractice(el) {
+  if (!currentPractice) return;
+  // Avoid duplicates
+  const exists = savedPractices.some(p => p.title === currentPractice.title);
+  if (!exists) {
+    savedPractices.push({
+      title: currentPractice.title,
+      label: currentPractice.label,
+      wisdom: currentPractice.wisdom,
+      wsrc: currentPractice.wsrc,
+      steps: currentPractice.steps
+    });
+    saveData('savedPractices', savedPractices);
+  }
+  el.style.background = 'var(--sage-light)';
+  el.style.color = '#3a5a4a';
+  el.innerHTML = el.innerHTML.replace('Keep this practice', 'Kept ✓');
+}
+
+// ─── Patterns tabs (computed from real session data) ─────
+const teacherMeta = {
+  RD: { name:'Ram Dass', bg:'#EDF4F0', dot:'#7D9E89', cl:'#3a5a4a', word:'presence' },
+  MW: { name:'Marianne Williamson', bg:'#F9E8E6', dot:'#CC3F2E', cl:'#7a1a10', word:'love' },
+  AH: { name:'Almaas', bg:'#EDE6F5', dot:'#5B2D8E', cl:'#3d1a6a', word:'essence' },
+  WD: { name:'Wayne Dyer', bg:'#FEF8DC', dot:'#F2B825', cl:'#7a5800', word:'intention' },
+  JC: { name:'Jesus', bg:'#E3EDF5', dot:'#1A5F8F', cl:'#1A5F8F', word:'grace' },
+  NM: { name:'Nisargadatta', bg:'#F0EDE7', dot:'#888780', cl:'#444441', word:'silence' },
+  BU: { name:'Buddha', bg:'#F5EFE0', dot:'#B8860B', cl:'#6B4A00', word:'stillness' },
+  PC: { name:'Peter Crone', bg:'#E8F0EE', dot:'#2A7A5A', cl:'#1A4A3A', word:'freedom' }
+};
+
+const stateLabels = {
+  mental:'Racing mind', physical:'Body tension', emotional:'Emotional weight', existential:'Lost/overwhelmed',
+  conflict:'Conflict', distance:'Distance', longing:'Longing', connection:'Connection',
+  overwhelm:'Overwhelm', stagnation:'Stagnation', clarity:'Seeking clarity', meaning:'Meaning'
+};
+
+function emptyPatternsMsg() {
+  return '<div style="text-align:center;padding:48px 20px;">' +
+    '<div class="serif-italic" style="margin-bottom:12px;">"The journey of a thousand miles begins with a single step."</div>' +
+    '<div style="font-size:13px;color:var(--stone);line-height:1.7;">Your patterns will appear here after your first practice.<br>There is nothing to catch up on — begin whenever you are ready.</div>' +
+    '</div>';
+}
+
+function buildMapTab() {
+  if (sessions.length === 0) return emptyPatternsMsg();
+  const count = sessions.length;
+  const mins = sessions.reduce((s, x) => s + (x.min || 3), 0);
+  const days = new Set(sessions.map(s => s.d)).size;
+  const teachers = new Set(sessions.map(s => s.t)).size;
+
+  // What brings you here — count by state
+  const stateCounts = {};
+  sessions.forEach(s => {
+    const parts = (s.key || '').split('_');
+    const state = parts.length === 3 ? parts[1] : parts[0];
+    const label = stateLabels[state] || state;
+    stateCounts[label] = (stateCounts[label] || 0) + 1;
+  });
+  const sorted = Object.entries(stateCounts).sort((a,b) => b[1]-a[1]).slice(0, 5);
+  const max = sorted.length ? sorted[0][1] : 1;
+  const barColors = ['var(--sage)','var(--coral)','var(--velvet)','var(--amber)','var(--dusk)'];
+  const bars = sorted.map(([label, n], i) =>
+    '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">' +
+      '<div style="font-size:13px;color:var(--ink);min-width:110px;">' + label + '</div>' +
+      '<div style="flex:1;height:8px;background:var(--border);border-radius:4px;overflow:hidden;">' +
+        '<div style="width:' + Math.round(n/max*100) + '%;height:100%;background:' + barColors[i%5] + ';border-radius:4px;"></div>' +
+      '</div><div style="font-size:12px;color:var(--stone);min-width:16px;">' + n + '</div></div>'
+  ).join('');
+
+  // Evidence loop insight
+  const withFeeling = sessions.filter(s => s.feeling);
+  let evidenceCard = '';
+  if (withFeeling.length >= 3) {
+    const recent = withFeeling.slice(-14);
+    const positive = recent.filter(s => s.feeling !== 'Still heavy').length;
+    if (positive / recent.length >= 0.5) {
+      evidenceCard = '<div style="background:#E8F3F0;border-radius:14px;padding:14px 16px;margin-bottom:10px;">' +
+        '<div style="font-size:12px;font-weight:500;color:#0F6E56;letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px;">Your own evidence</div>' +
+        '<div style="font-size:13px;font-weight:500;color:#085041;margin-bottom:4px;">After ' + positive + ' of your last ' + recent.length + ' practices, you said you felt better</div>' +
+        '<div style="font-size:13px;color:#0F6E56;line-height:1.6;">Not our claim — yours. The practice works for you.</div></div>';
+    }
+  }
+
+  // Most visited teacher card
+  let teacherCard = '';
+  const tCounts = {};
+  sessions.forEach(s => { tCounts[s.t] = (tCounts[s.t] || 0) + 1; });
+  const topT = Object.entries(tCounts).sort((a,b) => b[1]-a[1])[0];
+  if (topT && teacherMeta[topT[0]]) {
+    const tm = teacherMeta[topT[0]];
+    teacherCard = '<div style="background:#EDE6F5;border-radius:14px;padding:14px 16px;">' +
+      '<div style="font-size:12px;font-weight:500;color:var(--velvet);letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px;">Most returned to</div>' +
+      '<div style="font-size:13px;font-weight:500;color:#3d1a6a;margin-bottom:4px;">' + tm.name + ' meets you where you are</div>' +
+      '<div style="font-size:13px;color:var(--velvet);line-height:1.6;">You have sat with ' + tm.name + ' ' + topT[1] + (topT[1] === 1 ? ' time' : ' times') + '. Your still point lives in ' + tm.word + '.</div></div>';
+  }
+
+  return '<div class="label" style="margin-bottom:4px;">Pattern tracking</div>' +
+    '<div class="heading" style="margin-bottom:4px;">What the data sees</div>' +
+    '<div style="font-size:13px;color:var(--stone);margin-bottom:18px;">Based on your ' + count + (count === 1 ? ' session' : ' sessions') + '</div>' +
+    '<div style="display:flex;gap:8px;margin-bottom:18px;">' +
+      '<div class="stat-chip"><div class="stat-num" style="color:var(--sage);">' + count + '</div><div class="stat-lbl">Returns</div></div>' +
+      '<div class="stat-chip"><div class="stat-num" style="color:var(--dusk);">' + mins + '</div><div class="stat-lbl">Minutes</div></div>' +
+      '<div class="stat-chip"><div class="stat-num" style="color:var(--amber);">' + days + '</div><div class="stat-lbl">Days</div></div>' +
+      '<div class="stat-chip"><div class="stat-num" style="color:var(--velvet);">' + teachers + '</div><div class="stat-lbl">Teachers</div></div>' +
+    '</div>' +
+    '<div style="font-size:13px;font-weight:500;color:var(--ink);margin-bottom:10px;">What brings you here</div>' +
+    bars + '<div style="height:10px;"></div>' + evidenceCard + teacherCard;
+}
+
+function buildTeachersTab() {
+  if (sessions.length === 0) return emptyPatternsMsg();
+  const tCounts = {};
+  sessions.forEach(s => { tCounts[s.t] = (tCounts[s.t] || 0) + 1; });
+  const sorted = Object.entries(tCounts).sort((a,b) => b[1]-a[1]);
+  const max = sorted.length ? sorted[0][1] : 1;
+  const rows = sorted.map(([init, n]) => {
+    const tm = teacherMeta[init];
+    if (!tm) return '';
+    return '<div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:0.5px solid var(--border);">' +
+      '<div style="width:36px;height:36px;border-radius:50%;background:' + tm.bg + ';display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;color:' + tm.cl + ';flex-shrink:0;">' + init + '</div>' +
+      '<div style="flex:1;"><div style="font-size:13px;font-weight:500;color:var(--ink);">' + tm.name + '</div>' +
+      '<div style="font-size:13px;color:var(--stone);">' + n + (n === 1 ? ' session' : ' sessions') + ' · ' + tm.word + '</div></div>' +
+      '<div style="width:60px;"><div style="height:4px;background:var(--border);border-radius:2px;overflow:hidden;">' +
+      '<div style="width:' + Math.round(n/max*100) + '%;height:100%;background:' + tm.dot + ';border-radius:2px;"></div></div></div></div>';
+  }).join('');
+
+  // Quote from top teacher
+  let quoteBlock = '';
+  const topInit = sorted[0] && sorted[0][0];
+  if (topInit && teacherMeta[topInit]) {
+    const lastQ = sessions.filter(s => s.t === topInit).slice(-1)[0];
+    if (lastQ && lastQ.quote) {
+      quoteBlock = '<div style="border-left:2px solid var(--dusk);padding-left:14px;margin-top:16px;">' +
+        '<div class="serif-italic">' + lastQ.quote + '</div>' +
+        '<div style="font-size:13px;color:var(--stone);margin-top:4px;">' + lastQ.src + ', your most visited teacher</div></div>';
+    }
+  }
+
+  return '<div class="label" style="margin-bottom:4px;">Your guides</div>' +
+    '<div class="heading" style="margin-bottom:4px;">Who you\'ve sat with</div>' +
+    '<div style="font-size:13px;color:var(--stone);margin-bottom:18px;">Each teacher has met you in a different place</div>' +
+    rows + quoteBlock;
+}
+
+function buildTimelineTab() {
+  if (sessions.length === 0) return emptyPatternsMsg();
+  // Build a 3-week grid ending today, Monday-start
+  const today = new Date();
+  const dayOfWeek = (today.getDay() + 6) % 7; // Mon=0
+  const gridEnd = new Date(today);
+  gridEnd.setDate(today.getDate() + (6 - dayOfWeek)); // end of this week (Sunday)
+  const cells = [];
+  for (let i = 20; i >= 0; i--) {
+    const d = new Date(gridEnd);
+    d.setDate(gridEnd.getDate() - i);
+    const ds = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+    const sess = sessions.filter(s => s.d === ds);
+    const future = d > today;
+    cells.push({ ds, sess, future });
+  }
+  const rows = [cells.slice(0,7), cells.slice(7,14), cells.slice(14,21)];
+  const header = ['M','T','W','T','F','S','S'].map(d =>
+    '<div style="width:32px;text-align:center;font-size:10px;color:var(--stone);">' + d + '</div>').join('');
+  const grid = rows.map(row => '<div style="display:flex;gap:4px;margin-bottom:4px;">' +
+    row.map(c => {
+      if (c.future || c.sess.length === 0) return '<div style="width:32px;height:32px;border-radius:8px;background:' + (c.future ? 'transparent' : 'var(--mist)') + ';"></div>';
+      const color = (teacherMeta[c.sess[c.sess.length-1].t] || {}).dot || '#7D9E89';
+      return '<div style="width:32px;height:32px;border-radius:8px;background:' + color + '22;display:flex;align-items:center;justify-content:center;">' +
+        '<div style="width:10px;height:10px;border-radius:50%;background:' + color + ';"></div></div>';
+    }).join('') + '</div>').join('');
+
+  // Legend for teachers actually present
+  const present = [...new Set(sessions.map(s => s.t))].filter(t => teacherMeta[t]);
+  const legend = present.map(t =>
+    '<div style="display:flex;align-items:center;gap:5px;"><div style="width:8px;height:8px;border-radius:50%;background:' + teacherMeta[t].dot + ';"></div>' +
+    '<span style="font-size:10px;color:var(--stone);">' + teacherMeta[t].name.split(' ').pop() + '</span></div>').join('');
+
+  return '<div class="label" style="margin-bottom:4px;">Recent sessions</div>' +
+    '<div class="heading" style="margin-bottom:4px;">The last 3 weeks</div>' +
+    '<div style="font-size:13px;color:var(--stone);margin-bottom:18px;">Each dot is one return to yourself</div>' +
+    '<div style="margin-bottom:16px;"><div style="display:flex;gap:4px;margin-bottom:4px;">' + header + '</div>' + grid + '</div>' +
+    '<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;">' + legend + '</div>';
+}
+
+function switchTab(tab) {
+  ['map','teachers','timeline'].forEach(t => {
+    const el = document.getElementById('tab-' + t);
+    el.style.color = t === tab ? 'var(--dusk)' : 'var(--stone)';
+    el.style.borderBottom = t === tab ? '2px solid var(--dusk)' : '2px solid transparent';
+  });
+  const content = document.getElementById('tab-content');
+  const builders = { map: buildMapTab, teachers: buildTeachersTab, timeline: buildTimelineTab };
+  content.innerHTML = builders[tab]();
+  content.scrollTop = 0;
+}
+
+// ─── Utility ─────────────────────────────────────────────
+function setPill(el) {
+  const group = el.parentElement;
+  group.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ─── Init ────────────────────────────────────────────────
+// Restore persisted teacher selection if available
+try {
+  const saved = localStorage.getItem('selectedInits');
+  if (saved) selectedInits = new Set(JSON.parse(saved));
+} catch(e) {}
+
+// Restore user name
+userName = loadData('userName', 'Friend');
+document.getElementById('you-name').textContent = userName;
+document.getElementById('you-avatar').textContent = userName.charAt(0).toUpperCase();
+document.getElementById('you-name-input').value = userName;
+
+// Set home quote to today's daily quote on load
+currentQuoteIndex = getFilteredQuoteIndex();
+renderHome();
+
+// Set You screen closing quote to a random filtered quote
+const filteredQ = getFilteredQuotes();
+const yq = filteredQ[Math.floor(Math.random() * filteredQ.length)];
+document.getElementById('you-quote').textContent = yq.text;
+document.getElementById('you-src').textContent = yq.src;
+
+// Returning users skip onboarding — the door is already open
+if (sessions.length > 0 || localStorage.getItem('selectedInits')) {
+  goScreen('home');
+}
+</script>
+</body>
+</html>
