@@ -487,6 +487,9 @@
         </div>
       </div>
 
+      <!-- Your go-to practice -->
+      <div id="goto-card-wrap" style="padding:0 22px;margin-bottom:20px;display:none;"></div>
+
       <!-- Daily quote / today's intention -->
       <div class="sec-lbl" id="home-quote-lbl">Today's wisdom</div>
       <div style="padding:0 22px;margin-bottom:20px;">
@@ -644,24 +647,16 @@
         </div>
       </div>
       <!-- Breathing pacer -->
-      <div style="display:flex;flex-direction:column;align-items:center;margin-bottom:14px;flex-shrink:0;">
-        <style>
-          @keyframes breathe {
-            0%     { transform: scale(0.7); }
-            33.33% { transform: scale(1); }
-            58.33% { transform: scale(1); }
-            100%   { transform: scale(0.7); }
-          }
-          #breath-circle { animation: breathe 12s ease-in-out infinite; }
-        </style>
+      <div id="breath-wrap" style="display:flex;flex-direction:column;align-items:center;margin-bottom:14px;flex-shrink:0;">
         <div style="width:128px;height:128px;display:flex;align-items:center;justify-content:center;margin-bottom:10px;">
-          <div id="breath-circle" style="width:112px;height:112px;border-radius:50%;background:var(--sage-light);border:3px solid var(--sage);"></div>
+          <div id="breath-circle" style="width:112px;height:112px;border-radius:50%;background:var(--sage-light);border:3px solid var(--sage);transform:scale(0.7);"></div>
         </div>
         <div style="font-size:30px;color:var(--sage);font-weight:500;letter-spacing:.04em;" id="breath-lbl">Breathe in</div>
       </div>
       <div style="font-size:15px;font-weight:500;color:var(--ink);text-align:center;margin-bottom:12px;flex-shrink:0;" id="timer-msg">Follow the practice below</div>
-      <div style="background:var(--mist);border-radius:14px;padding:14px 16px;width:100%;flex-shrink:0;">
-        <div style="font-size:15px;color:var(--stone);line-height:1.8;font-style:italic;" id="timer-reminder">Sit where you are. Take one slow breath. When a thought arises, say "thinking" and return. Each return is a homecoming.</div>
+      <div style="background:var(--mist);border-radius:14px;padding:16px 16px;width:100%;flex-shrink:0;">
+        <div style="font-size:12px;font-weight:500;color:var(--stone);letter-spacing:.06em;text-transform:uppercase;text-align:center;margin-bottom:8px;" id="timer-phase-indicator">1 of 1</div>
+        <div style="font-size:20px;color:var(--ink);line-height:1.5;text-align:center;transition:opacity .4s ease;" id="timer-reminder">Sit where you are. Take one slow breath. When a thought arises, say "thinking" and return. Each return is a homecoming.</div>
       </div>
       <div style="text-align:center;font-size:14px;color:#8A8880;padding:14px 0 0;flex-shrink:0;">Made by <a href="https://matthew-schmidt-production.up.railway.app/" target="_blank" rel="noopener noreferrer" style="color:#8A8880;text-decoration:underline;">Matty</a></div>
     </div>
@@ -692,6 +687,14 @@
         <div class="feel-chip" onclick="selectFeeling(this)">Clearer</div>
         <div class="feel-chip" onclick="selectFeeling(this)">Calmer</div>
         <div class="feel-chip" onclick="selectFeeling(this)">Still heavy</div>
+      </div>
+      <div id="still-heavy-block" style="display:none;width:100%;background:var(--mist);border-radius:14px;padding:14px 16px;margin-bottom:14px;">
+        <div style="font-size:14px;color:var(--stone);line-height:1.6;margin-bottom:12px;">That's okay. Sometimes showing up is the practice.</div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div onclick="sitTwoMore()" style="text-align:center;background:var(--parchment);border-radius:10px;padding:10px;font-size:14px;font-weight:500;color:var(--ink);cursor:pointer;">Sit 2 more minutes</div>
+          <div onclick="tryDifferentVoice()" style="text-align:center;background:var(--parchment);border-radius:10px;padding:10px;font-size:14px;font-weight:500;color:var(--ink);cursor:pointer;">Try a different voice</div>
+          <div onclick="letItBe()" style="text-align:center;background:var(--parchment);border-radius:10px;padding:10px;font-size:14px;font-weight:500;color:var(--stone);cursor:pointer;">Let it be</div>
+        </div>
       </div>
       <div id="keep-practice-btn" onclick="keepPractice(this)" style="display:flex;align-items:center;justify-content:center;gap:7px;width:100%;padding:12px;border-radius:12px;background:var(--mist);font-size:15px;font-weight:500;color:var(--ink);cursor:pointer;margin-bottom:14px;">
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 12.5S1.5 9 1.5 5.2C1.5 3 3.2 1.5 5 1.5c1 0 1.7.5 2 1 .3-.5 1-1 2-1 1.8 0 3.5 1.5 3.5 3.7C12.5 9 7 12.5 7 12.5Z" stroke="currentColor" stroke-width="1.2" fill="none" stroke-linejoin="round"/></svg>
@@ -810,7 +813,7 @@
         <div class="pill" data-min="5" onclick="setSessionLength(this)">5 min</div>
         <div class="pill" data-min="10" onclick="setSessionLength(this)">10 min</div>
         <div class="pill" data-min="20" onclick="setSessionLength(this)">20 min</div>
-        <div class="pill" onclick="setPill(this)">30 min</div>
+        <div class="pill" data-min="30" onclick="setSessionLength(this)">30 min</div>
       </div>
       <div class="hr"></div>
       <div class="setting-row" onclick="shareApp()" style="cursor:pointer;"><div style="display:flex;align-items:center;gap:14px;"><div class="setting-icon" style="background:var(--mist);"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="3" y="3" width="12" height="12" rx="3" stroke="#888780" stroke-width="1" fill="none"/><path d="M6 9h6M9 6v6" stroke="#888780" stroke-width="1.2" stroke-linecap="round"/></svg></div><div><div style="font-size:16px;font-weight:500;color:var(--ink);">Share Stillward</div><div style="font-size:15px;color:var(--stone);" id="share-stillward-desc">Give someone a still point</div></div></div><div style="color:#8A8880;font-size:18px;">›</div></div>
@@ -1011,6 +1014,26 @@ const practicePools = {
 
 };
 
+// ─── Feeling-aware weighting ──────────────────────────────
+// Looks at past sessions for this same state `key` and scores each
+// practice title / teacher by how it's tended to leave the user feeling.
+function getFeelingStatsForKey(key) {
+  const byTitle = {};
+  const byTeacher = {};
+  sessions.forEach(s => {
+    if (!s.feeling || s.key !== key) return;
+    const positive = s.feeling === 'Lighter' || s.feeling === 'Clearer' || s.feeling === 'Calmer';
+    const heavy = s.feeling === 'Still heavy';
+    if (!byTitle[s.title]) byTitle[s.title] = { positive: 0, heavy: 0 };
+    if (positive) byTitle[s.title].positive++;
+    if (heavy) byTitle[s.title].heavy++;
+    if (!byTeacher[s.t]) byTeacher[s.t] = { positive: 0, heavy: 0 };
+    if (positive) byTeacher[s.t].positive++;
+    if (heavy) byTeacher[s.t].heavy++;
+  });
+  return { byTitle, byTeacher };
+}
+
 // ─── Pick next practice from pool, never repeating consecutively ──
 function getNextPractice(key) {
   const rawPool = practicePools[key] || practicePools.mental_high;
@@ -1032,7 +1055,29 @@ function getNextPractice(key) {
   let available = pool.map((_, i) => i).filter(i => i !== last);
   // If filtering left only one practice (which was just shown), allow the repeat
   if (available.length === 0) available = pool.map((_, i) => i);
-  const picked = available[Math.floor(Math.random() * available.length)];
+
+  // Weight by how this practice (and its teacher) has felt for this state before
+  const stats = getFeelingStatsForKey(key);
+  const weights = available.map(i => {
+    const p = pool[i];
+    let w = 1;
+    const t = stats.byTitle[p.title];
+    if (t) {
+      if (t.heavy >= 2 && t.positive === 0) w = 0.15;
+      else if (t.positive >= 2) w = 2;
+    }
+    const teacherStat = stats.byTeacher[p.init];
+    if (teacherStat && teacherStat.positive >= 2) w *= 1.5;
+    return w;
+  });
+  const totalW = weights.reduce((a, b) => a + b, 0);
+  let r = Math.random() * (totalW || 1);
+  let chosen = 0;
+  for (let i = 0; i < weights.length; i++) {
+    r -= weights[i];
+    if (r <= 0) { chosen = i; break; }
+  }
+  const picked = available[chosen];
   lastPracticeIdx[key] = picked;
   return pool[picked];
 }
@@ -1262,11 +1307,76 @@ function renderRecentPractices() {
   }).join('');
 }
 
+// Picks the best "go-to" candidate: kept practices, or ones that have left
+// the user feeling positive (Lighter/Clearer/Calmer) at least twice.
+function getGoToPractice() {
+  const positiveCounts = {};
+  sessions.forEach(s => {
+    if (s.feeling === 'Lighter' || s.feeling === 'Clearer' || s.feeling === 'Calmer') {
+      if (!positiveCounts[s.title]) positiveCounts[s.title] = { count: 0, lastDate: s.d };
+      positiveCounts[s.title].count++;
+      if (s.d >= positiveCounts[s.title].lastDate) positiveCounts[s.title].lastDate = s.d;
+    }
+  });
+  const candidates = {};
+  Object.keys(positiveCounts).forEach(title => {
+    if (positiveCounts[title].count >= 2) {
+      candidates[title] = { title, count: positiveCounts[title].count, lastDate: positiveCounts[title].lastDate, kept: false };
+    }
+  });
+  savedPractices.forEach(sp => {
+    if (candidates[sp.title]) candidates[sp.title].kept = true;
+    else candidates[sp.title] = { title: sp.title, count: 0, lastDate: '', kept: true };
+  });
+  const list = Object.values(candidates);
+  if (list.length === 0) return null;
+  list.sort((a, b) => (b.count - a.count) || (b.lastDate > a.lastDate ? 1 : -1));
+  return list[0];
+}
+
+function renderGoToCard() {
+  const wrap = document.getElementById('goto-card-wrap');
+  if (!wrap) return;
+  const candidate = getGoToPractice();
+  if (!candidate) { wrap.style.display = 'none'; wrap.innerHTML = ''; return; }
+  const found = findOriginalPracticeByTitle(candidate.title);
+  const savedMatch = savedPractices.find(sp => sp.title === candidate.title);
+  const label = found ? found.practice.label : (savedMatch ? savedMatch.label : '');
+  const line = candidate.count >= 2
+    ? ('Left you lighter ' + candidate.count + ' time' + (candidate.count === 1 ? '' : 's') + '.')
+    : 'You kept this one.';
+  wrap.style.display = 'block';
+  const titleAttr = candidate.title.replace(/'/g, '&#39;');
+  wrap.innerHTML =
+    "<div style=\"background:var(--mist);border-radius:20px;padding:18px 20px;cursor:pointer;\" onclick='launchGoTo(\"" + titleAttr + "\")'>" +
+      '<div style="font-size:13px;color:var(--stone);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px;">Your go-to</div>' +
+      '<div style="font-size:14px;color:var(--stone);margin-bottom:4px;">' + label + '</div>' +
+      '<div style="font-size:17px;font-weight:500;color:var(--ink);margin-bottom:6px;">' + candidate.title + '</div>' +
+      '<div style="font-size:14px;color:var(--sage);">' + line + '</div>' +
+    '</div>';
+}
+
+function launchGoTo(title) {
+  const found = findOriginalPracticeByTitle(title);
+  let p, key;
+  if (found) {
+    p = found.practice; key = found.key;
+  } else {
+    const sp = savedPractices.find(s => s.title === title);
+    if (!sp) return;
+    p = buildFallbackPractice(sp); key = null;
+  }
+  currentKey = key;
+  applyPractice(p);
+  goScreen('p3');
+}
+
 function renderHome() {
   renderHomeGreeting();
   refreshHomeQuote();
   renderReturns();
   renderRecentPractices();
+  renderGoToCard();
 }
 
 // ─── Logo tap interaction (home screen + welcome screen) ─
@@ -1314,7 +1424,7 @@ function goScreen(id) {
   window.scrollTo(0, 0);
   document.documentElement.scrollTop = 0;
   document.body.scrollTop = 0;
-  if (id !== 'p4' && timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+  if (id !== 'p4' && timerInterval) { clearInterval(timerInterval); timerInterval = null; extraSitActive = false; stopPacer(); }
   if (id === 'home') renderHome();
   if (id === 'you') renderYouScreen();
   if (id === 'patterns') switchTab('map');
@@ -1358,12 +1468,13 @@ function renderSavedPractices() {
     return;
   }
   container.innerHTML = savedPractices.map((p, i) =>
-    '<div style="display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:0.5px solid var(--border);">' +
-      '<div style="flex:1;">' +
+    '<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:0.5px solid var(--border);">' +
+      '<div style="flex:1;cursor:pointer;" onclick="startSavedPractice(' + i + ')">' +
         '<div style="font-size:15px;font-weight:500;color:var(--ink);">' + p.title + '</div>' +
         '<div style="font-size:14px;color:var(--stone);margin-top:2px;">' + p.label + '</div>' +
       '</div>' +
-      '<div onclick="removeSavedPractice(' + i + ')" style="font-size:16px;color:var(--stone);cursor:pointer;opacity:.5;padding:0 4px;">×</div>' +
+      '<div onclick="startSavedPractice(' + i + ')" style="flex-shrink:0;font-size:13px;font-weight:500;color:var(--sage);background:var(--sage-light);padding:6px 13px;border-radius:20px;cursor:pointer;">Begin</div>' +
+      '<div onclick="event.stopPropagation();removeSavedPractice(' + i + ')" style="flex-shrink:0;font-size:16px;color:var(--stone);cursor:pointer;opacity:.5;padding:0 4px;">×</div>' +
     '</div>'
   ).join('');
 }
@@ -1372,6 +1483,34 @@ function removeSavedPractice(i) {
   savedPractices.splice(i, 1);
   saveData('savedPractices', savedPractices);
   renderSavedPractices();
+}
+
+// Finds the original practice object (with full teacher styling, ring,
+// wexplain, etc.) for a saved practice's title, searching every pool.
+function findOriginalPracticeByTitle(title) {
+  for (const key of Object.keys(practicePools)) {
+    const found = practicePools[key].find(p => p.title === title);
+    if (found) return { practice: found, key };
+  }
+  return null;
+}
+
+function buildFallbackPractice(saved) {
+  return {
+    init: '', badgeBg: 'var(--mist)', dotBg: 'var(--sage)', teacherCl: 'var(--ink)',
+    label: saved.label || '', title: saved.title, body: '', wisdom: saved.wisdom,
+    wsrc: saved.wsrc, wexplain: '', steps: saved.steps, ring: '#7D9E89'
+  };
+}
+
+function startSavedPractice(i) {
+  const saved = savedPractices[i];
+  if (!saved) return;
+  const found = findOriginalPracticeByTitle(saved.title);
+  const p = found ? found.practice : buildFallbackPractice(saved);
+  currentKey = found ? found.key : null;
+  applyPractice(p);
+  goScreen('p3');
 }
 
 function renderYouStats() {
@@ -1574,12 +1713,90 @@ function pickFlavor(val) {
 let currentPractice = null;
 let currentKey = null;
 
-function pickEnergy(val) {
-  const key = (domain === 'personal' ? flavor : domain + '_' + flavor) + '_' + val;
-  const p = getNextPractice(key);
+// ─── Steps helpers ───────────────────────────────────────
+// Replaces the trailing "... for 3 minutes." sentence with the real session length.
+function stepsForLength(steps) {
+  if (!steps) return steps;
+  return steps.replace(/(\bfor\s+)3(\s+minutes\.?)(\s*)$/i, (m, p1, p2, p3) => p1 + sessionLength + p2 + p3);
+}
+
+// Splits a steps paragraph into 3-5 timed phases, dropping the trailing
+// "Stay for N minutes." sentence (that's conveyed by the timer itself).
+function splitSteps(rawSteps) {
+  const steps = (rawSteps || '').trim();
+  if (!steps) return [''];
+  let sentences = steps.match(/[^.!?]+(?:[.!?]+["\u201D\u2019']*|$)/g) || [steps];
+  sentences = sentences.map(s => s.trim()).filter(Boolean);
+  // Merge short fragments and quoted examples ("Fear? Hurt?", "\"I am afraid.\"") into the sentence before them
+  sentences = sentences.reduce((acc, s) => {
+    if (acc.length && (s.length < 30 || /^["\u201C]/.test(s))) acc[acc.length - 1] += ' ' + s;
+    else acc.push(s);
+    return acc;
+  }, []);
+  if (sentences.length > 1 && /\bfor\s+\d+\s+minutes\.?$/i.test(sentences[sentences.length - 1])) {
+    sentences = sentences.slice(0, -1);
+  }
+  if (sentences.length === 0) sentences = [steps];
+  const numPhases = sentences.length <= 3 ? sentences.length : Math.min(5, Math.max(3, Math.ceil(sentences.length / 2)));
+  const perPhase = Math.ceil(sentences.length / numPhases);
+  const phases = [];
+  for (let i = 0; i < sentences.length; i += perPhase) phases.push(sentences.slice(i, i + perPhase).join(' '));
+  return phases;
+}
+
+// ─── Breathing pacer ─────────────────────────────────────
+// Optional per-practice `pacer` field ({in, hold, out} seconds) overrides
+// the default. pacer:false disables it outright. Otherwise: practices whose
+// steps ask the user to think/imagine/name/ask get no pacer (it would fight
+// the inquiry); everything else gets a ratio based on energy state.
+const pacerInquiryWords = /\b(ask|imagine|think of|bring to mind|question|story|what would|who is aware)\b/i;
+function getPacer(key, practice) {
+  if (practice && practice.pacer === false) return null;
+  if (practice && practice.pacer && typeof practice.pacer === 'object') return practice.pacer;
+  const stepsText = (practice && practice.steps) || '';
+  if (pacerInquiryWords.test(stepsText)) return null;
+  return key && /_low$/.test(key) ? { in: 4, hold: 2, out: 4 } : { in: 4, hold: 0, out: 6 };
+}
+
+let pacerInterval = null;
+let pacerT = 0;
+function startPacer(pacer) {
+  stopPacer();
+  const circle = document.getElementById('breath-circle');
+  const lbl = document.getElementById('breath-lbl');
+  if (!circle || !lbl) return;
+  circle.style.transition = 'transform .3s linear';
+  const cycleLen = pacer.in + pacer.hold + pacer.out;
+  pacerT = 0;
+  const tick = () => {
+    if (paused) return;
+    let scale, label;
+    if (pacerT < pacer.in) {
+      scale = 0.7 + 0.3 * (pacer.in ? pacerT / pacer.in : 1);
+      label = 'Breathe in';
+    } else if (pacerT < pacer.in + pacer.hold) {
+      scale = 1;
+      label = 'Hold';
+    } else {
+      const outT = pacerT - pacer.in - pacer.hold;
+      scale = 1 - 0.3 * (pacer.out ? outT / pacer.out : 1);
+      label = 'Breathe out';
+    }
+    circle.style.transform = 'scale(' + scale.toFixed(3) + ')';
+    if (lbl.textContent !== label) lbl.textContent = label;
+    pacerT = (pacerT + 0.3) % cycleLen;
+  };
+  tick();
+  pacerInterval = setInterval(tick, 300);
+}
+function stopPacer() {
+  if (pacerInterval) { clearInterval(pacerInterval); pacerInterval = null; }
+}
+
+// ─── Apply a practice object to the p3/p4/p5 screens ─────
+function applyPractice(p) {
   currentPractice = p;
-  currentKey = key;
-  // Apply to practice card
+  const stepsText = stepsForLength(p.steps);
   document.getElementById('p3-badge').style.background = p.badgeBg;
   document.getElementById('p3-dot').style.background = p.dotBg;
   document.getElementById('p3-dot').textContent = p.init;
@@ -1590,30 +1807,62 @@ function pickEnergy(val) {
   document.getElementById('p3-wisdom').textContent = p.wisdom;
   document.getElementById('p3-wsrc').textContent = p.wsrc;
   document.getElementById('p3-explain').textContent = p.wexplain;
-  document.getElementById('p3-steps').textContent = p.steps;
+  document.getElementById('p3-steps').textContent = stepsText;
   // Apply to timer
   document.getElementById('timer-ring').style.stroke = p.ring;
   document.getElementById('timer-lbl').textContent = p.label;
-  document.getElementById('timer-reminder').textContent = p.steps;
+  document.getElementById('timer-reminder').textContent = stepsText;
   // Apply to done
   document.getElementById('done-quote').textContent = p.wisdom;
   document.getElementById('done-src').textContent = p.wsrc;
   // Store this practice's wisdom — will show on home after session
   lastPracticeQuote = { text: p.wisdom, src: p.wsrc };
+  const beginBtn = document.querySelector('#p3 .float-btn-wrap .btn-primary');
+  if (beginBtn) beginBtn.textContent = 'Begin — ' + sessionLength + ' minute' + (sessionLength === 1 ? '' : 's');
+}
+
+function pickEnergy(val) {
+  const key = (domain === 'personal' ? flavor : domain + '_' + flavor) + '_' + val;
+  const p = getNextPractice(key);
+  currentKey = key;
+  applyPractice(p);
   goScreen('p3');
 }
 
 // ─── Timer ───────────────────────────────────────────────
-let breathInterval = null;
+let phaseTexts = [''];
+let phaseStarts = [0];
+let currentPhaseIdx = -1;
+let currentTotalSec = 180;
+let extraSitActive = false;
 
-function startTimer() {
+function startTimer(overrideSeconds) {
   goScreen('p4');
-  const totalSec = sessionLength * 60;
+  const totalSec = overrideSeconds || sessionLength * 60;
+  currentTotalSec = totalSec;
   secondsLeft = totalSec; paused = false;
   document.getElementById('pause-btn').textContent = '⏸';
   document.getElementById('timer-msg').textContent = 'Follow the practice below';
   updateTimerDisplay();
   if (timerInterval) clearInterval(timerInterval);
+
+  // Break the steps into timed phases, spread across the session
+  const stepsText = currentPractice ? stepsForLength(currentPractice.steps) : '';
+  phaseTexts = splitSteps(stepsText);
+  const n = phaseTexts.length;
+  if (n <= 1) {
+    phaseStarts = [0];
+  } else {
+    const maxLastStart = totalSec * 0.75;
+    const evenStart = (n - 1) / n * totalSec;
+    const lastStart = Math.min(evenStart, maxLastStart);
+    phaseStarts = [];
+    for (let i = 0; i < n - 1; i++) phaseStarts.push(Math.round(i * lastStart / (n - 1)));
+    phaseStarts.push(Math.round(lastStart));
+  }
+  currentPhaseIdx = -1;
+  updatePhase(0);
+
   timerInterval = setInterval(() => {
     if (!paused) {
       secondsLeft--;
@@ -1621,25 +1870,43 @@ function startTimer() {
       if (secondsLeft === 60) {
         document.getElementById('timer-msg').textContent = 'Last minute — stay with it';
       }
+      const elapsed = totalSec - secondsLeft;
+      let idx = 0;
+      for (let i = 0; i < phaseStarts.length; i++) if (elapsed >= phaseStarts[i]) idx = i;
+      if (idx !== currentPhaseIdx) updatePhase(idx);
       if (secondsLeft <= 0) { clearInterval(timerInterval); completeSession(); }
     }
   }, 1000);
-  // Breath label sync — matches the 12s CSS cycle (0-4s in, 4-7s hold, 7-12s out)
-  if (breathInterval) clearInterval(breathInterval);
-  let breathT = 0;
-  const breathLbl = document.getElementById('breath-lbl');
-  breathLbl.textContent = 'Breathe in';
-  breathInterval = setInterval(() => {
-    if (paused) return;
-    breathT = (breathT + 0.5) % 12;
-    if (breathT < 4)        breathLbl.textContent = 'Breathe in';
-    else if (breathT < 7)   breathLbl.textContent = 'Hold';
-    else                    breathLbl.textContent = 'Breathe out';
-  }, 500);
+
+  // Breathing pacer — on for most practices, off for inquiry-style ones
+  const pacer = getPacer(currentKey, currentPractice || {});
+  const wrap = document.getElementById('breath-wrap');
+  if (pacer) {
+    if (wrap) wrap.style.display = 'flex';
+    startPacer(pacer);
+  } else {
+    if (wrap) wrap.style.display = 'none';
+    stopPacer();
+  }
+}
+
+function updatePhase(idx) {
+  currentPhaseIdx = idx;
+  const el = document.getElementById('timer-reminder');
+  const ind = document.getElementById('timer-phase-indicator');
+  const text = phaseTexts[idx] || '';
+  if (!el) return;
+  el.style.opacity = '0';
+  setTimeout(() => {
+    el.textContent = text;
+    if (ind) ind.textContent = (idx + 1) + ' of ' + phaseTexts.length;
+    el.style.opacity = '1';
+  }, 180);
+  if (idx > 0) { try { navigator.vibrate?.(30); } catch(e) {} }
 }
 
 function updateTimerDisplay() {
-  const totalSec = sessionLength * 60;
+  const totalSec = currentTotalSec;
   const m = Math.floor(secondsLeft / 60), s = secondsLeft % 60;
   document.getElementById('timer-display').textContent = m + ':' + (s < 10 ? '0' : '') + s;
   const pct = 1 - secondsLeft / totalSec;
@@ -1653,7 +1920,13 @@ function togglePause() {
 
 // ─── Session recording ───────────────────────────────────
 function completeSession() {
-  if (breathInterval) { clearInterval(breathInterval); breathInterval = null; }
+  stopPacer();
+  // "Sit 2 more minutes" doesn't record a second session — just returns to done
+  if (extraSitActive) {
+    extraSitActive = false;
+    goScreen('p5');
+    return;
+  }
   // Record the session
   if (currentPractice) {
     sessions.push({
@@ -1676,6 +1949,8 @@ function completeSession() {
   kb.style.background = 'var(--mist)';
   kb.style.color = 'var(--ink)';
   kb.innerHTML = kb.innerHTML.replace('Kept ✓', 'Keep this practice');
+  const shb = document.getElementById('still-heavy-block');
+  if (shb) shb.style.display = 'none';
   goScreen('p5');
 }
 
@@ -1688,6 +1963,37 @@ function selectFeeling(el) {
     sessions[sessions.length - 1].feeling = el.textContent.trim();
     saveData('sessions', sessions);
   }
+  const block = document.getElementById('still-heavy-block');
+  if (block) block.style.display = el.textContent.trim() === 'Still heavy' ? 'block' : 'none';
+}
+
+function hideStillHeavyBlock() {
+  const block = document.getElementById('still-heavy-block');
+  if (block) block.style.display = 'none';
+}
+
+function sitTwoMore() {
+  hideStillHeavyBlock();
+  extraSitActive = true;
+  startTimer(120);
+}
+
+function tryDifferentVoice() {
+  hideStillHeavyBlock();
+  if (!currentKey) return;
+  const rawPool = practicePools[currentKey] || [];
+  let pool = rawPool.filter(p => selectedInits.has(p.init));
+  if (pool.length === 0) pool = rawPool;
+  let candidates = pool.filter(p => !currentPractice || p.init !== currentPractice.init);
+  if (candidates.length === 0) candidates = pool;
+  if (candidates.length === 0) return;
+  const newP = candidates[Math.floor(Math.random() * candidates.length)];
+  applyPractice(newP);
+  goScreen('p3');
+}
+
+function letItBe() {
+  hideStillHeavyBlock();
 }
 
 function keepPractice(el) {
