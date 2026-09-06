@@ -647,9 +647,18 @@
         </div>
       </div>
       <!-- Breathing pacer -->
-      <div id="breath-wrap" style="display:flex;flex-direction:column;align-items:center;margin-bottom:14px;flex-shrink:0;">
+      <div style="display:flex;flex-direction:column;align-items:center;margin-bottom:14px;flex-shrink:0;">
+        <style>
+          @keyframes breathe {
+            0%     { transform: scale(0.7); }
+            33.33% { transform: scale(1); }
+            58.33% { transform: scale(1); }
+            100%   { transform: scale(0.7); }
+          }
+          #breath-circle { animation: breathe 12s ease-in-out infinite; }
+        </style>
         <div style="width:128px;height:128px;display:flex;align-items:center;justify-content:center;margin-bottom:10px;">
-          <div id="breath-circle" style="width:112px;height:112px;border-radius:50%;background:var(--sage-light);border:3px solid var(--sage);transform:scale(0.7);"></div>
+          <div id="breath-circle" style="width:112px;height:112px;border-radius:50%;background:var(--sage-light);border:3px solid var(--sage);"></div>
         </div>
         <div style="font-size:30px;color:var(--sage);font-weight:500;letter-spacing:.04em;" id="breath-lbl">Breathe in</div>
       </div>
@@ -1720,49 +1729,23 @@ function stepsForLength(steps) {
 }
 
 // ─── Breathing pacer ─────────────────────────────────────
-// Optional per-practice `pacer` field ({in, hold, out} seconds) overrides
-// the default. pacer:false disables it outright. Otherwise: practices whose
-// steps ask the user to think/imagine/name/ask get no pacer (it would fight
-// the inquiry); everything else gets a ratio based on energy state.
-const pacerInquiryWords = /\b(ask|imagine|think of|bring to mind|question|story|what would|who is aware)\b/i;
-function getPacer(key, practice) {
-  if (practice && practice.pacer === false) return null;
-  if (practice && practice.pacer && typeof practice.pacer === 'object') return practice.pacer;
-  const stepsText = (practice && practice.steps) || '';
-  if (pacerInquiryWords.test(stepsText)) return null;
-  return key && /_low$/.test(key) ? { in: 4, hold: 2, out: 4 } : { in: 4, hold: 0, out: 6 };
-}
-
+// Label sync for the 12s CSS `breathe` cycle (0-4s in, 4-7s hold, 7-12s out)
 let pacerInterval = null;
-let pacerT = 0;
-function startPacer(pacer) {
+function startPacer() {
   stopPacer();
-  const circle = document.getElementById('breath-circle');
   const lbl = document.getElementById('breath-lbl');
-  if (!circle || !lbl) return;
-  circle.style.transition = 'transform .3s linear';
-  const cycleLen = pacer.in + pacer.hold + pacer.out;
-  pacerT = 0;
-  const tick = () => {
+  const circle = document.getElementById('breath-circle');
+  if (!lbl) return;
+  if (circle) { circle.style.animation = 'none'; void circle.offsetWidth; circle.style.animation = ''; }
+  let t = 0;
+  lbl.textContent = 'Breathe in';
+  pacerInterval = setInterval(() => {
     if (paused) return;
-    let scale, label;
-    if (pacerT < pacer.in) {
-      scale = 0.7 + 0.3 * (pacer.in ? pacerT / pacer.in : 1);
-      label = 'Breathe in';
-    } else if (pacerT < pacer.in + pacer.hold) {
-      scale = 1;
-      label = 'Hold';
-    } else {
-      const outT = pacerT - pacer.in - pacer.hold;
-      scale = 1 - 0.3 * (pacer.out ? outT / pacer.out : 1);
-      label = 'Breathe out';
-    }
-    circle.style.transform = 'scale(' + scale.toFixed(3) + ')';
-    if (lbl.textContent !== label) lbl.textContent = label;
-    pacerT = (pacerT + 0.3) % cycleLen;
-  };
-  tick();
-  pacerInterval = setInterval(tick, 300);
+    t = (t + 0.5) % 12;
+    if (t < 4)      lbl.textContent = 'Breathe in';
+    else if (t < 7) lbl.textContent = 'Hold';
+    else            lbl.textContent = 'Breathe out';
+  }, 500);
 }
 function stopPacer() {
   if (pacerInterval) { clearInterval(pacerInterval); pacerInterval = null; }
@@ -1830,16 +1813,7 @@ function startTimer(overrideSeconds) {
     }
   }, 1000);
 
-  // Breathing pacer — on for most practices, off for inquiry-style ones
-  const pacer = getPacer(currentKey, currentPractice || {});
-  const wrap = document.getElementById('breath-wrap');
-  if (pacer) {
-    if (wrap) wrap.style.display = 'flex';
-    startPacer(pacer);
-  } else {
-    if (wrap) wrap.style.display = 'none';
-    stopPacer();
-  }
+  startPacer();
 }
 
 function updateTimerDisplay() {
