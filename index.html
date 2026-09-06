@@ -654,9 +654,8 @@
         <div style="font-size:30px;color:var(--sage);font-weight:500;letter-spacing:.04em;" id="breath-lbl">Breathe in</div>
       </div>
       <div style="font-size:15px;font-weight:500;color:var(--ink);text-align:center;margin-bottom:12px;flex-shrink:0;" id="timer-msg">Follow the practice below</div>
-      <div style="background:var(--mist);border-radius:14px;padding:16px 16px;width:100%;flex-shrink:0;">
-        <div style="font-size:12px;font-weight:500;color:var(--stone);letter-spacing:.06em;text-transform:uppercase;text-align:center;margin-bottom:8px;" id="timer-phase-indicator">1 of 1</div>
-        <div style="font-size:20px;color:var(--ink);line-height:1.5;text-align:center;transition:opacity .4s ease;" id="timer-reminder">Sit where you are. Take one slow breath. When a thought arises, say "thinking" and return. Each return is a homecoming.</div>
+      <div style="background:var(--mist);border-radius:14px;padding:14px 16px;width:100%;flex-shrink:0;">
+        <div style="font-size:15px;color:var(--stone);line-height:1.8;font-style:italic;" id="timer-reminder">Sit where you are. Take one slow breath. When a thought arises, say "thinking" and return. Each return is a homecoming.</div>
       </div>
       <div style="text-align:center;font-size:14px;color:#8A8880;padding:14px 0 0;flex-shrink:0;">Made by <a href="https://matthew-schmidt-production.up.railway.app/" target="_blank" rel="noopener noreferrer" style="color:#8A8880;text-decoration:underline;">Matty</a></div>
     </div>
@@ -1720,30 +1719,6 @@ function stepsForLength(steps) {
   return steps.replace(/(\bfor\s+)3(\s+minutes\.?)(\s*)$/i, (m, p1, p2, p3) => p1 + sessionLength + p2 + p3);
 }
 
-// Splits a steps paragraph into 3-5 timed phases, dropping the trailing
-// "Stay for N minutes." sentence (that's conveyed by the timer itself).
-function splitSteps(rawSteps) {
-  const steps = (rawSteps || '').trim();
-  if (!steps) return [''];
-  let sentences = steps.match(/[^.!?]+(?:[.!?]+["\u201D\u2019']*|$)/g) || [steps];
-  sentences = sentences.map(s => s.trim()).filter(Boolean);
-  // Merge short fragments and quoted examples ("Fear? Hurt?", "\"I am afraid.\"") into the sentence before them
-  sentences = sentences.reduce((acc, s) => {
-    if (acc.length && (s.length < 30 || /^["\u201C]/.test(s))) acc[acc.length - 1] += ' ' + s;
-    else acc.push(s);
-    return acc;
-  }, []);
-  if (sentences.length > 1 && /\bfor\s+\d+\s+minutes\.?$/i.test(sentences[sentences.length - 1])) {
-    sentences = sentences.slice(0, -1);
-  }
-  if (sentences.length === 0) sentences = [steps];
-  const numPhases = sentences.length <= 3 ? sentences.length : Math.min(5, Math.max(3, Math.ceil(sentences.length / 2)));
-  const perPhase = Math.ceil(sentences.length / numPhases);
-  const phases = [];
-  for (let i = 0; i < sentences.length; i += perPhase) phases.push(sentences.slice(i, i + perPhase).join(' '));
-  return phases;
-}
-
 // ─── Breathing pacer ─────────────────────────────────────
 // Optional per-practice `pacer` field ({in, hold, out} seconds) overrides
 // the default. pacer:false disables it outright. Otherwise: practices whose
@@ -1830,9 +1805,6 @@ function pickEnergy(val) {
 }
 
 // ─── Timer ───────────────────────────────────────────────
-let phaseTexts = [''];
-let phaseStarts = [0];
-let currentPhaseIdx = -1;
 let currentTotalSec = 180;
 let extraSitActive = false;
 
@@ -1846,22 +1818,6 @@ function startTimer(overrideSeconds) {
   updateTimerDisplay();
   if (timerInterval) clearInterval(timerInterval);
 
-  // Break the steps into timed phases, spread across the session
-  const stepsText = currentPractice ? stepsForLength(currentPractice.steps) : '';
-  phaseTexts = splitSteps(stepsText);
-  const n = phaseTexts.length;
-  if (n <= 1) {
-    phaseStarts = [0];
-  } else {
-    const maxLastStart = totalSec * 0.75;
-    const evenStart = (n - 1) / n * totalSec;
-    const lastStart = Math.min(evenStart, maxLastStart);
-    phaseStarts = [];
-    for (let i = 0; i < n - 1; i++) phaseStarts.push(Math.round(i * lastStart / (n - 1)));
-    phaseStarts.push(Math.round(lastStart));
-  }
-  currentPhaseIdx = -1;
-  updatePhase(0);
 
   timerInterval = setInterval(() => {
     if (!paused) {
@@ -1870,10 +1826,6 @@ function startTimer(overrideSeconds) {
       if (secondsLeft === 60) {
         document.getElementById('timer-msg').textContent = 'Last minute — stay with it';
       }
-      const elapsed = totalSec - secondsLeft;
-      let idx = 0;
-      for (let i = 0; i < phaseStarts.length; i++) if (elapsed >= phaseStarts[i]) idx = i;
-      if (idx !== currentPhaseIdx) updatePhase(idx);
       if (secondsLeft <= 0) { clearInterval(timerInterval); completeSession(); }
     }
   }, 1000);
@@ -1888,21 +1840,6 @@ function startTimer(overrideSeconds) {
     if (wrap) wrap.style.display = 'none';
     stopPacer();
   }
-}
-
-function updatePhase(idx) {
-  currentPhaseIdx = idx;
-  const el = document.getElementById('timer-reminder');
-  const ind = document.getElementById('timer-phase-indicator');
-  const text = phaseTexts[idx] || '';
-  if (!el) return;
-  el.style.opacity = '0';
-  setTimeout(() => {
-    el.textContent = text;
-    if (ind) ind.textContent = (idx + 1) + ' of ' + phaseTexts.length;
-    el.style.opacity = '1';
-  }, 180);
-  if (idx > 0) { try { navigator.vibrate?.(30); } catch(e) {} }
 }
 
 function updateTimerDisplay() {
