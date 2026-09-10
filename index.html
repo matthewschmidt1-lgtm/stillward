@@ -369,9 +369,10 @@
       <div class="display" style="margin-bottom:12px;">Who do you resonate with?</div>
       <div class="body-text" style="margin-bottom:16px;">Tap a voice to include or exclude it. You can change this anytime.</div>
       <div style="display:flex;gap:8px;margin-bottom:16px;">
-        <div class="pill" onclick="selectAllOb3Teachers()">Select all</div>
-        <div class="pill" onclick="unselectAllOb3Teachers()">Unselect all</div>
+        <div class="pill active" id="ob3-select-all" onclick="selectAllOb3Teachers()">✓ Select all</div>
+        <div class="pill" id="ob3-unselect-all" onclick="unselectAllOb3Teachers()">Unselect all</div>
       </div>
+      <div id="ob3-status" style="font-size:14px;color:var(--stone);margin-bottom:12px;">All 8 voices selected — tap Continue to keep them all.</div>
       <div id="ob3-teacher-chips" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px;">
         <div class="t-chip on" data-init="RD" style="background:#EDF4F0;color:#3a5a4a;" onclick="toggleOb3Teacher(this)">Ram Dass</div>
         <div class="t-chip on" data-init="MW" style="background:#F9E8E6;color:#7a1a10;" onclick="toggleOb3Teacher(this)">Marianne Williamson</div>
@@ -1595,12 +1596,28 @@ const teacherInitMap = {
 let selectedInits = new Set(Object.values(teacherInitMap));
 
 function renderOb3TeacherChips() {
-  document.querySelectorAll('#ob3-teacher-chips .t-chip').forEach(chip => {
+  const chips = document.querySelectorAll('#ob3-teacher-chips .t-chip');
+  chips.forEach(chip => {
     const init = chip.getAttribute('data-init');
     const on = selectedInits.has(init);
     chip.classList.toggle('on', on);
     chip.style.opacity = on ? '1' : '0.35';
   });
+  // Reflect the current state on the Select all / Unselect all pills
+  const total = chips.length;
+  const n = selectedInits.size;
+  const allOn = n === total;
+  const noneOn = n === 0;
+  const selAll = document.getElementById('ob3-select-all');
+  const unselAll = document.getElementById('ob3-unselect-all');
+  if (selAll) { selAll.classList.toggle('active', allOn); selAll.textContent = (allOn ? '✓ ' : '') + 'Select all'; }
+  if (unselAll) { unselAll.classList.toggle('active', noneOn); unselAll.textContent = (noneOn ? '✓ ' : '') + 'Unselect all'; }
+  const status = document.getElementById('ob3-status');
+  if (status) {
+    if (allOn) status.textContent = 'All ' + total + ' voices selected — tap Continue to keep them all.';
+    else if (noneOn) status.textContent = 'No voices selected — all will be included if you continue.';
+    else status.textContent = n + ' of ' + total + ' voices selected.';
+  }
 }
 
 function toggleOb3Teacher(el) {
