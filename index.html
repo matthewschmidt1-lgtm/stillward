@@ -311,9 +311,6 @@
   <!-- ============ ONBOARDING 1: WELCOME ============ -->
   <div class="screen active" id="ob1">
     <div class="scroll" style="padding: 20px 26px 24px;">
-      <div class="ob-dots">
-        <div class="ob-dot active"></div><div class="ob-dot"></div><div class="ob-dot"></div>
-      </div>
       <div style="text-align:center;margin-bottom:24px;padding-top:12px;">
 
         <!-- Orbiting leaf logo — same as home -->
@@ -366,8 +363,7 @@
       <div class="display" style="margin-bottom:14px;">Welcome.</div>
       <div class="body-text" style="margin-bottom:20px;">Three minutes. No pressure. Just a small return to yourself.</div>
       <div style="margin-bottom:32px;"></div>
-      <button class="btn-primary" onclick="goScreen('ob3')">I'm ready</button>
-      <button class="btn-ghost" onclick="goScreen('ob3')">Just browsing</button>
+      <button class="btn-primary" onclick="beginFromWelcome()">I'm ready</button>
       <div style="text-align:center;font-size:14px;color:#8A8880;padding:14px 0 0;">Made by <a href="https://matthew-schmidt-production.up.railway.app/" target="_blank" rel="noopener noreferrer" style="color:#8A8880;text-decoration:underline;">Matty</a></div>
     </div>
   </div>
@@ -1650,6 +1646,14 @@ function selectAllOb3Teachers() {
 function unselectAllOb3Teachers() {
   selectedInits = new Set();
   renderOb3TeacherChips();
+}
+
+function beginFromWelcome() {
+  // Remember that onboarding is done so returning visits go straight to home
+  if (selectedInits.size === 0) selectedInits = new Set(Object.values(teacherInitMap));
+  saveData('selectedInits', [...selectedInits]);
+  lastPracticeQuote = null;
+  goScreen('you');
 }
 
 function continueFromOb3() {
