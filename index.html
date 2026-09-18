@@ -795,6 +795,11 @@
       <div class="hr"></div>
       <div class="sec-lbl">Your teachers</div>
       <div style="font-size:14px;color:#6B6960;padding:0 22px;margin-bottom:10px;">Tap to include or exclude a voice. Your quotes and practices follow this.</div>
+      <div style="display:flex;gap:8px;padding:0 22px;margin-bottom:10px;">
+        <div class="pill active" id="you-select-all" onclick="selectAllYouTeachers()">✓ Select all</div>
+        <div class="pill" id="you-unselect-all" onclick="unselectAllYouTeachers()">Unselect all</div>
+      </div>
+      <div id="you-teacher-status" style="font-size:14px;color:var(--stone);padding:0 22px;margin-bottom:10px;">All 8 voices selected.</div>
       <div id="you-teacher-chips" style="display:flex;flex-wrap:wrap;gap:7px;padding:0 22px;margin-bottom:14px;">
         <div class="t-chip" data-init="RD" style="background:#EDF4F0;color:#3a5a4a;" onclick="toggleTeacherFromYou(this)">Ram Dass</div>
         <div class="t-chip" data-init="MW" style="background:#F9E8E6;color:#7a1a10;" onclick="toggleTeacherFromYou(this)">Williamson</div>
@@ -1462,24 +1467,45 @@ function updateYouName(val) {
 
 function toggleTeacherFromYou(el) {
   const init = el.getAttribute('data-init');
-  if (selectedInits.has(init)) {
-    // Don't allow removing the last teacher
-    if (selectedInits.size === 1) return;
-    selectedInits.delete(init);
-  } else {
-    selectedInits.add(init);
-  }
+  if (selectedInits.has(init)) selectedInits.delete(init);
+  else selectedInits.add(init);
+  saveData('selectedInits', [...selectedInits]);
+  renderYouTeacherChips();
+}
+function selectAllYouTeachers() {
+  selectedInits = new Set(Object.values(teacherInitMap));
+  saveData('selectedInits', [...selectedInits]);
+  renderYouTeacherChips();
+}
+function unselectAllYouTeachers() {
+  selectedInits = new Set();
   saveData('selectedInits', [...selectedInits]);
   renderYouTeacherChips();
 }
 
 function renderYouTeacherChips() {
-  document.querySelectorAll('#you-teacher-chips .t-chip').forEach(chip => {
+  const chips = document.querySelectorAll('#you-teacher-chips .t-chip');
+  chips.forEach(chip => {
     const init = chip.getAttribute('data-init');
     const on = selectedInits.has(init);
     chip.classList.toggle('on', on);
     chip.style.opacity = on ? '1' : '0.35';
   });
+  // Reflect the current state on the Select all / Unselect all pills
+  const total = chips.length;
+  const n = selectedInits.size;
+  const allOn = n === total;
+  const noneOn = n === 0;
+  const selAll = document.getElementById('you-select-all');
+  const unselAll = document.getElementById('you-unselect-all');
+  if (selAll) { selAll.classList.toggle('active', allOn); selAll.textContent = (allOn ? '✓ ' : '') + 'Select all'; }
+  if (unselAll) { unselAll.classList.toggle('active', noneOn); unselAll.textContent = (noneOn ? '✓ ' : '') + 'Unselect all'; }
+  const status = document.getElementById('you-teacher-status');
+  if (status) {
+    if (allOn) status.textContent = 'All ' + total + ' voices selected.';
+    else if (noneOn) status.textContent = 'No voices selected — all will be included until you choose.';
+    else status.textContent = n + ' of ' + total + ' voices selected.';
+  }
 }
 
 function renderSavedPractices() {
