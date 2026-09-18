@@ -1653,7 +1653,7 @@ function beginFromWelcome() {
   if (selectedInits.size === 0) selectedInits = new Set(Object.values(teacherInitMap));
   saveData('selectedInits', [...selectedInits]);
   lastPracticeQuote = null;
-  goScreen('you');
+  goScreen('home');
 }
 
 function continueFromOb3() {
