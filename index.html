@@ -1523,16 +1523,16 @@ function renderYouTeacherChips() {
 function renderSavedPractices() {
   const container = document.getElementById('saved-practices');
   if (savedPractices.length === 0) {
-    container.innerHTML = '<div style="font-size:15px;color:var(--stone);">Practices you keep will live here.</div>';
+    container.innerHTML = '<div style="font-size:17px;color:var(--stone);">Practices you keep will live here.</div>';
     return;
   }
   container.innerHTML = savedPractices.map((p, i) =>
     '<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:0.5px solid var(--border);">' +
       '<div style="flex:1;cursor:pointer;" onclick="startSavedPractice(' + i + ')">' +
-        '<div style="font-size:15px;font-weight:500;color:var(--ink);">' + p.title + '</div>' +
-        '<div style="font-size:14px;color:var(--stone);margin-top:2px;">' + p.label + '</div>' +
+        '<div style="font-size:17px;font-weight:500;color:var(--ink);">' + p.title + '</div>' +
+        '<div style="font-size:16px;color:var(--stone);margin-top:2px;">' + p.label + '</div>' +
       '</div>' +
-      '<div onclick="startSavedPractice(' + i + ')" style="flex-shrink:0;font-size:13px;font-weight:500;color:var(--sage);background:var(--sage-light);padding:6px 13px;border-radius:20px;cursor:pointer;">Begin</div>' +
+      '<div onclick="startSavedPractice(' + i + ')" style="flex-shrink:0;font-size:15px;font-weight:500;color:var(--sage);background:var(--sage-light);padding:6px 13px;border-radius:20px;cursor:pointer;">Begin</div>' +
       '<div onclick="event.stopPropagation();removeSavedPractice(' + i + ')" style="flex-shrink:0;font-size:16px;color:var(--stone);cursor:pointer;opacity:.5;padding:0 4px;">×</div>' +
     '</div>'
   ).join('');
