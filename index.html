@@ -237,6 +237,13 @@
   #home-intention .serif-italic { font-size: 19px; line-height: 1.6; }
   #home-intention .serif-italic + div { font-size: 17px; margin-top: 8px; }
   #timer-reminder { font-size: 17px; line-height: 1.7; }
+  #you .heading { font-size: 26px; }
+  #you .sec-lbl { font-size: 15px; }
+  #you .stat-num { font-size: 24px; }
+  #you .stat-lbl { font-size: 14px; }
+  #you .pill { font-size: 16px; }
+  #you .t-chip { font-size: 16px; }
+  #you .name-input { font-size: 19px; }
   .sec-lbl { font-size: 13px; font-weight: 500; color: var(--stone); letter-spacing: .07em; text-transform: uppercase; padding: 0 22px; margin-bottom: 10px; }
 
   /* Recent chip */
@@ -792,7 +799,7 @@
           <div id="you-avatar" style="width:58px;height:58px;border-radius:50%;background:var(--sage);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:500;color:#fff;flex-shrink:0;">F</div>
           <div>
             <div class="heading" id="you-name">Friend</div>
-            <div style="font-size:15px;color:var(--stone);margin-top:2px;">Practicing since April 2026</div>
+            <div style="font-size:17px;color:var(--stone);margin-top:2px;">Practicing since April 2026</div>
           </div>
         </div>
         <div style="display:flex;gap:8px;">
@@ -806,15 +813,15 @@
       <div style="padding:0 22px;margin-bottom:6px;">
         <input id="you-name-input" class="name-input" type="text" placeholder="Your first name" value="Friend" oninput="updateYouName(this.value)"/>
       </div>
-      <div style="font-size:14px;color:#6B6960;padding:0 22px;margin-bottom:4px;">Stays on your device.</div>
+      <div style="font-size:16px;color:#6B6960;padding:0 22px;margin-bottom:4px;">Stays on your device.</div>
       <div class="hr"></div>
       <div class="sec-lbl">Your teachers</div>
-      <div style="font-size:14px;color:#6B6960;padding:0 22px;margin-bottom:10px;">Tap to include or exclude a voice. Your quotes and practices follow this.</div>
+      <div style="font-size:16px;color:#6B6960;padding:0 22px;margin-bottom:10px;">Tap to include or exclude a voice. Your quotes and practices follow this.</div>
       <div style="display:flex;gap:8px;padding:0 22px;margin-bottom:10px;">
         <div class="pill active" id="you-select-all" onclick="selectAllYouTeachers()">✓ Select all</div>
         <div class="pill" id="you-unselect-all" onclick="unselectAllYouTeachers()">Unselect all</div>
       </div>
-      <div id="you-teacher-status" style="font-size:14px;color:var(--stone);padding:0 22px;margin-bottom:10px;">All 8 voices selected.</div>
+      <div id="you-teacher-status" style="font-size:16px;color:var(--stone);padding:0 22px;margin-bottom:10px;">All 8 voices selected.</div>
       <div id="you-teacher-chips" style="display:flex;flex-wrap:wrap;gap:7px;padding:0 22px;margin-bottom:14px;">
         <div class="t-chip" data-init="RD" style="background:#EDF4F0;color:#3a5a4a;" onclick="toggleTeacherFromYou(this)">Ram Dass</div>
         <div class="t-chip" data-init="MW" style="background:#F9E8E6;color:#7a1a10;" onclick="toggleTeacherFromYou(this)">Williamson</div>
@@ -828,14 +835,14 @@
       <div class="hr"></div>
       <div class="sec-lbl">Saved practices</div>
       <div id="saved-practices" style="padding:0 22px;margin-bottom:14px;">
-        <div style="font-size:15px;color:var(--stone);" id="saved-empty">Practices you keep will live here.</div>
+        <div style="font-size:17px;color:var(--stone);" id="saved-empty">Practices you keep will live here.</div>
       </div>
       <div class="hr"></div>
       <div class="sec-lbl">Daily reminder</div>
       <div class="setting-row">
         <div style="display:flex;align-items:center;gap:14px;">
           <div class="setting-icon" style="background:#FEF8DC;"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 2C9 2 4.5 4.5 4.5 9.5v1.5L3.5 12v.5h11V12l-1-1V9.5C13.5 4.5 9 2 9 2Z" stroke="#7a5800" stroke-width="1.1" fill="none" stroke-linejoin="round"/><path d="M7.5 13.5a1.5 1.5 0 003 0" stroke="#7a5800" stroke-width="1.1" stroke-linecap="round" fill="none"/></svg></div>
-          <div><div style="font-size:16px;font-weight:500;color:var(--ink);">Reminder on</div><div style="font-size:15px;color:var(--stone);">A gentle nudge once a day</div></div>
+          <div><div style="font-size:18px;font-weight:500;color:var(--ink);">Reminder on</div><div style="font-size:17px;color:var(--stone);">A gentle nudge once a day</div></div>
         </div>
         <div class="toggle on" onclick="this.classList.toggle('on')"><div class="toggle-knob"></div></div>
       </div>
@@ -857,12 +864,12 @@
         <div class="pill" data-min="30" onclick="setSessionLength(this)">30 min</div>
       </div>
       <div class="hr"></div>
-      <div class="setting-row" onclick="shareApp()" style="cursor:pointer;"><div style="display:flex;align-items:center;gap:14px;"><div class="setting-icon" style="background:var(--mist);"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="3" y="3" width="12" height="12" rx="3" stroke="#888780" stroke-width="1" fill="none"/><path d="M6 9h6M9 6v6" stroke="#888780" stroke-width="1.2" stroke-linecap="round"/></svg></div><div><div style="font-size:16px;font-weight:500;color:var(--ink);">Share Stillward</div><div style="font-size:15px;color:var(--stone);" id="share-stillward-desc">Give someone a still point</div></div></div><div style="color:#8A8880;font-size:18px;">›</div></div>
+      <div class="setting-row" onclick="shareApp()" style="cursor:pointer;"><div style="display:flex;align-items:center;gap:14px;"><div class="setting-icon" style="background:var(--mist);"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="3" y="3" width="12" height="12" rx="3" stroke="#888780" stroke-width="1" fill="none"/><path d="M6 9h6M9 6v6" stroke="#888780" stroke-width="1.2" stroke-linecap="round"/></svg></div><div><div style="font-size:18px;font-weight:500;color:var(--ink);">Share Stillward</div><div style="font-size:17px;color:var(--stone);" id="share-stillward-desc">Give someone a still point</div></div></div><div style="color:#8A8880;font-size:18px;">›</div></div>
       <div class="hr"></div>
-      <div class="setting-row"><div style="display:flex;align-items:center;gap:14px;"><div class="setting-icon" style="background:#E3EDF5;"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 14l3-3 3 3 3-6 3 6" stroke="#1A5F8F" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></div><div><div style="font-size:16px;font-weight:500;color:var(--ink);">Show pattern insights</div><div style="font-size:15px;color:var(--stone);">Surface your practice patterns</div></div></div><div class="toggle on" onclick="this.classList.toggle('on')"><div class="toggle-knob"></div></div></div>
-      <div class="setting-row"><div style="display:flex;align-items:center;gap:14px;"><div class="setting-icon" style="background:#EDF4F0;"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M4 10 Q6 5 9 8 Q12 11 14 6" stroke="#7D9E89" stroke-width="1.2" stroke-linecap="round" fill="none"/><circle cx="9" cy="8.5" r="1.5" fill="#7D9E89"/></svg></div><div><div style="font-size:16px;font-weight:500;color:var(--ink);">Ambient sound</div><div style="font-size:15px;color:var(--stone);">Play soft sound during practice</div></div></div><div class="toggle" onclick="this.classList.toggle('on')"><div class="toggle-knob"></div></div></div>
+      <div class="setting-row"><div style="display:flex;align-items:center;gap:14px;"><div class="setting-icon" style="background:#E3EDF5;"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 14l3-3 3 3 3-6 3 6" stroke="#1A5F8F" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></div><div><div style="font-size:18px;font-weight:500;color:var(--ink);">Show pattern insights</div><div style="font-size:17px;color:var(--stone);">Surface your practice patterns</div></div></div><div class="toggle on" onclick="this.classList.toggle('on')"><div class="toggle-knob"></div></div></div>
+      <div class="setting-row"><div style="display:flex;align-items:center;gap:14px;"><div class="setting-icon" style="background:#EDF4F0;"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M4 10 Q6 5 9 8 Q12 11 14 6" stroke="#7D9E89" stroke-width="1.2" stroke-linecap="round" fill="none"/><circle cx="9" cy="8.5" r="1.5" fill="#7D9E89"/></svg></div><div><div style="font-size:18px;font-weight:500;color:var(--ink);">Ambient sound</div><div style="font-size:17px;color:var(--stone);">Play soft sound during practice</div></div></div><div class="toggle" onclick="this.classList.toggle('on')"><div class="toggle-knob"></div></div></div>
       <div class="hr"></div>
-      <div style="font-size:13px;color:#888780;text-align:center;padding:8px 22px 4px;">Stillward · v1.0 · Made with presence</div>
+      <div style="font-size:15px;color:#888780;text-align:center;padding:8px 22px 4px;">Stillward · v1.0 · Made with presence</div>
       <div style="text-align:center;font-size:14px;color:#8A8880;padding:0 22px 24px;">Made by <a href="https://matthew-schmidt-production.up.railway.app/" target="_blank" rel="noopener noreferrer" style="color:#8A8880;text-decoration:underline;">Matty</a></div>
     </div>
     <div class="bottom-nav">
