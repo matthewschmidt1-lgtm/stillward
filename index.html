@@ -485,7 +485,6 @@
           <div id="home-logo-msg"></div>
         </div>
         <div class="heading" id="home-greeting" style="margin-bottom:2px;">Welcome back.</div>
-        <div style="font-size:15px;color:var(--stone);" id="home-reentry"></div>
       </div>
 
       <!-- Begin card -->
@@ -1276,16 +1275,6 @@ function renderHomeGreeting() {
   else             greeting = 'Winding down?';
   document.getElementById('home-greeting').textContent = greeting;
 
-  // Gentle re-entry message
-  const reentry = document.getElementById('home-reentry');
-  reentry.textContent = '';
-  if (sessions.length > 0) {
-    const lastDate = sessions[sessions.length - 1].d;
-    const gap = daysBetween(lastDate, todayStr());
-    if (gap >= 3) {
-      reentry.textContent = "It's been a little while. The door was always open.";
-    }
-  }
 }
 
 function renderReturns() {
