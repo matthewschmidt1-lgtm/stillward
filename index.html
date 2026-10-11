@@ -721,19 +721,29 @@
   <div class="screen" id="p5">
     <div class="prog-bar"><div class="prog-fill" style="width:100%"></div></div>
     <div style="flex:1;display:flex;flex-direction:column;align-items:center;padding:36px 26px 28px;overflow-y:auto;-webkit-overflow-scrolling:touch;">
-      <div id="done-mark" style="width:88px;height:88px;margin-bottom:20px;">
+      <div id="done-mark" style="position:relative;width:88px;height:88px;margin-bottom:20px;">
         <style>
           @keyframes doneSettle { 0% { transform: scale(.9); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
-          @keyframes doneRing   { 0% { transform: scale(.7); opacity: .5; } 100% { transform: scale(1.25); opacity: 0; } }
-          #done-mark svg { animation: doneSettle 1.1s ease-out both; transform-origin: 50% 50%; }
-          #done-mark .done-ring { animation: doneRing 1.8s ease-out .3s both; transform-origin: 80px 80px; }
+          @keyframes doneRipple { 0% { transform: scale(.6); opacity: .55; } 100% { transform: scale(16); opacity: 0; } }
+          #done-mark svg { position: relative; z-index: 1; animation: doneSettle 1.1s ease-out both; transform-origin: 50% 50%; }
+          #done-mark .ripple {
+            position: absolute; top: 0; left: 0; width: 88px; height: 88px; border-radius: 50%;
+            border: 1.5px solid var(--sage); pointer-events: none;
+            animation: doneRipple 3s ease-out both; animation-iteration-count: 3;
+          }
+          #done-mark .ripple.r2 { animation-delay: 1s; }
+          #done-mark .ripple.r3 { animation-delay: 2s; }
         </style>
+        <div class="ripple r1"></div>
+        <div class="ripple r2"></div>
+        <div class="ripple r3"></div>
         <svg width="88" height="88" viewBox="0 0 160 160">
-          <circle class="done-ring" cx="80" cy="80" r="70" fill="none" stroke="#7D9E89" stroke-width="1.5"/>
           <circle cx="80" cy="80" r="64" fill="#EDF4F0"/>
-          <path d="M80 36 Q114 80 80 124 Q46 80 80 36Z" fill="#7D9E89" opacity=".12"/>
-          <path d="M80 36 Q114 80 80 124 Q46 80 80 36Z" fill="none" stroke="#7D9E89" stroke-width="2.2"/>
-          <line x1="80" y1="48" x2="80" y2="112" stroke="#7D9E89" stroke-width="1.4" stroke-linecap="round" opacity=".5"/>
+          <g transform="rotate(45 80 80)">
+            <path d="M80 36 Q114 80 80 124 Q46 80 80 36Z" fill="#7D9E89" opacity=".12"/>
+            <path d="M80 36 Q114 80 80 124 Q46 80 80 36Z" fill="none" stroke="#7D9E89" stroke-width="2.2"/>
+            <line x1="80" y1="48" x2="80" y2="112" stroke="#7D9E89" stroke-width="1.4" stroke-linecap="round" opacity=".5"/>
+          </g>
           <circle cx="80" cy="80" r="5" fill="#7D9E89" opacity=".9"/>
         </svg>
       </div>
