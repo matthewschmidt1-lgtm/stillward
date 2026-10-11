@@ -185,7 +185,7 @@
     flex: 1; display: flex; flex-direction: column;
     align-items: center; gap: 4px; cursor: pointer; padding: 4px 0;
   }
-  .nav-lbl { font-size: 13px; color: #8A8880; letter-spacing: .02em; }
+  .nav-lbl { font-size: 15px; color: #8A8880; letter-spacing: .02em; }
   .nav-item.active .nav-lbl { color: var(--sage); }
 
   /* Stat chip */
@@ -226,7 +226,7 @@
   #p3 .body-text { font-size: 17px; line-height: 1.7; }
   #p3 .serif-italic { font-size: 18px; line-height: 1.6; }
   #p5 .display { font-size: 34px; }
-  #p5 .body-text { font-size: 17px; }
+  #p5 .body-text { font-size: 19px; }
   #p5 .serif-italic { font-size: 18px; line-height: 1.6; }
   #p5 #done-src { font-size: 16px; }
   #p5 .feel-chip { font-size: 16px; }
@@ -236,13 +236,14 @@
   #home-intention .sec-lbl { font-size: 15px; }
   #home-intention .serif-italic { font-size: 19px; line-height: 1.6; }
   #home-intention .serif-italic + div { font-size: 17px; margin-top: 8px; }
-  #timer-reminder { font-size: 17px; line-height: 1.7; }
+  #timer-reminder { font-size: 19px; line-height: 1.7; }
   #you .heading { font-size: 26px; }
   #you .sec-lbl { font-size: 15px; }
   #you .stat-num { font-size: 24px; }
   #you .stat-lbl { font-size: 14px; }
   #you .pill { font-size: 16px; }
-  #you .t-chip { font-size: 16px; }
+  #you .t-chip { font-size: 17px; padding: 9px 15px; }
+  #you .t-chip.on { font-weight: 600; border-color: currentColor; }
   #you .name-input { font-size: 19px; }
   #patterns .heading { font-size: 26px; }
   #patterns .label { font-size: 15px; }
@@ -310,7 +311,7 @@
     #p3 .body-text { font-size: 19px; line-height: 1.7; }
     #p3 .serif-italic { font-size: 21px; line-height: 1.6; }
     #p3 #p3-wsrc { font-size: 16px; margin-top: 8px; }
-    #p3 #p3-explain { font-size: 18px; line-height: 1.65; }
+    #p3 #p3-explain { font-size: 15px; line-height: 1.65; }
     #p3 .wisdom-block { padding-left: 16px; margin: 32px 0; }
     body {
       background: var(--parchment);
@@ -518,10 +519,10 @@
       <!-- Begin card -->
       <div style="padding:0 22px;margin-bottom:20px;">
         <div style="background:var(--sage);border-radius:20px;padding:22px 20px;cursor:pointer;" onclick="goScreen('p0')" id="begin-card">
-          <div style="font-size:13px;color:rgba(255,255,255,.85);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px;">3 minutes · today's practice</div>
+          <div style="font-size:15px;color:rgba(255,255,255,.85);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px;">3 minutes · today's practice</div>
           <div style="font-size:21px;font-weight:500;color:#fff;line-height:1.3;margin-bottom:12px;letter-spacing:-.01em;">What's pulling at you right now?</div>
-          <div style="font-size:15px;color:rgba(255,255,255,.9);line-height:1.6;margin-bottom:18px;">Your still point is close. Let's find it together.</div>
-          <div style="display:inline-block;padding:9px 20px;border-radius:10px;font-size:15px;font-weight:500;background:rgba(255,255,255,.2);color:#fff;">Begin now</div>
+          <div style="font-size:17px;color:rgba(255,255,255,.9);line-height:1.6;margin-bottom:18px;">Your still point is close. Let's find it together.</div>
+          <div style="display:inline-block;padding:9px 20px;border-radius:10px;font-size:16px;font-weight:500;background:rgba(255,255,255,.2);color:#fff;">Begin now</div>
         </div>
       </div>
 
@@ -653,10 +654,10 @@
         <div style="font-size:15px;color:var(--stone);margin-top:4px;" id="p3-wsrc">Ram Dass</div>
       </div>
       <div style="background:var(--mist);border-radius:12px;padding:12px 14px;margin-bottom:18px;">
-        <div style="font-size:13px;font-weight:500;color:var(--stone);letter-spacing:.06em;text-transform:uppercase;margin-bottom:5px;">What this means</div>
-        <div style="font-size:16px;color:var(--ink);line-height:1.65;" id="p3-explain">When your mind slows down and stops chattering, you become more aware of what's actually happening, inside and around you.</div>
+        <div style="font-size:15px;font-weight:700;color:var(--stone);letter-spacing:.06em;text-transform:uppercase;margin-bottom:5px;">What this means</div>
+        <div style="font-size:15px;color:var(--ink);line-height:1.65;" id="p3-explain">When your mind slows down and stops chattering, you become more aware of what's actually happening, inside and around you.</div>
       </div>
-      <div style="font-size:14px;font-weight:500;color:var(--ink);letter-spacing:.07em;text-transform:uppercase;margin-bottom:8px;">The practice</div>
+      <div style="font-size:14px;font-weight:700;color:var(--ink);letter-spacing:.07em;text-transform:uppercase;margin-bottom:8px;">The practice</div>
       <div class="body-text" id="p3-steps">Sit where you are. Take one slow breath. Feel it completely. When a thought arises, say "thinking" and return. Each return is a small homecoming. Stay for 3 minutes.</div>
       <div style="text-align:center;font-size:14px;color:#8A8880;padding:36px 0 8px;">Made by <a href="https://matthew-schmidt-production.up.railway.app/" target="_blank" rel="noopener noreferrer" style="color:#8A8880;text-decoration:underline;">Matty</a></div>
     </div>
@@ -702,7 +703,7 @@
         </div>
         <div style="font-size:30px;color:var(--sage);font-weight:500;letter-spacing:.04em;" id="breath-lbl">Breathe in</div>
       </div>
-      <div style="font-size:15px;font-weight:500;color:var(--ink);text-align:center;margin-bottom:12px;flex-shrink:0;" id="timer-msg">Follow the practice below</div>
+      <div style="font-size:17px;font-weight:500;color:var(--ink);text-align:center;margin-bottom:12px;flex-shrink:0;" id="timer-msg">Follow the practice below</div>
       <div style="background:var(--mist);border-radius:14px;padding:14px 16px;width:100%;flex-shrink:0;">
         <div style="color:var(--stone);font-style:italic;" id="timer-reminder">Sit where you are. Take one slow breath. When a thought arises, say "thinking" and return. Each return is a homecoming.</div>
       </div>
@@ -720,8 +721,21 @@
   <div class="screen" id="p5">
     <div class="prog-bar"><div class="prog-fill" style="width:100%"></div></div>
     <div style="flex:1;display:flex;flex-direction:column;align-items:center;padding:36px 26px 28px;overflow-y:auto;-webkit-overflow-scrolling:touch;">
-      <div style="width:72px;height:72px;border-radius:50%;background:var(--sage-light);display:flex;align-items:center;justify-content:center;margin-bottom:20px;">
-        <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><path d="M7 16l6 6 12-12" stroke="#7D9E89" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div id="done-mark" style="width:88px;height:88px;margin-bottom:20px;">
+        <style>
+          @keyframes doneSettle { 0% { transform: scale(.9); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+          @keyframes doneRing   { 0% { transform: scale(.7); opacity: .5; } 100% { transform: scale(1.25); opacity: 0; } }
+          #done-mark svg { animation: doneSettle 1.1s ease-out both; transform-origin: 50% 50%; }
+          #done-mark .done-ring { animation: doneRing 1.8s ease-out .3s both; transform-origin: 80px 80px; }
+        </style>
+        <svg width="88" height="88" viewBox="0 0 160 160">
+          <circle class="done-ring" cx="80" cy="80" r="70" fill="none" stroke="#7D9E89" stroke-width="1.5"/>
+          <circle cx="80" cy="80" r="64" fill="#EDF4F0"/>
+          <path d="M80 36 Q114 80 80 124 Q46 80 80 36Z" fill="#7D9E89" opacity=".12"/>
+          <path d="M80 36 Q114 80 80 124 Q46 80 80 36Z" fill="none" stroke="#7D9E89" stroke-width="2.2"/>
+          <line x1="80" y1="48" x2="80" y2="112" stroke="#7D9E89" stroke-width="1.4" stroke-linecap="round" opacity=".5"/>
+          <circle cx="80" cy="80" r="5" fill="#7D9E89" opacity=".9"/>
+        </svg>
       </div>
       <div class="display" style="text-align:center;margin-bottom:10px;">You came back<br>to yourself.</div>
       <div class="body-text" style="text-align:center;margin-bottom:22px;">Even a small return is a real one. Notice what's different, even a little.</div>
@@ -730,10 +744,12 @@
         <div style="font-size:15px;color:var(--stone);margin-top:4px;" id="done-src">Ram Dass</div>
       </div>
       <div style="font-size:16px;font-weight:500;color:var(--stone);letter-spacing:.07em;text-transform:uppercase;margin-bottom:10px;width:100%;">How do you feel?</div>
-      <div style="display:flex;gap:8px;margin-bottom:18px;width:100%;">
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:18px;width:100%;">
         <div class="feel-chip" onclick="selectFeeling(this)">Lighter</div>
-        <div class="feel-chip" onclick="selectFeeling(this)">Clearer</div>
         <div class="feel-chip" onclick="selectFeeling(this)">Calmer</div>
+        <div class="feel-chip" onclick="selectFeeling(this)">Clearer</div>
+        <div class="feel-chip" onclick="selectFeeling(this)">Tender</div>
+        <div class="feel-chip" onclick="selectFeeling(this)">Unchanged</div>
         <div class="feel-chip" onclick="selectFeeling(this)">Still heavy</div>
       </div>
       <div id="still-heavy-block" style="display:none;width:100%;background:var(--mist);border-radius:14px;padding:14px 16px;margin-bottom:14px;">
@@ -820,22 +836,24 @@
       </div>
       <div style="font-size:16px;color:#6B6960;padding:0 22px;margin-bottom:4px;">Stays on your device.</div>
       <div class="hr"></div>
-      <div class="sec-lbl">Your teachers</div>
-      <div style="font-size:16px;color:#6B6960;padding:0 22px;margin-bottom:10px;">Tap to include or exclude a voice. Your quotes and practices follow this.</div>
-      <div style="display:flex;gap:8px;padding:0 22px;margin-bottom:10px;">
-        <div class="pill active" id="you-select-all" onclick="selectAllYouTeachers()">✓ Select all</div>
-        <div class="pill" id="you-unselect-all" onclick="unselectAllYouTeachers()">Unselect all</div>
-      </div>
-      <div id="you-teacher-status" style="font-size:16px;color:var(--stone);padding:0 22px;margin-bottom:10px;">All 8 voices selected.</div>
-      <div id="you-teacher-chips" style="display:flex;flex-wrap:wrap;gap:7px;padding:0 22px;margin-bottom:14px;">
-        <div class="t-chip" data-init="RD" style="background:#EDF4F0;color:#3a5a4a;" onclick="toggleTeacherFromYou(this)">Ram Dass</div>
-        <div class="t-chip" data-init="MW" style="background:#F9E8E6;color:#7a1a10;" onclick="toggleTeacherFromYou(this)">Williamson</div>
-        <div class="t-chip" data-init="AH" style="background:#EDE6F5;color:#3d1a6a;" onclick="toggleTeacherFromYou(this)">Almaas</div>
-        <div class="t-chip" data-init="WD" style="background:#FEF8DC;color:#7a5800;" onclick="toggleTeacherFromYou(this)">Dyer</div>
-        <div class="t-chip" data-init="JC" style="background:#E3EDF5;color:#1A5F8F;" onclick="toggleTeacherFromYou(this)">Jesus</div>
-        <div class="t-chip" data-init="NM" style="background:#F0EDE7;color:#444441;" onclick="toggleTeacherFromYou(this)">Nisargadatta</div>
-        <div class="t-chip" data-init="BU" style="background:#F5EFE0;color:#6B4A00;" onclick="toggleTeacherFromYou(this)">Buddha</div>
-        <div class="t-chip" data-init="PC" style="background:#E8F0EE;color:#1A4A3A;" onclick="toggleTeacherFromYou(this)">Peter Crone</div>
+      <div id="you-teachers-card" style="margin:0 22px 16px;padding:18px 16px 14px;background:#EDF4F0;border:1.5px solid rgba(125,158,137,.4);border-radius:18px;">
+        <div style="font-size:19px;font-weight:600;color:var(--ink);margin-bottom:4px;">Your teachers</div>
+        <div style="font-size:17px;color:#5C5B56;line-height:1.5;margin-bottom:12px;">Tap to include or exclude a voice. Your quotes and practices follow this. Prefer just one or two? Tap Unselect all, then choose them.</div>
+        <div style="display:flex;gap:8px;margin-bottom:10px;">
+          <div class="pill active" id="you-select-all" onclick="selectAllYouTeachers()">✓ Select all</div>
+          <div class="pill" id="you-unselect-all" onclick="unselectAllYouTeachers()">Unselect all</div>
+        </div>
+        <div id="you-teacher-status" style="font-size:16px;color:var(--stone);margin-bottom:10px;">All 8 voices selected.</div>
+        <div id="you-teacher-chips" style="display:flex;flex-wrap:wrap;gap:8px;">
+          <div class="t-chip" data-init="RD" style="background:#fff;color:#3a5a4a;" onclick="toggleTeacherFromYou(this)">Ram Dass</div>
+          <div class="t-chip" data-init="MW" style="background:#fff;color:#7a1a10;" onclick="toggleTeacherFromYou(this)">Marianne Williamson</div>
+          <div class="t-chip" data-init="AH" style="background:#fff;color:#3d1a6a;" onclick="toggleTeacherFromYou(this)">Almaas</div>
+          <div class="t-chip" data-init="WD" style="background:#fff;color:#7a5800;" onclick="toggleTeacherFromYou(this)">Dyer</div>
+          <div class="t-chip" data-init="JC" style="background:#fff;color:#1A5F8F;" onclick="toggleTeacherFromYou(this)">Jesus</div>
+          <div class="t-chip" data-init="NM" style="background:#fff;color:#444441;" onclick="toggleTeacherFromYou(this)">Nisargadatta</div>
+          <div class="t-chip" data-init="BU" style="background:#fff;color:#6B4A00;" onclick="toggleTeacherFromYou(this)">Buddha</div>
+          <div class="t-chip" data-init="PC" style="background:#fff;color:#1A4A3A;" onclick="toggleTeacherFromYou(this)">Peter Crone</div>
+        </div>
       </div>
       <div class="hr"></div>
       <div class="sec-lbl">Saved practices</div>
@@ -1070,12 +1088,15 @@ const practicePools = {
 // ─── Feeling-aware weighting ──────────────────────────────
 // Looks at past sessions for this same state `key` and scores each
 // practice title / teacher by how it's tended to leave the user feeling.
+const POSITIVE_FEELINGS = ['Lighter', 'Calmer', 'Clearer'];
+function isPositiveFeeling(f) { return POSITIVE_FEELINGS.includes(f); }
+
 function getFeelingStatsForKey(key) {
   const byTitle = {};
   const byTeacher = {};
   sessions.forEach(s => {
     if (!s.feeling || s.key !== key) return;
-    const positive = s.feeling === 'Lighter' || s.feeling === 'Clearer' || s.feeling === 'Calmer';
+    const positive = isPositiveFeeling(s.feeling);
     const heavy = s.feeling === 'Still heavy';
     if (!byTitle[s.title]) byTitle[s.title] = { positive: 0, heavy: 0 };
     if (positive) byTitle[s.title].positive++;
@@ -1316,7 +1337,7 @@ function renderReturns() {
   } else {
     // Evidence loop teaser on home
     const recent = sessions.slice(-14);
-    const positive = recent.filter(s => s.feeling && s.feeling !== 'Still heavy').length;
+    const positive = recent.filter(s => isPositiveFeeling(s.feeling)).length;
     const withFeeling = recent.filter(s => s.feeling).length;
     if (withFeeling >= 3 && positive / withFeeling >= 0.6) {
       msg.textContent = 'After ' + positive + ' of your last ' + withFeeling + ' practices, you said you felt better. Your own evidence.';
@@ -1355,7 +1376,7 @@ function renderRecentPractices() {
 function getGoToPractice() {
   const positiveCounts = {};
   sessions.forEach(s => {
-    if (s.feeling === 'Lighter' || s.feeling === 'Clearer' || s.feeling === 'Calmer') {
+    if (isPositiveFeeling(s.feeling)) {
       if (!positiveCounts[s.title]) positiveCounts[s.title] = { count: 0, lastDate: s.d };
       positiveCounts[s.title].count++;
       if (s.d >= positiveCounts[s.title].lastDate) positiveCounts[s.title].lastDate = s.d;
@@ -2062,7 +2083,7 @@ function buildMapTab() {
   let evidenceCard = '';
   if (withFeeling.length >= 3) {
     const recent = withFeeling.slice(-14);
-    const positive = recent.filter(s => s.feeling !== 'Still heavy').length;
+    const positive = recent.filter(s => isPositiveFeeling(s.feeling)).length;
     if (positive / recent.length >= 0.5) {
       evidenceCard = '<div style="background:#E8F3F0;border-radius:14px;padding:14px 16px;margin-bottom:10px;">' +
         '<div style="font-size:16px;font-weight:500;color:#0F6E56;letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px;">Your own evidence</div>' +
