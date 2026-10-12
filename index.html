@@ -720,17 +720,6 @@
   <!-- ============ PRACTICE: DONE ============ -->
   <div class="screen" id="p5">
     <div class="prog-bar"><div class="prog-fill" style="width:100%"></div></div>
-    <!-- Water ripple: a gentle displacement that passes over the whole screen on arrival -->
-    <svg width="0" height="0" style="position:absolute;" aria-hidden="true">
-      <filter id="done-water" x="-10%" y="-10%" width="120%" height="120%" color-interpolation-filters="sRGB">
-        <feTurbulence type="fractalNoise" baseFrequency="0.008 0.014" numOctaves="2" seed="7" result="noise">
-          <animate id="done-water-freq" attributeName="baseFrequency" values="0.008 0.014;0.011 0.018;0.008 0.014" dur="3.6s" begin="indefinite" fill="freeze"/>
-        </feTurbulence>
-        <feDisplacementMap in="SourceGraphic" in2="noise" scale="0" xChannelSelector="R" yChannelSelector="G">
-          <animate id="done-water-scale" attributeName="scale" values="0;9;3;6;1;3;0" keyTimes="0;.18;.36;.55;.72;.88;1" dur="3.6s" begin="indefinite" fill="freeze"/>
-        </feDisplacementMap>
-      </filter>
-    </svg>
     <div id="done-content" style="flex:1;display:flex;flex-direction:column;align-items:center;padding:36px 26px 28px;overflow-y:auto;-webkit-overflow-scrolling:touch;">
       <div id="done-mark" style="position:relative;width:88px;height:88px;margin-bottom:20px;">
         <style>
@@ -1499,7 +1488,6 @@ function goScreen(id) {
   document.documentElement.scrollTop = 0;
   document.body.scrollTop = 0;
   if (id !== 'p4' && timerInterval) { clearInterval(timerInterval); timerInterval = null; extraSitActive = false; stopPacer(); }
-  if (id === 'p5') startDoneRipple();
   if (id === 'home') renderHome();
   if (id === 'you') renderYouScreen();
   if (id === 'patterns') switchTab('map');
@@ -1978,19 +1966,6 @@ function completeSession() {
 }
 
 // ─── Done screen ─────────────────────────────────────────
-let doneRippleTimeout = null;
-function startDoneRipple() {
-  const content = document.getElementById('done-content');
-  const freq = document.getElementById('done-water-freq');
-  const scale = document.getElementById('done-water-scale');
-  if (!content || !freq || !scale || !freq.beginElement) return;
-  if (doneRippleTimeout) clearTimeout(doneRippleTimeout);
-  content.style.filter = 'url(#done-water)';
-  content.style.webkitFilter = 'url(#done-water)';
-  try { freq.beginElement(); scale.beginElement(); } catch(e) {}
-  // Lift the filter once the water has settled so the text is perfectly crisp again
-  doneRippleTimeout = setTimeout(() => { content.style.filter = ''; content.style.webkitFilter = ''; }, 3700);
-}
 
 function selectFeeling(el) {
   document.querySelectorAll('.feel-chip').forEach(c => c.classList.remove('sel'));
