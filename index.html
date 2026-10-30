@@ -50,7 +50,7 @@
     --stone: #5C5B56;
     --muted: #65635B;
     --sage-text: #46705B;
-    --sage-deep: #4F7A63;
+    --sage-deep: #587F6B;
     --amber-text: #8A6200;
     --ink: #2C2C2A;
     --ink-deep: #1A1A18;
@@ -198,7 +198,7 @@
     align-items: center; gap: 4px; cursor: pointer; padding: 4px 0;
   }
   .nav-lbl { font-size: 15px; color: #65635B; letter-spacing: .02em; }
-  .nav-item.active .nav-lbl { color: var(--sage-text); font-weight: 500; }
+  .nav-item.active .nav-lbl { color: var(--sage); }
 
   /* Stat chip */
   .stat-chip { flex: 1; background: var(--parchment); border-radius: 12px; padding: 10px 6px; text-align: center; }
@@ -258,7 +258,7 @@
   #you .stat-lbl { font-size: 14px; }
   #you .pill { font-size: 16px; }
   #you .t-chip { font-size: 17px; padding: 9px 15px; }
-  #you .t-chip.on { font-weight: 600; border-color: currentColor; }
+  #you .t-chip.on { font-weight: 500; border-color: color-mix(in srgb, currentColor 40%, transparent); }
   #you .name-input { font-size: 19px; }
   #patterns .heading { font-size: 26px; }
   #patterns .label { font-size: 15px; }
@@ -579,7 +579,7 @@
       <div style="text-align:center;font-size:14px;color:#65635B;padding:4px 22px 6px;">Made by <a href="https://matthew-schmidt-production.up.railway.app/" target="_blank" rel="noopener noreferrer" style="color:#65635B;text-decoration:underline;display:inline-block;padding:13px 10px;margin:-13px -10px;">Matty</a></div>
     </div>
     <div class="bottom-nav">
-      <div class="nav-item active"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="3" fill="#46705B"/><circle cx="11" cy="11" r="7" fill="none" stroke="#46705B" stroke-width="1" stroke-dasharray="2 2"/></svg><div class="nav-lbl" style="color:var(--sage-text);">Home</div></div>
+      <div class="nav-item active"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="3" fill="#7D9E89"/><circle cx="11" cy="11" r="7" fill="none" stroke="#7D9E89" stroke-width="1" stroke-dasharray="2 2"/></svg><div class="nav-lbl" style="color:var(--sage);">Home</div></div>
       <div class="nav-item" onclick="goScreen('you')"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="8" r="3.5" stroke="#65635B" stroke-width="1.2" fill="none"/><path d="M4 19c0-3.866 3.134-7 7-7h0c3.866 0 7 3.134 7 7" stroke="#65635B" stroke-width="1.2" stroke-linecap="round" fill="none"/></svg><div class="nav-lbl">You</div></div>
       <div class="nav-item" onclick="goScreen('p0')"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect x="3" y="5" width="16" height="2" rx="1" fill="#65635B"/><rect x="3" y="10" width="11" height="2" rx="1" fill="#65635B"/><rect x="3" y="15" width="13" height="2" rx="1" fill="#65635B"/></svg><div class="nav-lbl">Practice</div></div>
       <div class="nav-item" onclick="goScreen('patterns')"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M4 16 Q7 8 11 11 Q15 14 18 6" stroke="#65635B" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg><div class="nav-lbl">Patterns</div></div>
@@ -798,15 +798,16 @@
       <div id="tab-teachers" style="flex:1;padding:12px 4px 10px;font-size:17px;font-weight:500;text-align:center;cursor:pointer;color:var(--stone);border-bottom:2px solid transparent;letter-spacing:.02em;" onclick="switchTab('teachers')">Teachers</div>
       <div id="tab-timeline" style="flex:1;padding:12px 4px 10px;font-size:17px;font-weight:500;text-align:center;cursor:pointer;color:var(--stone);border-bottom:2px solid transparent;letter-spacing:.02em;" onclick="switchTab('timeline')">Timeline</div>
     </div>
-    <div class="scroll" id="tab-content" style="padding:20px 22px 20px;">
+    <div class="scroll" id="patterns-scroll">
+    <div id="tab-content" style="padding:20px 22px 20px;">
       <!-- Map view by default -->
       <div class="label" style="margin-bottom:4px;">Pattern tracking</div>
       <div class="heading" style="margin-bottom:4px;">What the data sees</div>
       <div style="font-size:17px;color:var(--stone);margin-bottom:18px;">Based on your last 24 sessions</div>
       <div style="display:flex;gap:8px;margin-bottom:18px;">
-        <div class="stat-chip"><div class="stat-num" style="color:var(--sage-text);">24</div><div class="stat-lbl">Sessions</div></div>
+        <div class="stat-chip"><div class="stat-num" style="color:var(--sage);">24</div><div class="stat-lbl">Sessions</div></div>
         <div class="stat-chip"><div class="stat-num" style="color:var(--dusk);">72</div><div class="stat-lbl">Minutes</div></div>
-        <div class="stat-chip"><div class="stat-num" style="color:var(--amber-text);">14</div><div class="stat-lbl">Streak</div></div>
+        <div class="stat-chip"><div class="stat-num" style="color:var(--amber);">14</div><div class="stat-lbl">Streak</div></div>
         <div class="stat-chip"><div class="stat-num" style="color:var(--velvet);">6</div><div class="stat-lbl">Teachers</div></div>
       </div>
       <div style="font-size:17px;font-weight:500;color:var(--ink);margin-bottom:10px;letter-spacing:.02em;">What brings you here</div>
@@ -825,12 +826,13 @@
         <div style="font-size:17px;color:var(--velvet);line-height:1.6;">You've visited Ram Dass 9 times. Your still point lives in presence.</div>
       </div>
     </div>
-    <div style="text-align:center;font-size:14px;color:#65635B;padding:4px 22px 6px;flex-shrink:0;">Made by <a href="https://matthew-schmidt-production.up.railway.app/" target="_blank" rel="noopener noreferrer" style="color:#65635B;text-decoration:underline;display:inline-block;padding:13px 10px;margin:-13px -10px;">Matty</a></div>
+    <div style="text-align:center;font-size:14px;color:#65635B;padding:6px 22px 18px;">Made by <a href="https://matthew-schmidt-production.up.railway.app/" target="_blank" rel="noopener noreferrer" style="color:#65635B;text-decoration:underline;display:inline-block;padding:13px 10px;margin:-13px -10px;">Matty</a></div>
+    </div>
     <div class="bottom-nav">
       <div class="nav-item" onclick="goScreen('home')"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="3" fill="#65635B"/><circle cx="11" cy="11" r="7" fill="none" stroke="#65635B" stroke-width="1" stroke-dasharray="2 2"/></svg><div class="nav-lbl">Home</div></div>
       <div class="nav-item" onclick="goScreen('you')"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="8" r="3.5" stroke="#65635B" stroke-width="1.2" fill="none"/><path d="M4 19c0-3.866 3.134-7 7-7h0c3.866 0 7 3.134 7 7" stroke="#65635B" stroke-width="1.2" stroke-linecap="round" fill="none"/></svg><div class="nav-lbl">You</div></div>
       <div class="nav-item" onclick="goScreen('p0')"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect x="3" y="5" width="16" height="2" rx="1" fill="#65635B"/><rect x="3" y="10" width="11" height="2" rx="1" fill="#65635B"/><rect x="3" y="15" width="13" height="2" rx="1" fill="#65635B"/></svg><div class="nav-lbl">Practice</div></div>
-      <div class="nav-item active"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M4 16 Q7 8 11 11 Q15 14 18 6" stroke="#46705B" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg><div class="nav-lbl" style="color:var(--sage-text);">Patterns</div></div>
+      <div class="nav-item active"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M4 16 Q7 8 11 11 Q15 14 18 6" stroke="#7D9E89" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg><div class="nav-lbl" style="color:var(--sage);">Patterns</div></div>
     </div>
   </div>
 
@@ -867,14 +869,14 @@
         </div>
         <div id="you-teacher-status" style="font-size:16px;color:var(--stone);margin-bottom:10px;">All 8 voices selected.</div>
         <div id="you-teacher-chips" style="display:flex;flex-wrap:wrap;gap:8px;">
-          <div class="t-chip" data-init="RD" style="background:#fff;color:#3a5a4a;" onclick="toggleTeacherFromYou(this)">Ram Dass</div>
-          <div class="t-chip" data-init="MW" style="background:#fff;color:#7a1a10;" onclick="toggleTeacherFromYou(this)">Marianne Williamson</div>
-          <div class="t-chip" data-init="AH" style="background:#fff;color:#3d1a6a;" onclick="toggleTeacherFromYou(this)">Almaas</div>
-          <div class="t-chip" data-init="WD" style="background:#fff;color:#7a5800;" onclick="toggleTeacherFromYou(this)">Dyer</div>
-          <div class="t-chip" data-init="JC" style="background:#fff;color:#1A5F8F;" onclick="toggleTeacherFromYou(this)">Jesus</div>
-          <div class="t-chip" data-init="NM" style="background:#fff;color:#444441;" onclick="toggleTeacherFromYou(this)">Nisargadatta</div>
-          <div class="t-chip" data-init="BU" style="background:#fff;color:#6B4A00;" onclick="toggleTeacherFromYou(this)">Buddha</div>
-          <div class="t-chip" data-init="PC" style="background:#fff;color:#1A4A3A;" onclick="toggleTeacherFromYou(this)">Peter Crone</div>
+          <div class="t-chip" data-init="RD" style="background:#fff;color:#5A7467;" onclick="toggleTeacherFromYou(this)">Ram Dass</div>
+          <div class="t-chip" data-init="MW" style="background:#fff;color:#A15C55;" onclick="toggleTeacherFromYou(this)">Marianne Williamson</div>
+          <div class="t-chip" data-init="AH" style="background:#fff;color:#7B639A;" onclick="toggleTeacherFromYou(this)">Almaas</div>
+          <div class="t-chip" data-init="WD" style="background:#fff;color:#896A1C;" onclick="toggleTeacherFromYou(this)">Dyer</div>
+          <div class="t-chip" data-init="JC" style="background:#fff;color:#38749E;" onclick="toggleTeacherFromYou(this)">Jesus</div>
+          <div class="t-chip" data-init="NM" style="background:#fff;color:#6F6F6D;" onclick="toggleTeacherFromYou(this)">Nisargadatta</div>
+          <div class="t-chip" data-init="BU" style="background:#fff;color:#866B2E;" onclick="toggleTeacherFromYou(this)">Buddha</div>
+          <div class="t-chip" data-init="PC" style="background:#fff;color:#517569;" onclick="toggleTeacherFromYou(this)">Peter Crone</div>
         </div>
       </div>
       <div class="hr"></div>
@@ -919,7 +921,7 @@
     </div>
     <div class="bottom-nav">
       <div class="nav-item" onclick="goScreen('home')"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="3" fill="#65635B"/><circle cx="11" cy="11" r="7" fill="none" stroke="#65635B" stroke-width="1" stroke-dasharray="2 2"/></svg><div class="nav-lbl">Home</div></div>
-      <div class="nav-item active"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="8" r="3.5" stroke="#46705B" stroke-width="1.2" fill="none"/><path d="M4 19c0-3.866 3.134-7 7-7h0c3.866 0 7 3.134 7 7" stroke="#46705B" stroke-width="1.2" stroke-linecap="round" fill="none"/></svg><div class="nav-lbl" style="color:var(--sage-text);">You</div></div>
+      <div class="nav-item active"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="8" r="3.5" stroke="#7D9E89" stroke-width="1.2" fill="none"/><path d="M4 19c0-3.866 3.134-7 7-7h0c3.866 0 7 3.134 7 7" stroke="#7D9E89" stroke-width="1.2" stroke-linecap="round" fill="none"/></svg><div class="nav-lbl" style="color:var(--sage);">You</div></div>
       <div class="nav-item" onclick="goScreen('p0')"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect x="3" y="5" width="16" height="2" rx="1" fill="#65635B"/><rect x="3" y="10" width="11" height="2" rx="1" fill="#65635B"/><rect x="3" y="15" width="13" height="2" rx="1" fill="#65635B"/></svg><div class="nav-lbl">Practice</div></div>
       <div class="nav-item" onclick="goScreen('patterns')"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M4 16 Q7 8 11 11 Q15 14 18 6" stroke="#65635B" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg><div class="nav-lbl">Patterns</div></div>
     </div>
@@ -2132,9 +2134,9 @@ function buildMapTab() {
     '<div class="heading" style="margin-bottom:4px;">What the data sees</div>' +
     '<div style="font-size:17px;color:var(--stone);margin-bottom:18px;">Based on your ' + count + (count === 1 ? ' session' : ' sessions') + '</div>' +
     '<div style="display:flex;gap:8px;margin-bottom:18px;">' +
-      '<div class="stat-chip"><div class="stat-num" style="color:var(--sage-text);">' + count + '</div><div class="stat-lbl">Returns</div></div>' +
+      '<div class="stat-chip"><div class="stat-num" style="color:var(--sage);">' + count + '</div><div class="stat-lbl">Returns</div></div>' +
       '<div class="stat-chip"><div class="stat-num" style="color:var(--dusk);">' + mins + '</div><div class="stat-lbl">Minutes</div></div>' +
-      '<div class="stat-chip"><div class="stat-num" style="color:var(--amber-text);">' + days + '</div><div class="stat-lbl">Days</div></div>' +
+      '<div class="stat-chip"><div class="stat-num" style="color:var(--amber);">' + days + '</div><div class="stat-lbl">Days</div></div>' +
       '<div class="stat-chip"><div class="stat-num" style="color:var(--velvet);">' + teachers + '</div><div class="stat-lbl">Teachers</div></div>' +
     '</div>' +
     '<div style="font-size:17px;font-weight:500;color:var(--ink);margin-bottom:10px;">What brings you here</div>' +
@@ -2225,7 +2227,7 @@ function switchTab(tab) {
   const content = document.getElementById('tab-content');
   const builders = { map: buildMapTab, teachers: buildTeachersTab, timeline: buildTimelineTab };
   content.innerHTML = builders[tab]();
-  content.scrollTop = 0;
+  document.getElementById('patterns-scroll').scrollTop = 0;
 }
 
 // ─── Utility ─────────────────────────────────────────────
