@@ -140,6 +140,30 @@
   }
   .btn-sage:active { opacity: .85; }
 
+  /* Soft raised 3D button (Begin on the practice card) */
+  .btn-3d {
+    background: linear-gradient(to bottom, #C4D9CC 0%, #A9C6B5 100%);
+    color: #25483A; font-weight: 600;
+    border-radius: 18px;
+    border: 1px solid rgba(255,255,255,.55);
+    box-shadow:
+      inset 0 1.5px 0 rgba(255,255,255,.85),
+      inset 0 -2px 0 rgba(70,112,91,.12),
+      0 5px 0 #86A894,
+      0 9px 16px rgba(70,112,91,.28);
+    transform: translateY(0);
+    transition: transform .08s ease, box-shadow .08s ease;
+    margin-bottom: 5px;
+  }
+  .btn-3d:active {
+    opacity: 1; transform: translateY(4px) scale(1);
+    box-shadow:
+      inset 0 1.5px 0 rgba(255,255,255,.7),
+      inset 0 -2px 0 rgba(70,112,91,.12),
+      0 1px 0 #86A894,
+      0 3px 6px rgba(70,112,91,.22);
+  }
+
   .btn-ghost {
     width: 100%; padding: 13px; background: transparent; color: var(--stone);
     font-size: 16px; border: none; cursor: pointer; font-family: 'DM Sans', sans-serif;
@@ -683,7 +707,7 @@
       <div style="text-align:center;font-size:14px;color:#65635B;padding:36px 0 8px;">Made by <a href="https://matthew-schmidt-production.up.railway.app/" target="_blank" rel="noopener noreferrer" style="color:#65635B;text-decoration:underline;display:inline-block;padding:13px 10px;margin:-13px -10px;">Matty</a></div>
     </div>
     <div class="float-btn-wrap">
-      <button class="btn-primary" onclick="startTimer()">Begin: 3 minutes</button>
+      <button class="btn-primary btn-3d" onclick="startTimer()">Begin: 3 minutes</button>
     </div>
   </div>
 
