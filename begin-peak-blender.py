@@ -2,14 +2,16 @@ import bpy, bmesh, math, sys
 from mathutils import Vector, noise
 
 out = sys.argv[sys.argv.index('--') + 1]
-W, H = 1360, 224            # 4x of 340x56
+W, H = 1360, 336            # 4x of 340x84
 SAMPLES = 96
 
 bpy.ops.wm.read_factory_settings(use_empty=True)
 scene = bpy.context.scene
 
-SX, SY = 6.8, 1.12          # plane size, same aspect as the button
-NX, NY = 680, 112
+TILT = math.radians(24)
+SX, SY = 6.8, 1.227         # face size; SY * cos(TILT) is the 56px the face shows
+RIM, BOTTOM = 0.10, -0.42   # rim height and the flat underside of the slab
+NX, NY = 900, 150
 
 # --- terrain -------------------------------------------------------------
 mesh = bpy.data.meshes.new('peak')
@@ -74,12 +76,58 @@ for vert in bm.verts:
     mound = 0.30 * max(0.0, 1.0 - rr) ** 0.9 + 0.10 + 0.06 * noise.noise(Vector((px * 0.9, py * 0.9, 2.0)))
     h = max(h, mound)
     h += noise.noise(Vector((x * 3.0, y * 6.0, 9.0))) * 0.018 * min(1.0, h * 3)
+    ed = min(SX / 2 - abs(x), SY / 2 - abs(y))
+    f = min(1.0, max(0.0, (ed - 0.03) / 0.22)); f = f * f * (3 - 2 * f)
+    h = RIM + (h - RIM) * f * 0.85
     hmax = max(hmax, h)
     vert.co.x, vert.co.y, vert.co.z = x, y, h
+# close the relief into a solid with a flat underside (cleaner than Solidify on steep ridges)
+edges = [ed for ed in bm.edges if ed.is_boundary]
+ret = bmesh.ops.extrude_edge_only(bm, edges=edges)
+for v in [g for g in ret['geom'] if isinstance(g, bmesh.types.BMVert)]:
+    v.co.z = BOTTOM
+bmesh.ops.holes_fill(bm, edges=[ed for ed in bm.edges if ed.is_boundary], sides=0)
+bmesh.ops.recalc_face_normals(bm, faces=bm.faces[:])
 bm.to_mesh(mesh)
 bm.free()
 for p in mesh.polygons:
     p.use_smooth = True
+
+# --- turn the relief into a slab: solidify, then cut to a rounded rectangle --
+cb = bmesh.new()
+R, SEG = 0.42, 20
+outline = []
+for cx, cy, a0 in ((SX/2 - R, SY/2 - R, 0), (-SX/2 + R, SY/2 - R, 90), (-SX/2 + R, -SY/2 + R, 180), (SX/2 - R, -SY/2 + R, 270)):
+    for i in range(SEG + 1):
+        t = math.radians(a0 + 90 * i / SEG)
+        outline.append((cx + R * math.cos(t), cy + R * math.sin(t)))
+vs = [cb.verts.new((x, y, BOTTOM)) for x, y in outline]
+face = cb.faces.new(vs)
+ext = bmesh.ops.extrude_face_region(cb, geom=[face])
+top = [v for v in ext['geom'] if isinstance(v, bmesh.types.BMVert)]
+bmesh.ops.translate(cb, vec=(0, 0, 3.4), verts=top)
+bmesh.ops.recalc_face_normals(cb, faces=cb.faces[:])
+cm = bpy.data.meshes.new('cutter')
+cb.to_mesh(cm)
+cb.free()
+cutter = bpy.data.objects.new('cutter', cm)
+scene.collection.objects.link(cutter)
+cutter.hide_render = True
+cutter.display_type = 'WIRE'
+boo = obj.modifiers.new('cut', 'BOOLEAN')
+boo.operation = 'INTERSECT'
+boo.object = cutter
+boo.solver = 'MANIFOLD'
+bev = obj.modifiers.new('bevel', 'BEVEL')
+bev.width = 0.018
+bev.segments = 3
+bev.limit_method = 'ANGLE'
+bev.angle_limit = math.radians(35)
+
+# shadow catcher under the slab
+bpy.ops.mesh.primitive_plane_add(size=40, location=(0, 0, BOTTOM))
+ground = bpy.context.object
+ground.hide_render = True
 
 # --- material: sage rock, snow near the summit ---------------------------
 mat = bpy.data.materials.new('rock')
@@ -97,7 +145,7 @@ mapr = nt.nodes.new('ShaderNodeMapRange')
 texco = nt.nodes.new('ShaderNodeTexCoord')
 nt.links.new(texco.outputs['Object'], sep.inputs[0])
 nt.links.new(sep.outputs['Z'], mapr.inputs['Value'])
-mapr.inputs['From Min'].default_value = 0.0
+mapr.inputs['From Min'].default_value = -0.15
 mapr.inputs['From Max'].default_value = 0.95
 nt.links.new(texco.outputs['Object'], tex.inputs['Vector'])
 tex.inputs['Scale'].default_value = 45
@@ -121,10 +169,10 @@ obj.data.materials.append(mat)
 # --- light, camera, world ------------------------------------------------
 sun = bpy.data.lights.new('sun', 'SUN')
 sun.energy = 2.3
-sun.angle = math.radians(14)             # soft shadows
+sun.angle = math.radians(22)             # soft shadows
 sun.color = (1.0, 0.98, 0.94)
 sun_o = bpy.data.objects.new('sun', sun)
-sun_o.rotation_euler = (math.radians(48), math.radians(0), math.radians(-45))
+sun_o.rotation_euler = (math.radians(48), math.radians(0), math.radians(-135))
 scene.collection.objects.link(sun_o)
 
 world = bpy.data.worlds.new('w')
@@ -137,12 +185,16 @@ scene.world = world
 cam = bpy.data.cameras.new('cam')
 cam.type = 'ORTHO'
 cam.ortho_scale = SX
+cam.shift_y = -0.026
 cam_o = bpy.data.objects.new('cam', cam)
-cam_o.location = (0, 0, 5)
+cam_o.location = (0, -math.sin(TILT) * 12, math.cos(TILT) * 12)
+cam_o.rotation_euler = (TILT, 0, 0)
 scene.collection.objects.link(cam_o)
 scene.camera = cam_o
 
 scene.render.engine = 'CYCLES'
+scene.render.film_transparent = True
+scene.render.image_settings.color_mode = 'RGBA'
 scene.cycles.samples = SAMPLES
 scene.cycles.use_denoising = True
 scene.cycles.device = 'CPU'

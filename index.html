@@ -140,37 +140,20 @@
   }
   .btn-sage:active { opacity: .85; }
 
-  /* Begin button: a mountain peak seen from above, rendered in Blender (begin-peak.jpg).
-     Light from the top left; the soft glow keeps the label readable. */
+  /* Begin button: a stone slab with a mountain relief on top, rendered in Blender
+     (begin-slab.png, script in begin-peak-blender.py). The label stays live text. */
   .btn-3d {
-    position: relative; overflow: hidden;
-    color: #1F4333; font-weight: 600; letter-spacing: 0;
-    border-radius: 20px;
-    border: 1px solid rgba(255,255,255,.5);
-    background:
-      radial-gradient(ellipse 30% 70% at 46% 46%, rgba(255,255,255,.92) 0%, rgba(255,255,255,.6) 50%, rgba(255,255,255,0) 100%),
-      url("begin-peak.jpg") center / 100% 100% no-repeat,
-      #B8D2C2;
-    box-shadow:
-      inset 1.5px 1.5px 0 rgba(255,255,255,.9),
-      inset -2px -3px 5px rgba(34,70,52,.25),
-      0 6px 0 #7FA18D,
-      0 7px 0 #6C8F7B,
-      0 14px 20px rgba(40,75,57,.32);
-    text-shadow: 0 1px 0 rgba(255,255,255,.7), 0 0 10px rgba(255,255,255,.8);
-    transform: translateY(0);
-    transition: transform .09s ease, box-shadow .09s ease;
-    margin-bottom: 7px;
+    display: flex; justify-content: center; align-items: flex-start; aspect-ratio: 1360 / 336;
+    padding: 17px 0 0; line-height: 20px;
+    color: #1F4333; font-weight: 600; letter-spacing: 0; text-align: center;
+    background: url("begin-slab.png") center / 100% 100% no-repeat;
+    border: none; border-radius: 0; box-shadow: none;
+    text-shadow: 0 0 8px rgba(238,248,242,.95), 0 1px 0 rgba(255,255,255,.7);
+    filter: drop-shadow(0 7px 7px rgba(40,75,57,.30));
+    transition: transform .09s ease, filter .09s ease;
+    -webkit-tap-highlight-color: transparent;
   }
-  .btn-3d:active {
-    opacity: 1; transform: translateY(5px) scale(1);
-    box-shadow:
-      inset 1.5px 1.5px 0 rgba(255,255,255,.8),
-      inset -2px -3px 5px rgba(34,70,52,.25),
-      0 1px 0 #7FA18D,
-      0 2px 0 #6C8F7B,
-      0 4px 8px rgba(40,75,57,.3);
-  }
+  .btn-3d:active { opacity: 1; transform: translateY(4px) scale(1); filter: brightness(.97) drop-shadow(0 2px 3px rgba(40,75,57,.28)); }
 
   .btn-ghost {
     width: 100%; padding: 13px; background: transparent; color: var(--stone);
