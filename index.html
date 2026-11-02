@@ -247,9 +247,9 @@
   #ob3 .t-chip { font-size: 16px; padding: 9px 16px; }
   .t-chip:not(.on) { opacity: .4; }
 
-  /* Teacher picker stones: Blender-rendered pill stones, 9-sliced so the ends stay round
+  /* Teacher stones (picker and You tab): Blender-rendered pill stones, 9-sliced so the ends stay round
      and the middle stretches to the name. Selected stones are deeper and lifted, with white text. */
-  #ob3 .t-chip.stone {
+  #ob3 .t-chip.stone, #you .t-chip.stone {
     --cap: 25px;
     display: block; box-sizing: border-box; min-height: 0; height: 48.34px; margin: 0 0 2px;
     padding: 8.5px 0 0; line-height: 20px; white-space: nowrap; font-size: 16px; font-weight: 500;
@@ -259,13 +259,13 @@
     filter: drop-shadow(0 2px 2px rgba(60,70,60,.18));
     transition: filter .22s ease, transform .22s ease;
   }
-  #ob3 .t-chip.stone .t { display: block; transition: transform .18s ease; }
-  #ob3 .t-chip.stone.on {
+  #ob3 .t-chip.stone .t, #you .t-chip.stone .t { display: block; transition: transform .18s ease; }
+  #ob3 .t-chip.stone.on, #you .t-chip.stone.on {
     border-image-source: var(--on); color: #fff; text-shadow: 0 1px 1px rgba(0,0,0,.28);
     filter: drop-shadow(0 5px 4px rgba(45,45,40,.28)); transform: translateY(-1px);
   }
-  #ob3 .t-chip.stone.on .t { transform: translateY(-1px); }
-  #ob3 .t-chip.stone:active .t { transform: translateY(1px); }
+  #ob3 .t-chip.stone.on .t, #you .t-chip.stone.on .t { transform: translateY(-1px); }
+  #ob3 .t-chip.stone:active .t, #you .t-chip.stone:active .t { transform: translateY(1px); }
 
   /* Pill buttons */
   .pill { padding: 8px 16px; border-radius: 20px; font-size: 15px; font-weight: 500; cursor: pointer; min-height: 44px; display: inline-flex; align-items: center; border: none; background: var(--mist); color: var(--stone); font-family: 'DM Sans', sans-serif; transition: all .15s; }
@@ -906,15 +906,15 @@
           <div class="pill" id="you-unselect-all" onclick="unselectAllYouTeachers()">Unselect all</div>
         </div>
         <div id="you-teacher-status" style="font-size:16px;color:var(--stone);margin-bottom:10px;">All 8 voices selected.</div>
-        <div id="you-teacher-chips" style="display:flex;flex-wrap:wrap;gap:8px;">
-          <div class="t-chip" data-init="RD" style="background:#fff;color:#5A7467;" onclick="toggleTeacherFromYou(this)">Ram Dass</div>
-          <div class="t-chip" data-init="MW" style="background:#fff;color:#A15C55;" onclick="toggleTeacherFromYou(this)">Marianne Williamson</div>
-          <div class="t-chip" data-init="AH" style="background:#fff;color:#7B639A;" onclick="toggleTeacherFromYou(this)">Almaas</div>
-          <div class="t-chip" data-init="WD" style="background:#fff;color:#896A1C;" onclick="toggleTeacherFromYou(this)">Dyer</div>
-          <div class="t-chip" data-init="JC" style="background:#fff;color:#38749E;" onclick="toggleTeacherFromYou(this)">Jesus</div>
-          <div class="t-chip" data-init="NM" style="background:#fff;color:#6F6F6D;" onclick="toggleTeacherFromYou(this)">Nisargadatta</div>
-          <div class="t-chip" data-init="BU" style="background:#fff;color:#866B2E;" onclick="toggleTeacherFromYou(this)">Buddha</div>
-          <div class="t-chip" data-init="PC" style="background:#fff;color:#517569;" onclick="toggleTeacherFromYou(this)">Peter Crone</div>
+        <div id="you-teacher-chips" style="display:flex;flex-wrap:wrap;gap:0;margin:0 -5px;">
+          <div class="t-chip stone" data-init="RD" style="--off:url(stones/rd-off.png);--on:url(stones/rd-on.png);--c-off:#26443a;" onclick="toggleTeacherFromYou(this)"><span class="t">Ram Dass</span></div>
+          <div class="t-chip stone" data-init="MW" style="--off:url(stones/mw-off.png);--on:url(stones/mw-on.png);--c-off:#5a1209;" onclick="toggleTeacherFromYou(this)"><span class="t">Marianne Williamson</span></div>
+          <div class="t-chip stone" data-init="AH" style="--off:url(stones/ah-off.png);--on:url(stones/ah-on.png);--c-off:#2c1254;" onclick="toggleTeacherFromYou(this)"><span class="t">Almaas</span></div>
+          <div class="t-chip stone" data-init="WD" style="--off:url(stones/wd-off.png);--on:url(stones/wd-on.png);--c-off:#5a4000;" onclick="toggleTeacherFromYou(this)"><span class="t">Dyer</span></div>
+          <div class="t-chip stone" data-init="JC" style="--off:url(stones/jc-off.png);--on:url(stones/jc-on.png);--c-off:#124a73;" onclick="toggleTeacherFromYou(this)"><span class="t">Jesus</span></div>
+          <div class="t-chip stone" data-init="NM" style="--off:url(stones/nm-off.png);--on:url(stones/nm-on.png);--c-off:#2b2b29;" onclick="toggleTeacherFromYou(this)"><span class="t">Nisargadatta</span></div>
+          <div class="t-chip stone" data-init="BU" style="--off:url(stones/bu-off.png);--on:url(stones/bu-on.png);--c-off:#4a3200;" onclick="toggleTeacherFromYou(this)"><span class="t">Buddha</span></div>
+          <div class="t-chip stone" data-init="PC" style="--off:url(stones/pc-off.png);--on:url(stones/pc-on.png);--c-off:#123a2b;" onclick="toggleTeacherFromYou(this)"><span class="t">Peter Crone</span></div>
         </div>
       </div>
       <div class="hr"></div>
@@ -1589,7 +1589,6 @@ function renderYouTeacherChips() {
     const init = chip.getAttribute('data-init');
     const on = selectedInits.has(init);
     chip.classList.toggle('on', on);
-    chip.style.opacity = on ? '1' : '0.35';
   });
   // Reflect the current state on the Select all / Unselect all pills
   const total = chips.length;
@@ -1732,6 +1731,12 @@ const teacherInitMap = {
 
 // Start with all teachers selected
 let selectedInits = new Set(Object.values(teacherInitMap));
+
+// Warm the stone images so they are ready the first time a teacher screen opens
+['rd','mw','ah','wd','jc','nm','bu','pc'].forEach(k => {
+  ['off','on'].forEach(st => { new Image().src = 'stones/' + k + '-' + st + '.png'; });
+});
+new Image().src = 'continue-slab.png';
 
 function renderOb3TeacherChips() {
   const chips = document.querySelectorAll('#ob3-teacher-chips .t-chip');
