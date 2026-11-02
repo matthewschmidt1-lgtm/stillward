@@ -907,14 +907,14 @@
         </div>
         <div id="you-teacher-status" style="font-size:16px;color:var(--stone);margin-bottom:10px;">All 8 voices selected.</div>
         <div id="you-teacher-chips" style="display:flex;flex-wrap:wrap;gap:0;margin:0 -5px;">
-          <div class="t-chip stone" data-init="RD" style="--off:url(stones/rd-off.png);--on:url(stones/rd-on.png);--c-off:#26443a;" onclick="toggleTeacherFromYou(this)"><span class="t">Ram Dass</span></div>
-          <div class="t-chip stone" data-init="MW" style="--off:url(stones/mw-off.png);--on:url(stones/mw-on.png);--c-off:#5a1209;" onclick="toggleTeacherFromYou(this)"><span class="t">Marianne Williamson</span></div>
-          <div class="t-chip stone" data-init="AH" style="--off:url(stones/ah-off.png);--on:url(stones/ah-on.png);--c-off:#2c1254;" onclick="toggleTeacherFromYou(this)"><span class="t">Almaas</span></div>
-          <div class="t-chip stone" data-init="WD" style="--off:url(stones/wd-off.png);--on:url(stones/wd-on.png);--c-off:#5a4000;" onclick="toggleTeacherFromYou(this)"><span class="t">Dyer</span></div>
-          <div class="t-chip stone" data-init="JC" style="--off:url(stones/jc-off.png);--on:url(stones/jc-on.png);--c-off:#124a73;" onclick="toggleTeacherFromYou(this)"><span class="t">Jesus</span></div>
-          <div class="t-chip stone" data-init="NM" style="--off:url(stones/nm-off.png);--on:url(stones/nm-on.png);--c-off:#2b2b29;" onclick="toggleTeacherFromYou(this)"><span class="t">Nisargadatta</span></div>
-          <div class="t-chip stone" data-init="BU" style="--off:url(stones/bu-off.png);--on:url(stones/bu-on.png);--c-off:#4a3200;" onclick="toggleTeacherFromYou(this)"><span class="t">Buddha</span></div>
-          <div class="t-chip stone" data-init="PC" style="--off:url(stones/pc-off.png);--on:url(stones/pc-on.png);--c-off:#123a2b;" onclick="toggleTeacherFromYou(this)"><span class="t">Peter Crone</span></div>
+          <div class="t-chip stone" data-init="RD" style="--off:url(stones/rd-off.png);--on:url(stones/you-rd-on.png);--c-off:#26443a;" onclick="toggleTeacherFromYou(this)"><span class="t">Ram Dass</span></div>
+          <div class="t-chip stone" data-init="MW" style="--off:url(stones/mw-off.png);--on:url(stones/you-mw-on.png);--c-off:#5a1209;" onclick="toggleTeacherFromYou(this)"><span class="t">Marianne Williamson</span></div>
+          <div class="t-chip stone" data-init="AH" style="--off:url(stones/ah-off.png);--on:url(stones/you-ah-on.png);--c-off:#2c1254;" onclick="toggleTeacherFromYou(this)"><span class="t">Almaas</span></div>
+          <div class="t-chip stone" data-init="WD" style="--off:url(stones/wd-off.png);--on:url(stones/you-wd-on.png);--c-off:#5a4000;" onclick="toggleTeacherFromYou(this)"><span class="t">Dyer</span></div>
+          <div class="t-chip stone" data-init="JC" style="--off:url(stones/jc-off.png);--on:url(stones/you-jc-on.png);--c-off:#124a73;" onclick="toggleTeacherFromYou(this)"><span class="t">Jesus</span></div>
+          <div class="t-chip stone" data-init="NM" style="--off:url(stones/nm-off.png);--on:url(stones/you-nm-on.png);--c-off:#2b2b29;" onclick="toggleTeacherFromYou(this)"><span class="t">Nisargadatta</span></div>
+          <div class="t-chip stone" data-init="BU" style="--off:url(stones/bu-off.png);--on:url(stones/you-bu-on.png);--c-off:#4a3200;" onclick="toggleTeacherFromYou(this)"><span class="t">Buddha</span></div>
+          <div class="t-chip stone" data-init="PC" style="--off:url(stones/pc-off.png);--on:url(stones/you-pc-on.png);--c-off:#123a2b;" onclick="toggleTeacherFromYou(this)"><span class="t">Peter Crone</span></div>
         </div>
       </div>
       <div class="hr"></div>
@@ -1735,6 +1735,7 @@ let selectedInits = new Set(Object.values(teacherInitMap));
 // Warm the stone images so they are ready the first time a teacher screen opens
 ['rd','mw','ah','wd','jc','nm','bu','pc'].forEach(k => {
   ['off','on'].forEach(st => { new Image().src = 'stones/' + k + '-' + st + '.png'; });
+  new Image().src = 'stones/you-' + k + '-on.png';
 });
 new Image().src = 'continue-slab.png';
 
