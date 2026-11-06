@@ -267,6 +267,11 @@
   #ob3 .t-chip.stone.on .t, #you .t-chip.stone.on .t { transform: translateY(-1px); }
   #ob3 .t-chip.stone:active .t, #you .t-chip.stone:active .t { transform: translateY(1px); }
 
+  /* "Made by Matty" sits at the bottom of the page on the main tabs, even when the content is short */
+  #home .scroll, #you .scroll, #p0 .scroll, #patterns-scroll { display: flex; flex-direction: column; }
+  #home .scroll > *, #you .scroll > *, #p0 .scroll > *, #patterns-scroll > * { flex-shrink: 0; }
+  .made-by { margin-top: auto; }
+
   /* Pill buttons */
   .pill { padding: 8px 16px; border-radius: 20px; font-size: 15px; font-weight: 500; cursor: pointer; min-height: 44px; display: inline-flex; align-items: center; border: none; background: var(--mist); color: var(--stone); font-family: 'DM Sans', sans-serif; transition: all .15s; }
   .pill.active { background: var(--ink); color: var(--parchment); }
@@ -614,7 +619,7 @@
           <div style="flex:1;font-size:15px;color:var(--stone);line-height:1.6;" id="returns-msg">Every practice is a return to yourself. This number only ever grows.</div>
         </div>
       </div>
-      <div style="text-align:center;font-size:14px;color:#65635B;padding:4px 22px 6px;">Made by <a href="https://matthew-schmidt-production.up.railway.app/" target="_blank" rel="noopener noreferrer" style="color:#65635B;text-decoration:underline;display:inline-block;padding:13px 10px;margin:-13px -10px;">Matty</a></div>
+      <div class="made-by" style="text-align:center;font-size:14px;color:#65635B;padding:4px 22px 6px;">Made by <a href="https://matthew-schmidt-production.up.railway.app/" target="_blank" rel="noopener noreferrer" style="color:#65635B;text-decoration:underline;display:inline-block;padding:13px 10px;margin:-13px -10px;">Matty</a></div>
     </div>
     <div class="bottom-nav">
       <div class="nav-item active"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="3" fill="#7D9E89"/><circle cx="11" cy="11" r="7" fill="none" stroke="#7D9E89" stroke-width="1" stroke-dasharray="2 2"/></svg><div class="nav-lbl" style="color:var(--sage);">Home</div></div>
@@ -654,7 +659,7 @@
           <div class="choice-desc">Purpose, clarity, overwhelm, and meaning</div>
         </div><div class="arrow">›</div>
       </div>
-      <div style="text-align:center;font-size:14px;color:#65635B;padding:36px 0 8px;">Made by <a href="https://matthew-schmidt-production.up.railway.app/" target="_blank" rel="noopener noreferrer" style="color:#65635B;text-decoration:underline;display:inline-block;padding:13px 10px;margin:-13px -10px;">Matty</a></div>
+      <div class="made-by" style="text-align:center;font-size:14px;color:#65635B;padding:36px 0 8px;">Made by <a href="https://matthew-schmidt-production.up.railway.app/" target="_blank" rel="noopener noreferrer" style="color:#65635B;text-decoration:underline;display:inline-block;padding:13px 10px;margin:-13px -10px;">Matty</a></div>
     </div>
   </div>
 
@@ -864,7 +869,7 @@
         <div style="font-size:17px;color:#7B56A5;line-height:1.6;">You've visited Ram Dass 9 times. Your still point lives in presence.</div>
       </div>
     </div>
-    <div style="text-align:center;font-size:14px;color:#65635B;padding:6px 22px 18px;">Made by <a href="https://matthew-schmidt-production.up.railway.app/" target="_blank" rel="noopener noreferrer" style="color:#65635B;text-decoration:underline;display:inline-block;padding:13px 10px;margin:-13px -10px;">Matty</a></div>
+    <div class="made-by" style="text-align:center;font-size:14px;color:#65635B;padding:6px 22px 18px;">Made by <a href="https://matthew-schmidt-production.up.railway.app/" target="_blank" rel="noopener noreferrer" style="color:#65635B;text-decoration:underline;display:inline-block;padding:13px 10px;margin:-13px -10px;">Matty</a></div>
     </div>
     <div class="bottom-nav">
       <div class="nav-item" onclick="goScreen('home')"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="3" fill="#65635B"/><circle cx="11" cy="11" r="7" fill="none" stroke="#65635B" stroke-width="1" stroke-dasharray="2 2"/></svg><div class="nav-lbl">Home</div></div>
@@ -952,8 +957,8 @@
       <div class="setting-row"><div style="display:flex;align-items:center;gap:14px;"><div class="setting-icon" style="background:#E3EDF5;"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 14l3-3 3 3 3-6 3 6" stroke="#1A5F8F" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></div><div><div style="font-size:18px;font-weight:500;color:var(--ink);">Show pattern insights</div><div style="font-size:17px;color:var(--stone);">Surface your practice patterns</div></div></div><div class="toggle on" onclick="this.classList.toggle('on')"><div class="toggle-knob"></div></div></div>
       <div class="setting-row"><div style="display:flex;align-items:center;gap:14px;"><div class="setting-icon" style="background:#EDF4F0;"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M4 10 Q6 5 9 8 Q12 11 14 6" stroke="#7D9E89" stroke-width="1.2" stroke-linecap="round" fill="none"/><circle cx="9" cy="8.5" r="1.5" fill="#7D9E89"/></svg></div><div><div style="font-size:18px;font-weight:500;color:var(--ink);">Ambient sound</div><div style="font-size:17px;color:var(--stone);">Play soft sound during practice</div></div></div><div class="toggle" onclick="this.classList.toggle('on')"><div class="toggle-knob"></div></div></div>
       <div class="hr"></div>
-      <div style="font-size:15px;color:var(--muted);text-align:center;padding:8px 22px 4px;">Made with presence</div>
-      <div style="text-align:center;font-size:14px;color:#65635B;padding:0 22px 24px;">Made by <a href="https://matthew-schmidt-production.up.railway.app/" target="_blank" rel="noopener noreferrer" style="color:#65635B;text-decoration:underline;display:inline-block;padding:13px 10px;margin:-13px -10px;">Matty</a></div>
+      <div class="made-by" style="font-size:15px;color:var(--muted);text-align:center;padding:8px 22px 4px;">Made with presence</div>
+      <div class="made-by" style="text-align:center;font-size:14px;color:#65635B;padding:0 22px 24px;">Made by <a href="https://matthew-schmidt-production.up.railway.app/" target="_blank" rel="noopener noreferrer" style="color:#65635B;text-decoration:underline;display:inline-block;padding:13px 10px;margin:-13px -10px;">Matty</a></div>
     </div>
     <div class="bottom-nav">
       <div class="nav-item" onclick="goScreen('home')"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="3" fill="#65635B"/><circle cx="11" cy="11" r="7" fill="none" stroke="#65635B" stroke-width="1" stroke-dasharray="2 2"/></svg><div class="nav-lbl">Home</div></div>
