@@ -892,12 +892,7 @@
           <div class="stat-chip"><div class="stat-num" style="color:var(--velvet);">6</div><div class="stat-lbl">Teachers</div></div>
         </div>
       </div>
-      <div class="sec-lbl">Your name</div>
-      <div style="padding:0 22px;margin-bottom:6px;">
-        <input id="you-name-input" class="name-input" type="text" placeholder="Your first name" value="Friend" oninput="updateYouName(this.value)"/>
-      </div>
-      <div class="hr"></div>
-      <div id="you-teachers-card" style="margin:0 22px 16px;padding:18px 16px 14px;background:#F3F8F5;border:1.5px solid rgba(125,158,137,.25);border-radius:18px;">
+      <div id="you-teachers-card" style="margin:16px 22px 16px;padding:18px 16px 14px;background:#F3F8F5;border:1.5px solid rgba(125,158,137,.25);border-radius:18px;">
         <div style="font-size:19px;font-weight:600;color:var(--ink);margin-bottom:4px;">Your teachers</div>
         <div style="font-size:17px;color:#5C5B56;line-height:1.5;margin-bottom:12px;">Tap to include or exclude a voice. Your quotes and practices follow this. Prefer just one or two? Tap Unselect all, then choose them.</div>
         <div style="display:flex;gap:8px;margin-bottom:10px;">
@@ -915,6 +910,11 @@
           <div class="t-chip stone" data-init="BU" style="--off:url(stones/bu-off.png);--on:url(stones/you-bu-on.png);--c-off:#4a3200;" onclick="toggleTeacherFromYou(this)"><span class="t">Buddha</span></div>
           <div class="t-chip stone" data-init="PC" style="--off:url(stones/pc-off.png);--on:url(stones/you-pc-on.png);--c-off:#123a2b;" onclick="toggleTeacherFromYou(this)"><span class="t">Peter Crone</span></div>
         </div>
+      </div>
+      <div class="hr"></div>
+      <div class="sec-lbl">Your name</div>
+      <div style="padding:0 22px;margin-bottom:6px;">
+        <input id="you-name-input" class="name-input" type="text" placeholder="Your first name" value="Friend" oninput="updateYouName(this.value)"/>
       </div>
       <div class="hr"></div>
       <div class="sec-lbl">Saved practices</div>
