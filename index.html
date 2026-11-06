@@ -291,7 +291,7 @@
   #p5 #keep-practice-btn { font-size: 17px; }
   #p5 .btn-primary { font-size: 18px; }
   #p5 #still-heavy-block, #p5 #still-heavy-block div { font-size: 16px; }
-  #home-intention .sec-lbl { font-size: 15px; }
+  #home-intention .sec-lbl { font-size: 15px; margin-bottom: 20px; }
   #home-intention .serif-italic { font-size: 19px; line-height: 1.6; }
   #home-intention .serif-italic + div { font-size: 17px; margin-top: 8px; }
   #timer-reminder { font-size: 19px; line-height: 1.7; }
@@ -594,7 +594,7 @@
       <div id="goto-card-wrap" style="padding:0 22px;margin-bottom:20px;display:none;"></div>
 
       <!-- Daily quote / today's intention -->
-      <div id="home-intention" style="padding-top:18px;margin-bottom:36px;">
+      <div id="home-intention" style="padding-top:18px;margin-bottom:54px;">
       <div class="sec-lbl" id="home-quote-lbl">Today's wisdom</div>
       <div style="padding:0 22px;">
         <div style="border-left:2px solid var(--dusk);padding-left:14px;">
@@ -609,16 +609,6 @@
       <div id="recent-practices" style="display:none;gap:8px;padding:0 22px;margin-bottom:20px;overflow-x:auto;padding-bottom:4px;">
       </div>
 
-      <!-- Returns counter -->
-      <div style="padding:0 22px;margin-bottom:20px;">
-        <div style="background:var(--mist);border-radius:16px;padding:16px 18px;display:flex;align-items:center;gap:14px;">
-          <div style="text-align:center;min-width:56px;">
-            <div style="font-size:24px;font-weight:500;color:var(--sage-text);" id="returns-count">0</div>
-            <div style="font-size:14px;color:var(--stone);letter-spacing:.03em;">returns</div>
-          </div>
-          <div style="flex:1;font-size:15px;color:var(--stone);line-height:1.6;" id="returns-msg">Every practice is a return to yourself. This number only ever grows.</div>
-        </div>
-      </div>
       <div class="made-by" style="text-align:center;font-size:14px;color:#65635B;padding:4px 22px 6px;">Made by <a href="https://matthew-schmidt-production.up.railway.app/" target="_blank" rel="noopener noreferrer" style="color:#65635B;text-decoration:underline;display:inline-block;padding:13px 10px;margin:-13px -10px;">Matty</a></div>
     </div>
     <div class="bottom-nav">
@@ -1392,6 +1382,7 @@ function renderHomeGreeting() {
 }
 
 function renderReturns() {
+  if (!document.getElementById('returns-count')) return; // the returns box was removed from Home
   const count = sessions.length;
   document.getElementById('returns-count').textContent = count;
   const msg = document.getElementById('returns-msg');
